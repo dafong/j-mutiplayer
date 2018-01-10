@@ -1,0 +1,9 @@
+/Library/
+/Bolt_DebugStart_Build/
+/release/
+/Temp/
+*.csproj
+*.sln
+*.userprefs
+obj/
+/.vs/
