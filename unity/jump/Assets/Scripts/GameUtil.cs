@@ -16,7 +16,7 @@ public class GameUtil : MonoBehaviour {
 
 	public float scaleSpeed;
 
-	public float minScale;
+    public float maxScaleDuration;
 
 	public float jumpPowerSpeed;
 
@@ -26,7 +26,11 @@ public class GameUtil : MonoBehaviour {
 
 	public Transform curFloor;
 
+    public Transform targetFloor;
+
 	public State state;
+
+    public int score;
 
 	private bool isStart;
 
@@ -46,27 +50,25 @@ public class GameUtil : MonoBehaviour {
 	}
 
 	public void OnClick(){
-		
+
 	}
 
 	public void OnPressDown(){
 		state = State.ChargeUp;
 		jumpPower = 0;
+        float scaleChange = maxScaleDuration * scaleSpeed;
 
-		float duration = (1 - minScale) / scaleSpeed;
-		float translate = (2 * (1 - minScale)) / 2;
+        float halfHeight = curFloor.GetComponent<Floor>().ScaleY(scaleChange,maxScaleDuration);
 
-		curFloor.transform.DOLocalMoveY (0.5f, duration, false).SetId ("FloorMoveDown").SetEase (Ease.Linear);
-		curFloor.transform.DOScaleY ( 0.5f, duration).SetId ("FloorScaleDown").SetEase (Ease.Linear);
-
-//		player.transform.DOLocalMoveY (-2 * translate, duration, false).SetId ("PlayerMoveDown").SetEase (Ease.Linear);
-//		player.transform.DOScale (new Vector3 (1.5f, 0.5f * minScale, 1.5f), duration).SetId ("PlayerScaleDown").SetEase (Ease.Linear);
-	}
+        player.GetComponent<Player>().PressUp(scaleChange, 2 * halfHeight, maxScaleDuration);
+    }
 
 	public void OnPressUp(){
 		curFloor.DOKill ();
 		player.DOKill ();
 		state = State.Jump;
+        curFloor.GetComponent<Floor>().Revert(0.1f);
+        player.GetComponent<Player>().JumpTo(targetFloor.transform.position);
 	}
 
 
