@@ -31,4 +31,5 @@ export default class CameraController{
 		console.log(euler)
 	}
 
+	
 }

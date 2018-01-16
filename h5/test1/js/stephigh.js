@@ -8,7 +8,69 @@ export default class StepHigh{
 		console.log('game step hight init...')
 		this.scene = new THREE.Scene();
 		// this.showMenu()
-		this.shadow()
+		// this.shadow()
+		this.halflambert()
+	}
+
+	halflambert(){
+		var shader = {
+			uniforms : {
+				lightcol : { type : '3f', value:[1,1,1] },
+				lightdir : { type : '3f', value:[0,0,0] },
+				lightscale : { type : 'f' , value:1 },
+				color : { type : '3f' , value:[1,0,0]},
+			},
+			vertex_shader :[
+				'uniform vec3 lightcol;',
+				'uniform vec3 lightdir;',
+				'uniform float lightscale;',
+				'uniform vec3 color;',
+				'varying vec4 posw;',
+				'varying vec3 f_color;',
+				'varying vec3 f_lightcol;',
+				'varying vec3 f_lightdir;',
+				'varying vec3 f_normal;',
+				'varying float f_lightscale;',
+				'void main(){',
+					'posw = modelMatrix * vec4(position,1.0);',
+					'f_color = color;',
+					'f_lightcol = lightcol;',
+					'f_lightdir = lightdir;',
+					'f_normal = normal;',
+					'f_lightscale = lightscale;',
+					'gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);',
+				'}'
+			].join('\n'),
+			fragment_shader :[
+				'varying vec4 posw;',
+				'varying vec3 f_color;',
+				'varying vec3 f_lightcol;',
+				'varying vec3 f_lightdir;',
+				'varying vec3 f_normal;',
+				'varying float f_lightscale;',
+				'void main(){',
+					'vec3 normal = normalize(f_normal);',
+					'vec3 lightdir = normalize(f_lightdir);',
+					'vec3 lightcol = f_lightcol * (dot(normal,lightdir)/2.0 + 0.5) * f_lightscale;',
+					'gl_FragColor = vec4(lightcol * f_color,1);',
+				'}'
+			].join('\n')
+		}
+		var mat = new THREE.ShaderMaterial({
+		    uniforms: THREE.UniformsUtils.clone(shader.uniforms),
+		    vertexShader: shader.vertex_shader,
+		    fragmentShader: shader.fragment_shader
+		});
+		mat.uniforms.color.value = [1,1,0];
+		mat.uniforms.lightdir.value = [1,1,-1];
+		mat.uniforms.lightscale.value = 1.2;
+	    var geometry = new THREE.BoxBufferGeometry( 60, 60, 60 );
+		var mesh = new THREE.Mesh( geometry, mat );
+		mesh.position.set(0,0,0)
+		this.scene.add( mesh );
+
+		var cam = CameraController.get()
+		cam.lookAt(mesh.position)
 	}
 
 	shadow(){
