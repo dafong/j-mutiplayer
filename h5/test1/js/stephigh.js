@@ -56,19 +56,21 @@ export default class StepHigh{
 				'}'
 			].join('\n')
 		}
-		var mat = new THREE.ShaderMaterial({
-		    uniforms: THREE.UniformsUtils.clone(shader.uniforms),
-		    vertexShader: shader.vertex_shader,
-		    fragmentShader: shader.fragment_shader
-		});
-		mat.uniforms.color.value = [1,1,0];
-		mat.uniforms.lightdir.value = [1,1,-1];
-		mat.uniforms.lightscale.value = 1.2;
-	    var geometry = new THREE.BoxBufferGeometry( 60, 60, 60 );
+		// var mat = new THREE.ShaderMaterial({
+		//     uniforms: THREE.UniformsUtils.clone(shader.uniforms),
+		//     vertexShader: shader.vertex_shader,
+		//     fragmentShader: shader.fragment_shader
+		// });
+		// mat.uniforms.color.value = [1,1,0];
+		// mat.uniforms.lightdir.value = [1,1,-1];
+		// mat.uniforms.lightscale.value = 1.2;
+		var mat = new THREE.MeshLambertMaterial( { color: new THREE.Color( 0xffffff ) } );
+	    var geometry = new THREE.BoxGeometry( 6, 6, 6 );
 		var mesh = new THREE.Mesh( geometry, mat );
 		mesh.position.set(0,0,0)
 		this.scene.add( mesh );
-
+		var e = new THREE.AmbientLight(16777215, .8);
+	this.scene.add(e)
 		var cam = CameraController.get()
 		cam.lookAt(mesh.position)
 	}
@@ -115,7 +117,7 @@ export default class StepHigh{
 		this.scene.add( mesh );
 
 		var cam = CameraController.get()
-		cam.lookAt(mesh.position)
+
 	}
 
 	test(){
@@ -154,7 +156,9 @@ export default class StepHigh{
 		cam.lookAt(mesh.position)
 	}
 	showMenu(){
-		var geometry = new THREE.BoxBufferGeometry( 60, 60, 60 );
+		// var geometry = new THREE.BoxBufferGeometry( 60, 60, 60 );
+		var geometry = new THREE.BoxGeometry(10,1.25,10);
+
 		var material = new THREE.MeshLambertMaterial( { color: new THREE.Color( 0xff0000 ) } );
 		var mesh = new THREE.Mesh( geometry, material );
 
@@ -168,7 +172,7 @@ export default class StepHigh{
 		var cam = CameraController.get()
 		cam.lookAt(mesh.position)
 
-		var mat = new THREE.ShaderMaterial()
+		// var mat = new THREE.ShaderMaterial()
 		// var loader = new OBJLoader2();
 		// // function called on successful load
 		// 	var callbackOnLoad = function ( event ) {

@@ -13,8 +13,17 @@ export default class App{
 
 	init(){
 		console.log('app init...')
-		renderer = new THREE.WebGLRenderer({ context: ctx });
+
+		// renderer = new THREE.WebGLRenderer({ context: ctx ,antialias : true});
+		renderer = new THREE.WebGLRenderer({
+			antialias: !0,
+			canvas: canvas,
+			preserveDrawingBuffer: !0
+		});
+
+
 		renderer.setSize( window.innerWidth, window.innerHeight)
+
 		var cam = CameraController.get()
 		this.root = new StepHigh()
 		this.root.init()
