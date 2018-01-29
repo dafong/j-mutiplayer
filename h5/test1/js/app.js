@@ -1,4 +1,4 @@
-import * as THREE from 'libs/three.js'
+import * as t from 'libs/three.js'
 import CameraController from 'cameracontroller.js'
 import StepHigh from 'stephigh.js'
 let ctx = canvas.getContext('webgl')
@@ -6,6 +6,7 @@ let renderer
 let scene
 let camera
 let mesh
+
 export default class App{
 	constructor() {
 		this.init()
@@ -13,14 +14,12 @@ export default class App{
 
 	init(){
 		console.log('app init...')
-
-		// renderer = new THREE.WebGLRenderer({ context: ctx ,antialias : true});
-		renderer = new THREE.WebGLRenderer({
-			antialias: !0,
+		console.log('window.devicePixelRatio= ' + window.devicePixelRatio)
+		renderer = new t.WebGLRenderer({
+			antialias: true,
 			canvas: canvas,
-			preserveDrawingBuffer: !0
+			preserveDrawingBuffer: true
 		});
-
 
 		renderer.setSize( window.innerWidth, window.innerHeight)
 

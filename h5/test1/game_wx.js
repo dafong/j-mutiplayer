@@ -20909,11 +20909,19 @@ define("game.js", function(require, module, exports) {
 							v.default.getFirstBlood() || this.options.query.mode || (this.guider = !0), this.gameCtrl = new C.default(this), this.gameView = new P.default(this), this.gameModel = new k.default(this), this.instructionCtrl = new A.default(this), this.historyTimes = new S.default(this), this.reporter = new E.default, this.audioManager = new f.default(this), this.gameSocket = new x.default(this), this.scene = new o.Scene;
 							var t = d.FRUSTUMSIZE,
 								i = O / R;
-							this.camera = new o.OrthographicCamera(t * i / -2, t * i / 2, t / 2, t / -2, -10, 85), this.camera.position.set(-17, 30, 26), this.camera.lookAt(new o.Vector3(13, 0, -4)), this.scene.add(this.camera), this.renderer = new o.WebGLRenderer({
+							this.camera = new o.OrthographicCamera(t * i / -2, t * i / 2, t / 2, t / -2, -10, 85),
+                            this.camera.position.set(-17, 30, 26),
+                            this.camera.lookAt(new o.Vector3(13, 0, -4)),
+                            this.scene.add(this.camera),
+                            this.renderer = new o.WebGLRenderer({
 								antialias: !0,
 								canvas: canvas,
 								preserveDrawingBuffer: !0
-							}), window.renderer = this.renderer, this.blocksPool = [], this.blocksInUse = [], this.doubleHit = 0, B && (U.indexOf("iPhone 4") >= 0 || U.indexOf("iPhone 5") >= 0 || I.system.indexOf("iOS 9") >= 0 || I.system.indexOf("iOS 8") >= 0 || U.indexOf("iPhone 6") >= 0 && U.indexOf("iPhone 6s") < 0) ? (this.renderer.shadowMap.enabled = !1, d.GAME.canShadow = !1, this.renderer.setPixelRatio(1.5)) : void 0 !== I.benchmarkLevel && I.benchmarkLevel < 5 && -1 != I.benchmarkLevel ? (d.GAME.canShadow = !1, this.renderer.shadowMap.enabled = !1, this.renderer.setPixelRatio(window.devicePixelRatio ? B ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio : 1)) : (this.renderer.setPixelRatio(window.devicePixelRatio ? B ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio : 1), this.renderer.shadowMap.enabled = !0), this.renderer.setSize(O, R), this.renderer.localClippingEnabled = !0, this.ground = new c.default, this.ground.obj.position.z = -84, this.camera.add(this.ground.obj), this.waves = [];
+							}),
+                            window.renderer = this.renderer,
+                            this.blocksPool = [],
+                            this.blocksInUse = [],
+                            this.doubleHit = 0, B && (U.indexOf("iPhone 4") >= 0 || U.indexOf("iPhone 5") >= 0 || I.system.indexOf("iOS 9") >= 0 || I.system.indexOf("iOS 8") >= 0 || U.indexOf("iPhone 6") >= 0 && U.indexOf("iPhone 6s") < 0) ? (this.renderer.shadowMap.enabled = !1, d.GAME.canShadow = !1, this.renderer.setPixelRatio(1.5)) : void 0 !== I.benchmarkLevel && I.benchmarkLevel < 5 && -1 != I.benchmarkLevel ? (d.GAME.canShadow = !1, this.renderer.shadowMap.enabled = !1, this.renderer.setPixelRatio(window.devicePixelRatio ? B ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio : 1)) : (this.renderer.setPixelRatio(window.devicePixelRatio ? B ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio : 1), this.renderer.shadowMap.enabled = !0), this.renderer.setSize(O, R), this.renderer.localClippingEnabled = !0, this.ground = new c.default, this.ground.obj.position.z = -84, this.camera.add(this.ground.obj), this.waves = [];
 							for (a = 0; a < 4; ++a) {
 								var n = new l.default;
 								this.waves.push(n), n.obj.visible = !1, this.scene.add(n.obj)
