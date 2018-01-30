@@ -14451,13 +14451,18 @@ define("game.js", function(require, module, exports) {
 							}(this, e), this.material = new r.MeshBasicMaterial({
 								color: i.fillStyle || 16777215,
 								transparent: !0
-							}), i.opacity && (this.material.opacity = i.opacity), this.options = i || {}, this.obj = new r.Object3D, this.obj.name = "text", i.chinese) {
+							}),
+							i.opacity && (this.material.opacity = i.opacity),
+							this.options = i || {},
+							this.obj = new r.Object3D,
+							this.obj.name = "text", i.chinese) {
 							var n = new r.Mesh(new r.TextGeometry(t, {
 								font: a.default,
 								size: 1,
 								height: .1
 							}), this.material);
-							this.obj.add(n), "center" == i.textAlign && (n.position.x = 1.1 * t.length / -2)
+							this.obj.add(n), "center" == i.textAlign &&
+							(n.position.x = 1.1 * t.length / -2)
 						} else {
 							this.scores = [], this.plus = new r.Mesh(new r.TextGeometry("+", {
 								font: a.default,
@@ -17462,7 +17467,9 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "showLookersPage",
 						value: function(e) {
-							this.hide2D(), this.showState = !0, this.canvasType = g.lookers, this._createPlane(), this._drawLookers(e)
+							this.hide2D(), this.showState = !0, this.canvasType = g.lookers,
+							this._createPlane(),
+							this._drawLookers(e)
 						}
 					}, {
 						key: "showBeginnerPage",
@@ -17773,7 +17780,9 @@ define("game.js", function(require, module, exports) {
 							var i = this,
 								n = e.score || 0,
 								r = e.nickname || "";
-							t.textAlign = "center", t.textBaseline = "middle", "in" == e.type ? (this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cx(50), this._cx(50), "bg", function() {
+							t.textAlign = "center",
+							t.textBaseline = "middle",
+							"in" == e.type ? (this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cx(50), this._cx(50), "bg", function() {
 								i._drawImageCenter("res/ava_lookers.png", i._cx(207), i._cy(91), i._cx(53), i._cx(53), "bg", null, i.imgid.bg)
 							}, this.imgid.bg, !0), t.font = this._cf(17), t.fillStyle = "black", t.fillText(r + " 正在游戏中", this._cx(207), this._cy(144))) : "gg" == e.type ? (t.fillStyle = "rgba(0,0,0, 0.4)", t.fillRect(0, 0, p, f), this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cwh(50), this._cwh(50), "bg", function() {
 								i._drawImageCenter("res/ava_lookers.png", i._cx(207), i._cy(91), i._cwh(53), i._cwh(53), "bg", null, i.imgid.bg)
@@ -18462,7 +18471,12 @@ define("game.js", function(require, module, exports) {
 							fillStyle: 2434341,
 							sumScore: !0,
 							opacity: .8
-						}), this.scoreText.obj.position.set(0, 21, -10), this.scoreText.obj.updateMatrix(), this.scoreText.obj.matrixAutoUpdate = !1, this.camera.add(this.scoreText.obj), this.quickText = new a.default("好快！", {
+						}),
+						this.scoreText.obj.position.set(0, 21, -10),
+						this.scoreText.obj.updateMatrix(),
+						this.scoreText.obj.matrixAutoUpdate = !1,
+						this.camera.add(this.scoreText.obj),
+						this.quickText = new a.default("好快！", {
 							fillStyle: 2434341,
 							chinese: !0
 						}), this.quickText.obj.position.set(-13, 18, -10), this.quickText.obj.updateMatrix(), this.quickText.obj.matrixAutoUpdate = !1, this.quickText.obj.visible = !1, this.perfectText = new a.default("很好！", {
