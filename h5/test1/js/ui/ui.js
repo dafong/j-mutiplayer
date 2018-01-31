@@ -15,8 +15,8 @@ export default class UI{
             o.canvas.height= window.innerHeight * g.config.devicePixelRatio
             o.tex = new t.Texture(o.canvas)
             o.mat = new t.MeshBasicMaterial({
-                map : o.tex,
-                // color : 0xff0000,
+                // map : o.tex,
+                color : 0xff0000,
                 transparent : true
             })
             // o.mat.map.minFilter = t.LinearFilter
@@ -39,7 +39,7 @@ export default class UI{
     showLayer(ls){
         var cam = Camera.get()
         this.hideall()
-        for(var l in ls){
+        for(var l of ls){
             cam.camera.add(this.layers[l].root)
         }
     }
@@ -77,19 +77,23 @@ export default class UI{
         var root= new t.Mesh(geo,mat)
         root.name="layer" + 1
         root.position.set(0,0,10 - 0.01 * 1)
-        var cam = Camera.get()
-        cam.camera.add(root)
 
 
-
+        context.clearRect(0,0,320,568)
+        context.fillStyle = "rgba(0,0,0, 0.3)",
+        context.fillRect(0, 0, 320, 568);
         var img = new Image
         var self = this
         img.onload = function(){
-            context.drawImage(img,10,-10,50,50)
+            console.log("image loaded")
+            context.drawImage(img,10,10,50,50)
+            tex.needsUpdate = true
         }
         img.src = 'images/bullet.png'
 
-        tex.needUpdate = true
+        root.visible = true
+        var cam = Camera.get()
+        cam.camera.add(root)
     }
 
     showBonusPage(){
