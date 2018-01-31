@@ -17413,7 +17413,15 @@ define("game.js", function(require, module, exports) {
 					return r(e, [{
 						key: "showFriendRankList",
 						value: function(e) {
-							this.hide2D(), this.showState = !0, e = e || {}, this.canvasType = g.friendRank, this.myUserInfo = h.default.getMyUserInfo() || {}, this.myUserInfo.week_best_score = e.week_best_score || 0, this._createPlane(), this._updateClip(), this._drawRankListBg(), this.renderRankList(h.default.getFriendsScore())
+							this.hide2D(),
+							this.showState = !0, e = e || {},
+							this.canvasType = g.friendRank,
+							this.myUserInfo = h.default.getMyUserInfo() || {},
+							this.myUserInfo.week_best_score = e.week_best_score || 0,
+							this._createPlane(),
+							this._updateClip(),
+							this._drawRankListBg(),
+							this.renderRankList(h.default.getFriendsScore())
 						}
 					}, {
 						key: "showGroupRankList",
@@ -17428,14 +17436,21 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "showGameOverPage",
 						value: function(e) {
-							this.hide2D(), this.showState = !0, e = e || {}, this.opt = e || this.opt, this._createPlane(), this.myUserInfo = h.default.getMyUserInfo() || {
+							this.hide2D(),
+							this.showState = !0,
+							e = e || {},
+							this.opt = e || this.opt,
+							this._createPlane(),
+							this.myUserInfo = h.default.getMyUserInfo() || {
 								headimg: "",
 								nickname: "",
 								week_best_score: 0,
 								score_info: [{
 									score: 0
 								}]
-							}, this.myUserInfo.last_week_best_score = e.week_best_score, this.myUserInfo.week_best_score = Math.max(e.week_best_score, e.score) || 0;
+							},
+							this.myUserInfo.last_week_best_score = e.week_best_score,
+							this.myUserInfo.week_best_score = Math.max(e.week_best_score, e.score) || 0;
 							var t = h.default.getFriendsScore() || [];
 							t.push(this.myUserInfo);
 							var i = this._rerank(t);
@@ -17481,7 +17496,9 @@ define("game.js", function(require, module, exports) {
 						value: function() {
 							if (!b) {
 								this.showState = !1;
-								for (var e = 0; e < m.length; e++) this.obj[m[e]] && (this.obj[m[e]].visible = !1, this.options.camera.remove(this.obj[m[e]]))
+								for (var e = 0; e < m.length; e++)
+									this.obj[m[e]] &&
+									(this.obj[m[e]].visible = !1, this.options.camera.remove(this.obj[m[e]]))
 							}
 						}
 					}, {
@@ -17768,9 +17785,39 @@ define("game.js", function(require, module, exports) {
 						value: function(e) {
 							e = e || {};
 							var t = this.context.bg;
-							t.clearRect(0, 0, p, f), t.fillStyle = "rgba(0,0,0, 0.3)", t.fillRect(0, 0, p, f);
-							this._drawImageCenter("res/title.png", this._cx(204), this._cy(168), this._cwh(207), this._cwh(52), "bg", null, this.imgid.bg);
-							this.context.btn.clearRect(0, 0, p, f), this._drawImageCenter("res/play.png", this._cx(207), this._cy(587), this._cwh(208), this._cwh(78), "btn", null, this.imgid.btn), t.font = this._cf(17), t.textBaseline = "middle", t.textAlign = "center", t.fillStyle = "#fff", t.fillText("排行榜", this._cx(213.5), this._cy(684)), this._drawImageCenter("res/r_arr.png", this._cx(250), this._cy(684), this._cwh(6.6), this._cwh(10), "bg", null, this.imgid.bg), this._drawImageCenter("res/rank.png", this._cx(165), this._cy(684), this._cwh(22), this._cwh(22), "bg", null, this.imgid.bg), this._updatePlane("bg")
+							t.clearRect(0, 0, p, f),
+							t.fillStyle = "rgba(0,0,0, 0.3)",
+							t.fillRect(0, 0, p, f);
+							this._drawImageCenter(
+								"res/title.png",
+								this._cx(204),
+								this._cy(168),
+								this._cwh(207),
+								this._cwh(52), "bg", null, this.imgid.bg);
+							this.context.btn.clearRect(0, 0, p, f),
+							 this._drawImageCenter(
+								 "res/play.png",
+								 this._cx(207),
+								 this._cy(587),
+								 this._cwh(208),
+								 this._cwh(78), "btn", null, this.imgid.btn),
+								 t.font = this._cf(17),
+								 t.textBaseline = "middle",
+								 t.textAlign = "center",
+								 t.fillStyle = "#fff",
+								 t.fillText("排行榜", this._cx(213.5), this._cy(684)),
+								 this._drawImageCenter(
+									 "res/r_arr.png",
+									 this._cx(250),
+									 this._cy(684),
+									 this._cwh(6.6),
+									 this._cwh(10), "bg", null, this.imgid.bg),
+								this._drawImageCenter(
+									"res/rank.png",
+									this._cx(165),
+									this._cy(684),
+									this._cwh(22), this._cwh(22), "bg", null, this.imgid.bg),
+								this._updatePlane("bg")
 						}
 					}, {
 						key: "_drawLookers",
@@ -17782,9 +17829,11 @@ define("game.js", function(require, module, exports) {
 								r = e.nickname || "";
 							t.textAlign = "center",
 							t.textBaseline = "middle",
-							"in" == e.type ? (this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cx(50), this._cx(50), "bg", function() {
+							"in" == e.type ? (
+								this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cx(50), this._cx(50), "bg", function() {
 								i._drawImageCenter("res/ava_lookers.png", i._cx(207), i._cy(91), i._cx(53), i._cx(53), "bg", null, i.imgid.bg)
-							}, this.imgid.bg, !0), t.font = this._cf(17), t.fillStyle = "black", t.fillText(r + " 正在游戏中", this._cx(207), this._cy(144))) : "gg" == e.type ? (t.fillStyle = "rgba(0,0,0, 0.4)", t.fillRect(0, 0, p, f), this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cwh(50), this._cwh(50), "bg", function() {
+							}, this.imgid.bg, !0)
+							, t.font = this._cf(17), t.fillStyle = "black", t.fillText(r + " 正在游戏中", this._cx(207), this._cy(144))) : "gg" == e.type ? (t.fillStyle = "rgba(0,0,0, 0.4)", t.fillRect(0, 0, p, f), this._drawImageRound(e.headimg, this._cx(207), this._cy(91), this._cwh(50), this._cwh(50), "bg", function() {
 								i._drawImageCenter("res/ava_lookers.png", i._cx(207), i._cy(91), i._cwh(53), i._cwh(53), "bg", null, i.imgid.bg)
 							}, this.imgid.bg, !0), t.fillStyle = "#fff", t.strokeStyle = "white", t.font = this._cf(17), t.fillText(r + " 游戏已结束", this._cx(207), this._cy(144)), t.lineWidth = .5 * c, t.strokeStyle = "rgba(255,255,255,0.5)", t.beginPath(), t.moveTo(this._cx(157), this._cy(176)), t.lineTo(this._cx(257), this._cy(176)), t.closePath(), t.stroke(), t.font = this._cf(14), t.fillText("游戏得分", this._cx(207), this._cy(207)), t.fillStyle = "rgba(255,255,255,0.2)", t.fillRect(this._cx(156), this._cy(203), this._cwh(9), this._cwh(3)), t.fillRect(this._cx(156), this._cy(209), this._cwh(9), this._cwh(3)), t.fillRect(this._cx(243), this._cy(203), this._cwh(9), this._cwh(3)), t.fillRect(this._cx(243), this._cy(209), this._cwh(9), this._cwh(3)), t.fillStyle = "#fff", t.font = this._cf(80, !0), t.fillText(n || 0, this._cx(212), this._cy(267))) : "out" == e.type && (t.fillStyle = "rgba(0,0,0, 0.4)", t.fillRect(0, 0, p, f), this._drawImageRound(e.headimg, this._cx(207), this._cy(221), this._cwh(50), this._cwh(50), "bg", function() {
 								i._drawImageCenter("res/ava_lookers.png", i._cx(207), i._cy(221), i._cwh(53), i._cwh(53), "bg", null, i.imgid.bg)
@@ -17843,22 +17892,73 @@ define("game.js", function(require, module, exports) {
 						key: "_drawBeginner",
 						value: function() {
 							var e = this.context.bg;
-							e.clearRect(0, 0, p, f), e.fillStyle = "rgba(255,255,255,0.3)", e.fillRect(this._cx(103), this._cy(134), this._cwh(206), this._cwh(115)), e.fillStyle = "black", e.textBaseline = "middle", e.textAlign = "center", e.font = this._cf(17), e.fillText("长按屏幕并释放", this._cx(207), this._cy(172)), e.textAlign = "left", e.fillText("控制", this._cx(149), this._cy(213)), e.textAlign = "right", e.fillText("向前跳", this._cx(265), this._cy(213)), this._drawImageCenter("res/i.png", this._cx(198), this._cy(211), this._cwh(13.2), this._cwh(35.6), "bg", null, this.imgid.bg), this._updatePlane("bg")
+							e.clearRect(0, 0, p, f),
+							e.fillStyle = "rgba(255,255,255,0.3)",
+							e.fillRect(this._cx(103), this._cy(134), this._cwh(206), this._cwh(115)),
+							e.fillStyle = "black",
+							e.textBaseline = "middle",
+							e.textAlign = "center",
+							e.font = this._cf(17),
+							e.fillText("长按屏幕并释放", this._cx(207), this._cy(172)),
+							e.textAlign = "left",
+							e.fillText("控制",
+							this._cx(149),
+							this._cy(213)),
+							e.textAlign = "right",
+							 e.fillText("向前跳",
+							 this._cx(265),
+							 this._cy(213)),
+							 this._drawImageCenter(
+								 "res/i.png",
+								 this._cx(198),
+								 this._cy(211),
+								 this._cwh(13.2),
+								 this._cwh(35.6),
+								 "bg", null,
+								 this.imgid.bg),
+								 this._updatePlane("bg")
 						}
 					}, {
 						key: "_createPlane",
 						value: function() {
 							if (!this.canvas.bg) {
-								for (var e = 0; e < m.length; e++) this.canvas[m[e]] = document.createElement("canvas"), this.context[m[e]] = this.canvas[m[e]].getContext("2d"), this.canvas[m[e]].width = p, "list1" == m[e] || "list2" == m[e] ? this.canvas[m[e]].height = 10 * this._cwh(60) : this.canvas[m[e]].height = f, this.texture[m[e]] = new a.Texture(this.canvas[m[e]]), this.material[m[e]] = new a.MeshBasicMaterial({
+								for (var e = 0; e < m.length; e++)
+								this.canvas[m[e]] = document.createElement("canvas"),
+								 this.context[m[e]] = this.canvas[m[e]].getContext("2d"),
+								 this.canvas[m[e]].width = p,
+								 "list1" == m[e] || "list2" == m[e] ?
+								 this.canvas[m[e]].height = 10 * this._cwh(60) : this.canvas[m[e]].height = f,
+								 this.texture[m[e]] = new a.Texture(this.canvas[m[e]]),
+								 this.material[m[e]] = new a.MeshBasicMaterial({
 									map: this.texture[m[e]],
 									transparent: !0
-								}), "list1" == m[e] || "list2" == m[e] ? this.geometry[m[e]] = new a.PlaneGeometry(y, 10 * this._cwh(60) / f * v) : this.geometry[m[e]] = new a.PlaneGeometry(y, v), this.obj[m[e]] = new a.Mesh(this.geometry[m[e]], this.material[m[e]]), this.material[m[e]].map.minFilter = a.LinearFilter, this.obj[m[e]].position.y = 0, this.obj[m[e]].position.x = 0, this.obj[m[e]].position.z = 9 - .001 * e
+								}),
+								"list1" == m[e] || "list2" == m[e] ?
+								this.geometry[m[e]] = new a.PlaneGeometry(y, 10 * this._cwh(60) / f * v) :
+								this.geometry[m[e]] = new a.PlaneGeometry(y, v),
+								this.obj[m[e]] = new a.Mesh(this.geometry[m[e]],
+									this.material[m[e]]),
+									this.material[m[e]].map.minFilter = a.LinearFilter,
+									this.obj[m[e]].position.y = 0,
+									this.obj[m[e]].position.x = 0,
+									this.obj[m[e]].position.z = 9 - .001 * e
 							}
 						}
 					}, {
 						key: "_updatePlane",
 						value: function(e) {
-							this.showState && (this.canvasType == g.gameOver && "bg" != e && "btn" != e && "sample" != e || this.canvasType == g.start && "bg" != e && "btn" != e && "sample" != e || (this.texture[e].needsUpdate = !0, this.obj[e].visible = !0, this.options.camera.add(this.obj[e])))
+							this.showState &&
+							(this.canvasType == g.gameOver &&
+								"bg" != e &&
+								"btn" != e &&
+								"sample" != e ||
+								this.canvasType == g.start &&
+								"bg" != e &&
+								"btn" != e &&
+								"sample" != e ||
+								(this.texture[e].needsUpdate = !0,
+									this.obj[e].visible = !0,
+									this.options.camera.add(this.obj[e])))
 						}
 					}, {
 						key: "_updateClip",
@@ -17939,7 +18039,9 @@ define("game.js", function(require, module, exports) {
 							var l = new Image,
 								c = this;
 							l.onload = function() {
-								c.imgid[a] == s && (c.context[a].drawImage(l, t - n / 2, i - r / 2, n, r), !!o && o(), h || c._updatePlane(a))
+								c.imgid[a] == s &&
+								(c.context[a].drawImage(l, t - n / 2, i - r / 2, n, r), !!o && o(), h ||
+								c._updatePlane(a))
 							}, l.onerror = function() {
 								!!o && o()
 							}, l.src = e
@@ -17953,7 +18055,12 @@ define("game.js", function(require, module, exports) {
 								u = this.context[a];
 							this.canvas[a];
 							l.onload = function() {
-								c.imgid[a] == s && (u.save(), c._roundedRectR(t - n / 2, i - r / 2, n, r, 2, a), u.clip(), u.drawImage(l, t - n / 2, i - r / 2, n, r), u.closePath(), u.restore(), !!o && o(), h || c._updatePlane(a))
+								c.imgid[a] == s && (u.save(),
+								 c._roundedRectR(t - n / 2, i - r / 2, n, r, 2, a),
+								 u.clip(),
+								  u.drawImage(l, t - n / 2, i - r / 2, n, r),
+								  u.closePath(), u.restore(), !!o && o(), h ||
+								  c._updatePlane(a))
 							}, l.onerror = function() {
 								!!o && o()
 							}, l.src = e
@@ -17987,7 +18094,8 @@ define("game.js", function(require, module, exports) {
 							if (!this.particles[i]) {
 								var n = [46833, 1573119, 16711680, 16711424, 65280];
 								this.materials = [];
-								for (var r = new a.PlaneGeometry(.4, .4), o = 0; o < n.length; ++o) this.materials.push(new a.MeshBasicMaterial({
+								for (var r = new a.PlaneGeometry(.4, .4), o = 0; o < n.length; ++o)
+								this.materials.push(new a.MeshBasicMaterial({
 									color: n[o],
 									transparent: !0
 								}));
@@ -22254,15 +22362,29 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "_createPlane",
 						value: function() {
-							for (var e = 0; e < p.length; e++) this.canvas[p[e]] = document.createElement("canvas"), this.context[p[e]] = this.canvas[p[e]].getContext("2d"), this.canvas[p[e]].width = u, this.canvas[p[e]].height = this.cheight * s, this.texture[p[e]] = new a.Texture(this.canvas[p[e]]), this.material[p[e]] = new a.MeshBasicMaterial({
+							for (var e = 0; e < p.length; e++)
+							this.canvas[p[e]] = document.createElement("canvas"),
+							this.context[p[e]] = this.canvas[p[e]].getContext("2d"),
+							this.canvas[p[e]].width = u,
+							this.canvas[p[e]].height = this.cheight * s,
+							this.texture[p[e]] = new a.Texture(this.canvas[p[e]]),
+							this.material[p[e]] = new a.MeshBasicMaterial({
 								map: this.texture[p[e]],
 								transparent: !0
-							}), this.geometry[p[e]] = new a.PlaneGeometry(f, this.cheight / l * d), this.obj[p[e]] = new a.Mesh(this.geometry[p[e]], this.material[p[e]]), this.material[p[e]].map.minFilter = a.LinearFilter, this.obj[p[e]].position.y = -(.5 - this.cheight / 2 / l) * d, this.obj[p[e]].position.x = 0, this.obj[p[e]].position.z = 9 - .001 * e
+							}),
+							this.geometry[p[e]] = new a.PlaneGeometry(f, this.cheight / l * d),
+							this.obj[p[e]] = new a.Mesh(this.geometry[p[e]], this.material[p[e]]),
+							this.material[p[e]].map.minFilter = a.LinearFilter,
+							this.obj[p[e]].position.y = -(.5 - this.cheight / 2 / l) * d,
+							this.obj[p[e]].position.x = 0,
+							this.obj[p[e]].position.z = 9 - .001 * e
 						}
 					}, {
 						key: "_updatePlane",
 						value: function(e) {
-							this.showState && (this.texture[e].needsUpdate = !0, this.obj[e].visible = !0, this.options.camera.add(this.obj[e]))
+							this.showState && (this.texture[e].needsUpdate = !0,
+								this.obj[e].visible = !0,
+								this.options.camera.add(this.obj[e]))
 						}
 					}, {
 						key: "_drawImageCenter",
@@ -22490,13 +22612,22 @@ define("game.js", function(require, module, exports) {
 						key: "getShareCard",
 						value: function(e, t) {
 							e = e || {};
-							this.canvas || (this.canvas = document.createElement("canvas"), this.context = this.canvas.getContext("2d"), this.canvas.width = 693, this.canvas.height = 558);
+							this.canvas || (this.canvas = document.createElement("canvas"),
+							this.context = this.canvas.getContext("2d"),
+							this.canvas.width = 693, this.canvas.height = 558);
 							var i = this.context;
 							if ("shareBattle" == e.type) {
-								i.fillStyle = "white", i.fillRect(0, 0, 693, 558);
+								i.fillStyle = "white",
+								i.fillRect(0, 0, 693, 558);
 								n = this;
-								this._drawImageCanvas1("res/changlle_share.png", 0, 0, 693, 558, "share", function() {
-									i.fillStyle = "rgba(0,0,0,0.8)", i.font = "180px " + o, i.textBaseline = "middle", i.textAlign = "center", i.fillText(e.score || 0, 356.5, 334.8), !!t && t(n.canvas)
+								this._drawImageCanvas1(
+									"res/changlle_share.png", 0, 0, 693, 558,"share",
+								function() {
+									i.fillStyle = "rgba(0,0,0,0.8)",
+									i.font = "180px " + o,
+									i.textBaseline = "middle",
+									i.textAlign = "center",
+									i.fillText(e.score || 0, 356.5, 334.8), !!t && t(n.canvas)
 								})
 							}
 							if ("history" == e.type) {

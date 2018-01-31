@@ -3,7 +3,7 @@ import * as t from 'libs/three.js'
 let instance
 let D2A = 2 * Math.PI / 360.0
 let OFFSET =  new t.Vector3(0, 80, 0)
-let CAMERASIZE=8
+
 export default class CameraController{
 
 	static get(){
@@ -14,23 +14,18 @@ export default class CameraController{
 	}
 
 	init(){
-		const winWidth = window.innerWidth
-		const winHeight = window.innerHeight
-		var i = window.innerWidth/window.innerHeight;
+
+		var ratio = g.config.ratio
 		//design size is 414 * 735 iphone 6
 		 // window.innerHeight / window.innerWidth / 736 * 414 * 60
 		// new o.OrthographicCamera(t * i / -2, t * i / 2, t / 2, t / -2, -10, 85),
-
-		this.camera =  new t.OrthographicCamera( - CAMERASIZE *i ,  CAMERASIZE*i , CAMERASIZE, -CAMERASIZE, -10, 85 );
+		var size = g.config.frustumsize
+		this.camera =  new t.OrthographicCamera( - size * ratio ,  size * ratio, size, -size, -10, 85 );
 		this.camera.position.set(-17, 30, 26);
 		this.camera.lookAt(new t.Vector3(13, 0, -4));
-		// this.camera.position.set(0,0,-20);
-		// this.camera.lookAt(new t.Vector3(0,0,0))
-
-
 
 		instance = this
-		console.log('camera init...size['+winWidth+'x'+winHeight+']')
+
 	}
 
 	lookAt(p){

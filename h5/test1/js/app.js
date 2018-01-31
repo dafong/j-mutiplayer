@@ -4,8 +4,8 @@ import CameraController from 'cameracontroller.js'
 import StepHigh from 'stephigh.js'
 import UI from 'ui/ui.js'
 import Text from 'ui/text.js'
-let ctx = canvas.getContext('webgl')
 
+let ctx = canvas.getContext('webgl')
 let renderer
 let scene
 let camera
@@ -19,10 +19,10 @@ export default class App{
 	setupRender(){
 		var info = wx.getSystemInfoSync()
 		console.log('---------------------------------------')
-		console.log('[window.devicePixelRatio] ' + window.devicePixelRatio)
-		console.log('[model] ' + info.model)
-		console.log('[platform] ' + info.platform)
-		console.log('[system] ' + info.system)
+		console.log('[devicePixelRatio] ' + g.config.devicePixelRatio)
+		console.log('[model] ' + g.config.model)
+		console.log('[platform] ' + g.config.platform)
+		console.log('[system] ' + g.config.system)
 		console.log('---------------------------------------')
 
 		renderer = new t.WebGLRenderer({
@@ -52,34 +52,19 @@ export default class App{
 	init(){
 
 		this.setupRender()
-
-
+		g.ui = new UI
+		g.ui.showMainPage()
 		this.scene = new t.Scene();
 		var cam = CameraController.get()
-
-		var ui = new UI
-		var t1 = new Text("你好12344",{
-			size:.5
-		})
-		ui.root.add(t1.root)
-
-
-		this.t1 = t1
-		t1.root.position.x = -4.5
-		cam.camera.add(ui.root)
 		this.scene.add(cam.camera)
 
-			
 		this.loop()
 
 
 	}
 
 	update(){
-		// if(this.root)
-		// 	this.root.update()
-
-		// this.t1.root.rotation.y += 0.01
+		
 		var cam = CameraController.get()
 	}
 
