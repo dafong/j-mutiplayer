@@ -23,7 +23,7 @@ export default class CameraController{
 		this.camera =  new t.OrthographicCamera( - size * ratio ,  size * ratio, size, -size, -10, 85 );
 		this.camera.position.set(-17, 30, 26);
 		this.camera.lookAt(new t.Vector3(13, 0, -4));
-
+		this.camera.name = "camera"
 		instance = this
 
 	}

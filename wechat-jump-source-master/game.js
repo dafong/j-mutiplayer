@@ -17761,9 +17761,24 @@ define("game.js", function(require, module, exports) {
 						value: function(e) {
 							e = e || {};
 							var t = this.context.bg;
-							t.clearRect(0, 0, p, f), t.fillStyle = "rgba(0,0,0, 0.3)", t.fillRect(0, 0, p, f);
-							this._drawImageCenter("res/title.png", this._cx(204), this._cy(168), this._cwh(207), this._cwh(52), "bg", null, this.imgid.bg);
-							this.context.btn.clearRect(0, 0, p, f), this._drawImageCenter("res/play.png", this._cx(207), this._cy(587), this._cwh(208), this._cwh(78), "btn", null, this.imgid.btn), t.font = this._cf(17), t.textBaseline = "middle", t.textAlign = "center", t.fillStyle = "#fff", t.fillText("排行榜", this._cx(213.5), this._cy(684)), this._drawImageCenter("res/r_arr.png", this._cx(250), this._cy(684), this._cwh(6.6), this._cwh(10), "bg", null, this.imgid.bg), this._drawImageCenter("res/rank.png", this._cx(165), this._cy(684), this._cwh(22), this._cwh(22), "bg", null, this.imgid.bg), this._updatePlane("bg")
+							t.clearRect(0, 0, p, f),
+							t.fillStyle = "rgba(0,0,0, 0.3)",
+							t.fillRect(0, 0, p, f);
+							this._drawImageCenter("res/title.png", this._cx(204), this._cy(168), this._cwh(207),
+							this._cwh(52), "bg", null, this.imgid.bg);
+							this.context.btn.clearRect(0, 0, p, f),
+							this._drawImageCenter("res/play.png", this._cx(207), this._cy(587), this._cwh(208),
+							this._cwh(78), "btn", null, this.imgid.btn),
+							t.font = this._cf(17),
+							t.textBaseline = "middle",
+							t.textAlign = "center",
+							t.fillStyle = "#fff",
+							t.fillText("排行榜", this._cx(213.5), this._cy(684)),
+							this._drawImageCenter("res/r_arr.png", this._cx(250), this._cy(684), this._cwh(6.6),
+							this._cwh(10), "bg", null, this.imgid.bg),
+							this._drawImageCenter("res/rank.png", this._cx(165), this._cy(684), this._cwh(22),
+							this._cwh(22), "bg", null, this.imgid.bg),
+							this._updatePlane("bg")
 						}
 					}, {
 						key: "_drawLookers",
@@ -22232,10 +22247,24 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "_createPlane",
 						value: function() {
-							for (var e = 0; e < p.length; e++) this.canvas[p[e]] = document.createElement("canvas"), this.context[p[e]] = this.canvas[p[e]].getContext("2d"), this.canvas[p[e]].width = u, this.canvas[p[e]].height = this.cheight * s, this.texture[p[e]] = new a.Texture(this.canvas[p[e]]), this.material[p[e]] = new a.MeshBasicMaterial({
-								map: this.texture[p[e]],
-								transparent: !0
-							}), this.geometry[p[e]] = new a.PlaneGeometry(f, this.cheight / l * d), this.obj[p[e]] = new a.Mesh(this.geometry[p[e]], this.material[p[e]]), this.material[p[e]].map.minFilter = a.LinearFilter, this.obj[p[e]].position.y = -(.5 - this.cheight / 2 / l) * d, this.obj[p[e]].position.x = 0, this.obj[p[e]].position.z = 9 - .001 * e
+							for (var e = 0; e < p.length; e++)
+								this.canvas[p[e]] = document.createElement("canvas"),
+								this.context[p[e]] = this.canvas[p[e]].getContext("2d"),
+								this.canvas[p[e]].width = u,
+								this.canvas[p[e]].height = this.cheight * s,
+							    this.texture[p[e]] = new a.Texture(this.canvas[p[e]]),
+								this.material[p[e]] = new a.MeshBasicMaterial({
+									map: this.texture[p[e]],
+									transparent: !0
+								}),
+								this.geometry[p[e]] = new a.PlaneGeometry(f, this.cheight / l * d),
+								this.obj[p[e]] = new a.Mesh(
+									this.geometry[p[e]],
+									this.material[p[e]]),
+								this.material[p[e]].map.minFilter = a.LinearFilter,
+								this.obj[p[e]].position.y = -(.5 - this.cheight / 2 / l) * d,
+								this.obj[p[e]].position.x = 0,
+								this.obj[p[e]].position.z = 9 - .001 * e
 						}
 					}, {
 						key: "_updatePlane",

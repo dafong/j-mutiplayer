@@ -53,11 +53,14 @@ export default class App{
 	init(){
 
 		this.setupRender()
-		g.ui = new UI
-		g.ui.showMainPage()
+
 		this.scene = new t.Scene();
+		this.scene.name="scene"
 		var cam = CameraController.get()
 		this.scene.add(cam.camera)
+		g.ui = new UI
+		g.ui.showMainPage()
+		g.util.dump_3d(this.scene)
 
 		this.loop()
 

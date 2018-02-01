@@ -42,7 +42,7 @@ export default class UI{
     showLayer(ls){
         var cam = Camera.get()
         this.hideall()
-        for(var l in ls){
+        for(var l of ls){
             cam.camera.add(this.layers[l].root)
         }
     }
