@@ -23,6 +23,7 @@ export default class App{
 		console.log('[model] ' + g.config.model)
 		console.log('[platform] ' + g.config.platform)
 		console.log('[system] ' + g.config.system)
+		console.log('[resolution] ' + g.config.width + ' x ' + g.config.height)
 		console.log('---------------------------------------')
 
 		renderer = new t.WebGLRenderer({
@@ -64,7 +65,7 @@ export default class App{
 	}
 
 	update(){
-		
+
 		var cam = CameraController.get()
 	}
 

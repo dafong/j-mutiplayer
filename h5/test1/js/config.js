@@ -6,5 +6,7 @@ export default {
     platform : info.platform,
     system : info.system,
     frustumsize : 8,
-    ratio : window.innerWidth / window.innerHeight
+    ratio : window.innerWidth / window.innerHeight,
+    width : window.innerWidth,
+    height: window.innerHeight 
 }
