@@ -21342,16 +21342,35 @@ define("game.js", function(require, module, exports) {
 								e.gameCtrl.onPlayerOut()
 							}), e.gameSocket.onJoinSuccess(function(t) {
 								e.gameCtrl.socketJoinSuccess(t), "observe" == e.mode && (e.bottle.obj.position.set(8, -d.BLOCK.height / 2, 0), e.camera.position.set(-17, 30, 26), e.shadowLight.position.set(0, 15, 10), e.currentBlock && (e.currentBlock.obj.visible = !1), e.nextBlock && (e.nextBlock.obj.visible = !1))
-							}), canvas.addEventListener("touchstart", function(t) {
-								if (!("single" != e.mode && "player" != e.mode || "game" != e.stage || e.is_from_wn || e.guider) && t.changedTouches[0].clientX < .13 * O && t.changedTouches[0].clientY > .88 * R) e.gameCtrl.shareObservCard();
-								else if ("friendRankList" != e.stage && "battlePage" != e.stage && "groupRankList" != e.stage && "singleSettlementPgae" != e.stage && "startPage" != e.stage)
+							}),
+							canvas.addEventListener("touchstart",
+							function(t) {
+								if (!("single" != e.mode && "player" != e.mode || "game" != e.stage || e.is_from_wn || e.guider) &&
+								t.changedTouches[0].clientX < .13 * O
+								&& t.changedTouches[0].clientY > .88 * R)
+								e.gameCtrl.shareObservCard();
+								else if (
+									"friendRankList" != e.stage &&
+									"battlePage" != e.stage &&
+									"groupRankList" != e.stage &&
+									"singleSettlementPgae" != e.stage &&
+									"startPage" != e.stage)
 									if ("viewerWaiting" != e.stage && "viewerGG" != e.stage && "viewerOut" != e.stage)
 										if ("game" != e.stage);
 										else {
 											if ("observe" === e.mode) return;
-											"stop" !== e.bottle.status || e.pendingReset || e.guider && e.animating || (e.stopBlockMusic(), e.audioManager.scale_intro.seek(0), e.audioManager.scale_intro.play(), e.bottle.prepare(), e.currentBlock.shrink(), e.mouseDownTime = Date.now(), e.touchStartTime.push(e.mouseDownTime), e.onceTouchMoveList = [])
+											"stop" !==  e.bottle.status || 
+											e.pendingReset ||
+											e.guider && e.animating ||
+											(e.stopBlockMusic(),
+											e.audioManager.scale_intro.seek(0),
+											e.audioManager.scale_intro.play(),
+											 e.bottle.prepare(),
+											 e.currentBlock.shrink(),
+											 e.mouseDownTime = Date.now(),
+											 e.touchStartTime.push(e.mouseDownTime), e.onceTouchMoveList = [])
 										}
-								else e.full2D.doTouchEndEvent(t);
+									else e.full2D.doTouchEndEvent(t);
 								else e.full2D.doTouchStartEvent(t)
 							});
 							canvas.addEventListener("touchend", function(t) {
