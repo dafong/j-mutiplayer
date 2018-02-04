@@ -14834,9 +14834,11 @@ define("game.js", function(require, module, exports) {
 						var n = this;
 						if (function(e, t) {
 								if (!(e instanceof t)) throw new TypeError("Cannot call a class as a function")
-							}(this, e), this.radius = a.BLOCK.radius, this.status = "stop", this.scale = 1, this.type = "green", this.types = ["green", "black", "gray"], this.radiusScale = 1, this.obj = new r.Object3D, this.obj.name = "block", this.body = new r.Object3D, (t <= 8 || 27 == t) && (this.greenMaterial = new r.MeshLambertMaterial({
+							}(this, e), this.radius = a.BLOCK.radius, this.status = "stop", this.scale = 1, this.type = "green", this.types = ["green", "black", "gray"], this.radiusScale = 1, this.obj = new r.Object3D, this.obj.name = "block", this.body = new r.Object3D, (t <= 8 || 27 == t) &&
+							(this.greenMaterial = new r.MeshLambertMaterial({
 								color: h.green
-							}), this.whiteMaterial = new r.MeshLambertMaterial({
+							}),
+							this.whiteMaterial = new r.MeshLambertMaterial({
 								color: h.white
 							})), this.shadowWidth = 11, 2 == t || 7 == t ? (this.shadow = new r.Mesh(u, a.desk_shadow), this.shadow.position.set(0, -a.BLOCK.height / 2 - .001 * t, -4.5), this.shadow.scale.y = 1.2) : 3 == t || 21 == t || 27 == t || 28 == t || 29 == t || 31 == t ? (this.shadow = new r.Mesh(u, a.cylinder_shadow), this.shadow.position.set(-.1, -a.BLOCK.height / 2 - .001 * t, -2.8), this.shadow.scale.y = 1.4, this.shadow.scale.x = 1) : (this.shadow = new r.Mesh(u, a.shadow), this.shadow.position.set(-.74, -a.BLOCK.height / 2 - .001 * t, -2.73), this.shadow.scale.y = 1.4), this.shadow.rotation.x = -Math.PI / 2, this.order = t, this.radiusSegments = 4, this.height = a.BLOCK.height, this.canChange = !0, 0 == t) {
 							var o = [this.greenMaterial, this.whiteMaterial],
@@ -15526,8 +15528,12 @@ define("game.js", function(require, module, exports) {
 					return n(e, [{
 						key: "merge",
 						value: function(e, t, i, n) {
-							for (var a = 0, o = t.faces.length; a < o; ++a) t.faces[a].materialIndex = 0;
-							for (var s = new r.Mesh(t), a = 0, o = n.length; a < o; ++a) s.position.set(n[a].x, n[a].y, n[a].z), s.updateMatrix(), e.merge(s.geometry, s.matrix, i)
+							for (var a = 0, o = t.faces.length; a < o; ++a)
+							t.faces[a].materialIndex = 0;
+							for (var s = new r.Mesh(t), a = 0, o = n.length; a < o; ++a)
+								s.position.set(n[a].x, n[a].y, n[a].z),
+								s.updateMatrix(),
+								e.merge(s.geometry, s.matrix, i)
 						}
 					}, {
 						key: "_mapUv",
@@ -16833,7 +16839,11 @@ define("game.js", function(require, module, exports) {
 							});
 							n.materials.push(c);
 							var u = new r.Mesh(t, c);
-							u.position.z = .1 * -(o + 1), u.name = o, u.updateMatrix(), u.matrixAutoUpdate = !1, n.obj.add(u)
+							u.position.z = .1 * -(o + 1),
+							u.name = o,
+							u.updateMatrix(),
+							u.matrixAutoUpdate = !1,
+							 n.obj.add(u)
 						}
 						for (o = 1; o < 7; ++o) this.obj.children[o].visible = !1;
 						this.current = 0
@@ -16843,7 +16853,8 @@ define("game.js", function(require, module, exports) {
 						value: function(e, t) {
 							var i = document.createElement("canvas"),
 								n = i.getContext("2d");
-							i.width = 64, i.height = 64, n.clearRect(0, 0, i.width, i.height);
+							i.width = 64, i.height = 64,
+							n.clearRect(0, 0, i.width, i.height);
 							var r = n.createLinearGradient(0, 0, 0, i.height);
 							return r.addColorStop(0, e), r.addColorStop(1, t), n.fillStyle = r, n.fillRect(0, 0, i.width, i.height), i
 						}
@@ -17452,7 +17463,8 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "showStartPage",
 						value: function(e) {
-							this.hide2D(), b || (this.showState = !0, this.canvasType = g.start, this._createPlane(), this._drawStart(e))
+							this.hide2D(),
+							b || (this.showState = !0, this.canvasType = g.start, this._createPlane(), this._drawStart(e))
 						}
 					}, {
 						key: "showPkPage",
@@ -17855,10 +17867,26 @@ define("game.js", function(require, module, exports) {
 						key: "_createPlane",
 						value: function() {
 							if (!this.canvas.bg) {
-								for (var e = 0; e < m.length; e++) this.canvas[m[e]] = document.createElement("canvas"), this.context[m[e]] = this.canvas[m[e]].getContext("2d"), this.canvas[m[e]].width = p, "list1" == m[e] || "list2" == m[e] ? this.canvas[m[e]].height = 10 * this._cwh(60) : this.canvas[m[e]].height = f, this.texture[m[e]] = new a.Texture(this.canvas[m[e]]), this.material[m[e]] = new a.MeshBasicMaterial({
+								for (var e = 0; e < m.length; e++)
+								this.canvas[m[e]] = document.createElement("canvas"),
+								this.context[m[e]] = this.canvas[m[e]].getContext("2d"),
+								 this.canvas[m[e]].width = p,
+								 "list1" == m[e] || "list2" == m[e] ?
+								 this.canvas[m[e]].height = 10 * this._cwh(60) :
+								 this.canvas[m[e]].height = f,
+								  this.texture[m[e]] = new a.Texture(this.canvas[m[e]]),
+								  this.material[m[e]] = new a.MeshBasicMaterial({
 									map: this.texture[m[e]],
 									transparent: !0
-								}), "list1" == m[e] || "list2" == m[e] ? this.geometry[m[e]] = new a.PlaneGeometry(y, 10 * this._cwh(60) / f * v) : this.geometry[m[e]] = new a.PlaneGeometry(y, v), this.obj[m[e]] = new a.Mesh(this.geometry[m[e]], this.material[m[e]]), this.material[m[e]].map.minFilter = a.LinearFilter, this.obj[m[e]].position.y = 0, this.obj[m[e]].position.x = 0, this.obj[m[e]].position.z = 9 - .001 * e
+								}), "list1" == m[e] || "list2" == m[e] ?
+								this.geometry[m[e]] = new a.PlaneGeometry(y, 10 * this._cwh(60) / f * v) :
+								this.geometry[m[e]] = new a.PlaneGeometry(y, v),
+								this.obj[m[e]] = new a.Mesh(this.geometry[m[e]],
+									this.material[m[e]]),
+									this.material[m[e]].map.minFilter = a.LinearFilter,
+									this.obj[m[e]].position.y = 0,
+									this.obj[m[e]].position.x = 0,
+									this.obj[m[e]].position.z = 9 - .001 * e
 							}
 						}
 					}, {
@@ -17919,7 +17947,9 @@ define("game.js", function(require, module, exports) {
 						key: "_cf",
 						value: function(e, t) {
 							var i = e * c * u / 414;
-							return d / u < 736 / 414 && (i = e * c * d / 736), t && x ? i + "px " + x : i + "px Helvetica"
+							return d / u < 736 / 414
+							&& (i = e * c * d / 736),
+							 t && x ? i + "px " + x : i + "px Helvetica"
 						}
 					}, {
 						key: "_cxp",
@@ -17945,7 +17975,9 @@ define("game.js", function(require, module, exports) {
 							var l = new Image,
 								c = this;
 							l.onload = function() {
-								c.imgid[a] == s && (c.context[a].drawImage(l, t - n / 2, i - r / 2, n, r), !!o && o(), h || c._updatePlane(a))
+								c.imgid[a] == s &&
+								(c.context[a].drawImage(l, t - n / 2, i - r / 2, n, r),
+								!!o && o(), h || c._updatePlane(a))
 							}, l.onerror = function() {
 								!!o && o()
 							}, l.src = e

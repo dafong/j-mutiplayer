@@ -10,7 +10,10 @@ var cx=function(e){ return e * wr * dpr }
 var cy=function(e){ return e * hr * dpr }
 var cw=function(e){ return e * wr * dpr }
 var ch=function(e){ return e * hr * dpr }
-
+var tx=function(e){ return e * 1/wr }
+var ty=function(e){ return e * 1/hr }
+GameGlobal.tx = tx
+GameGlobal.ty = ty
 var l = {
     init : function(){
         this.layers = []
@@ -30,8 +33,8 @@ var l = {
             var size = 2 * g.config.frustumsize
             o.geo = new t.PlaneGeometry(g.config.ratio * size, size)
             o.root= new t.Mesh(o.geo,o.mat)
-            o.root.name="layer" + i
-            o.root.position.set(0,0,-10 + 0.01 * i)
+            o.root.name="[ui] layer" + i
+            o.root.position.set(0,0,10 + 0.01 * i)
             this.layers[i] = o
         }
     },
@@ -71,6 +74,7 @@ var l = {
         })
         return p
     },
+
     drawImage : function(path,l,x,y,px,py,w,h){
         x=cx(x),y=cy(y)
         if(px == undefined) px = 0.5
@@ -82,7 +86,6 @@ var l = {
         var self= this
         var p = new Promise(function(resolve,reject){
             img.onload = function(){
-                console.log("loaded")
                 w = (w || img.width) * wr
                 h = (h || img.height) * hr
                 x = x - w * px
@@ -91,11 +94,15 @@ var l = {
                 tex.needsUpdate =true
                 resolve()
             }
+            img.onerror = function(){
+                console.log('error when loading ' + img.src)
+            }
             img.src = path
         })
 
         return p
     },
+
     clearRect : function(l,x,y,w,h){
         x=cx(x),y=cy(y),w=cw(w),h=ch(h)
         this.layers[l].ctx.clearRect(x,y,w,h)
