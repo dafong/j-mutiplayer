@@ -51,8 +51,33 @@ export default class App{
 		}
 	}
 
+	setupEvent(){
+			var handler = function(func,log,t){
+				var x = ~~_tx(t.changedTouches[0].clientX)
+				var y = ~~_ty(t.changedTouches[0].clientY)
+				console.log("[touch] "+ log + " " + x +" " + y)
+				var isd = false
+				if(g.ui){
+					isd = g.ui[func](t,x,y)
+				}
+				if(isd) return;
+				g.step[func](t,x,y)
+			}
+
+			canvas.addEventListener("touchstart",function(t) {
+				handler("ontouchstart","start",t)
+			})
+			canvas.addEventListener("touchend",function(t) {
+				handler("ontouchend","end",t)
+			})
+			canvas.addEventListener("touchmove",function(t) {
+				handler("ontouchmove","end",t)
+			})
+	}
+
 	init(){
 		this.setupRender()
+		this.setupEvent()
 		this.scene = new t.Scene();
 		this.scene.name="scene"
 		var cam = CameraController.get()
@@ -64,6 +89,7 @@ export default class App{
 
 		this.loop()
 	}
+
 
 	update(){
 

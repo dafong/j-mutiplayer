@@ -2,12 +2,18 @@ function _dump_3d(o3d,l,s){
     var lv = l || 0
     var str= s || ''
     var tab = '-'.repeat(lv)
-    str = (tab + o3d.name + '\n')
+    str = (tab + ' '+ _to_string(o3d)+ '\n')
     for(var c of o3d.children){
         str += _dump_3d(c,lv+2)
     }
     return str
 }
+
+function _to_string(o3d){
+
+    return o3d.name + '  [x=' +o3d.position.x.toFixed(1)+',y='+o3d.position.y.toFixed(1)+',z='+o3d.position.z.toFixed(1) +']'
+}
+
 
 function _get_world_canvas(s,e){
     var c = wx.createCanvas()
@@ -25,6 +31,7 @@ export default {
     dump_table : function(){
 
     },
+
 
     get_world_canvas : _get_world_canvas,
 

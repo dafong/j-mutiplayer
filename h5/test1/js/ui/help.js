@@ -6,14 +6,16 @@ let layerSize = 4
 var dpr = window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio
 var wr = window.innerWidth/Size.x
 var hr = window.innerHeight/Size.y
-var cx=function(e){ return e * wr * dpr }
-var cy=function(e){ return e * hr * dpr }
-var cw=function(e){ return e * wr * dpr }
-var ch=function(e){ return e * hr * dpr }
-var tx=function(e){ return e * 1/wr }
-var ty=function(e){ return e * 1/hr }
-GameGlobal.tx = tx
-GameGlobal.ty = ty
+var _cx=function(e){ return e * wr * dpr }
+var _cy=function(e){ return e * hr * dpr }
+var _cw=function(e){ return e * wr * dpr }
+var _ch=function(e){ return e * hr * dpr }
+var _tx=function(e){ return e * 1/wr }
+var _ty=function(e){ return e * 1/hr }
+var _py=function(h,b){ return b + h/2 }
+GameGlobal._tx = _tx
+GameGlobal._ty = _ty
+GameGlobal._py = _py
 var l = {
     init : function(){
         this.layers = []
@@ -60,7 +62,7 @@ var l = {
         font  = font || 'Helvetica'
         size  = size || 17
         size  = size * wr * dpr
-        x = cx(x),y = cy(y)
+        x = _cx(x),y = _cy(y)
         var ctx = this.layers[l].ctx
         ctx.fillStyle = sty
         ctx.textBaseline = bl
@@ -76,7 +78,7 @@ var l = {
     },
 
     drawImage : function(path,l,x,y,px,py,w,h){
-        x=cx(x),y=cy(y)
+        x=_cx(x),y=_cy(y)
         if(px == undefined) px = 0.5
         if(py == undefined) py = 0.5
 
@@ -104,7 +106,7 @@ var l = {
     },
 
     clearRect : function(l,x,y,w,h){
-        x=cx(x),y=cy(y),w=cw(w),h=ch(h)
+        x=_cx(x),y=_cy(y),w=_cw(w),h=_ch(h)
         this.layers[l].ctx.clearRect(x,y,w,h)
     },
 
@@ -113,7 +115,7 @@ var l = {
     },
 
     fillRect : function(l,x,y,w,h){
-        x=cx(x),y=cy(y),w=cw(w),h=ch(h)
+        x=_cx(x),y=_cy(y),w=_cw(w),h=_ch(h)
         this.layers[l].ctx.fillRect(x,y,w,h)
     },
 

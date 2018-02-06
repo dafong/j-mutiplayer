@@ -1,5 +1,6 @@
 import * as t from 'libs/three.js'
 import Camera from 'cameracontroller.js'
+import Player from 'player.js'
 var scene
 var cols = [
 	["rgba(215, 219, 230, 1)", "rgba(188, 190, 199, 1)"],
@@ -11,6 +12,10 @@ var cols = [
 	["rgba(216, 218, 255, 1)", "rgba(165, 176, 232, 1)"],
 	["rgba(207, 207, 207, 1)", "rgba(199, 196, 201, 1)"]
 ]
+var State = {
+	Start : 0,
+	Charge : 1,
+}
 export default class Step{
 
 	constructor(s){
@@ -25,6 +30,9 @@ export default class Step{
 		this.root = new t.Object3D
 		this.root.name = "world"
 		this.addground()
+		this.addfloor()
+		this.addlight()
+		this.addplayer()
 	}
 
 	addground(){
@@ -45,10 +53,53 @@ export default class Step{
 			m.name = 'bg_'+i
 			this.root.add(m)
 		}
+		this.root.position.z = -84
 		this.cur = 0
 		for(var i=1;i<7;i++){
 			this.root.children[i].visible = false
 		}
+	}
+	// radius: 5,
+	// width: 10,
+	// minRadiusScale: .8,
+	// maxRadiusScale: 1,
+	// height: 5.5,
+	// radiusSegments: [4, 50],
+	// floatHeight: 0,
+	// minDistance: 1,
+	// maxDistance: 17,
+	// minScale: r.minScale,
+	// reduction: r.reduction,
+	// moveDownVelocity: .07,
+	// fullHeight: 5.5 / 21 * 40
+	addfloor(){
+		var o = new t.MeshLambertMaterial({
+			color: 0x619066
+		})
+		var s = new t.BoxGeometry(2 , 1, 2 );
+		var m = new t.Mesh(s, o)
+		scene.add(m)
+		m.name="floor"
+		m.position.set(12,_py(1,0),0)
+	}
+
+	stargame(){
+		this.state = State.Start
+	}
+	addtable(){
+
+	}
+
+	addplayer(){
+		this.player = new Player()
+		scene.add(this.player.root)
+		this.player.root.position.set(8,_py(2,0),0)
+	}
+
+	 addlight(){
+	    var e = new t.AmbientLight(0xffffff, .8);
+	    e.name = "ambient light"
+	    scene.add(e)
 	}
 
 	changecolor(){
@@ -67,4 +118,19 @@ export default class Step{
 	reset(){
 		// g.util.dump_3d(this.scene)
 	}
+
+	ontouchstart(t,x,y){
+		if(State.Start == this.state){
+			this.state = State.Charge
+		}
+		console.log("game start")
+    }
+
+    ontouchend(t,x,y){
+		
+    }
+
+    ontouchmove(t,x,y){
+
+    }
 }
