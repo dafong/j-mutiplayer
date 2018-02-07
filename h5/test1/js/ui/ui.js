@@ -9,21 +9,25 @@ export default class UI{
     }
 
     ontouchstart(t,x,y){
-        if(self.page){
-            self.page.ontouchstart(t,x,y)
+        if(this.page){
+            return this.page.ontouchstart(t,x,y)
         }
     }
 
     ontouchmove(t,x,y){
         if(this.page){
-            this.page.ontouchmove(t,x,y)
+            return  this.page.ontouchmove(t,x,y)
         }
     }
 
     ontouchend(t,x,y){
         if(this.page){
-            this.page.ontouchend(t,x,y)
+            return this.page.ontouchend(t,x,y)
         }
+    }
+
+    update(delta){
+
     }
 
     showMainPage(options){

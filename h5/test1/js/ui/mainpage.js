@@ -16,6 +16,11 @@ export default class MainPage{
         })
         g.h.drawImage("images/name.png",0,207,200,.5,.5)
         g.h.showLayer([0,1])
+
+        //temp test
+        g.h.drawImage("images/commonbt.png",0,207,700,.5,.5).then(function(){
+            return g.h.drawText("reset",0,207,700,20,'#fff')
+        })
     }
 
     refresh(){
@@ -27,13 +32,25 @@ export default class MainPage{
     }
 
     ontouchstart(t,x,y){
+        if(x > 146 && x < 265 && y > 578 && y < 621 ){
+            this.evt = "create_room"
+            return true;
+        }
 
+        if(x > 146 && x < 265 && y > 678 && y < 720 ){
+            this.evt = "reset"
+            return true;
+        }
+
+        this.evt = undefined
     }
 
     ontouchend(t,x,y){
-        if(x > 146 && x < 265 && y > 578 && y < 621 ){
-            console.log("btn clicked create room ")
-            return true;
+        if(this.evt == "create_room"){
+            console.log("create room clicked")
+        }
+        if(this.evt == "reset"){
+            g.step.reset()
         }
     }
 

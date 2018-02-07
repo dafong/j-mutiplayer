@@ -12432,7 +12432,7 @@ define("game.js", function(require, module, exports) {
 							this.startTime = ("undefined" == typeof performance ? Date : performance).now(), this.oldTime = this.startTime, this.elapsedTime = 0, this.running = !0
 						},
 						stop: function() {
-							this.getElapsedTime(), this.running = !1, this.autoStart = !1
+							this.getElaps this.running = !1, this.autoStart = !1
 						},
 						getElapsedTime: function() {
 							return this.getDelta(), this.elapsedTime
@@ -15664,9 +15664,18 @@ define("game.js", function(require, module, exports) {
 						key: "showup",
 						value: function(e) {
 							var t = this.shadow.position.z;
-							this.body.position.set(0, 20, 0), this.shadow.position.z = -15, this.obj.visible = !0, 3 == e || 4 == e || 6 == e ? this.obj.position.set(7.5 * (6 == e ? 5 : 3), 0, 3.8 * (3 == e || 6 == e ? -1 : 1)) : 5 == e ? this.obj.position.set(30, 0, 0) : this.obj.position.set(7.5 * e, 0, 0), (0, o.TweenAnimation)(this.body.position.y, a.BLOCK.height / 2 - this.height / 2, 500, "Bounce.easeOut", function(e, t) {
+							this.body.position.set(0, 20, 0),
+							this.shadow.position.z = -15,
+							this.obj.visible = !0,
+							3 == e || 4 == e || 6 == e ?
+							this.obj.position.set(7.5 * (6 == e ? 5 : 3), 0, 3.8 * (3 == e || 6 == e ? -1 : 1)) :
+							5 == e ? this.obj.position.set(30, 0, 0) :
+							this.obj.position.set(7.5 * e, 0, 0),
+							(0, o.TweenAnimation)(this.body.position.y, a.BLOCK.height / 2 - this.height / 2, 500, "Bounce.easeOut",
+							function(e, t) {
 								this.body.position.y = e
-							}.bind(this)), (0, o.TweenAnimation)(this.shadow.position.z, t, 500, "Bounce.easeOut", function(e, t) {
+							}.bind(this)),
+							(0, o.TweenAnimation)(this.shadow.position.z, t, 500, "Bounce.easeOut", function(e, t) {
 								this.shadow.position.z = e
 							}.bind(this))
 						}
@@ -15699,7 +15708,14 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "reset",
 						value: function() {
-							this.status = "stop", this.scale = 1, this.obj.scale.y = 1, this.obj.position.y = 0, this.body.position.y = a.BLOCK.height / 2 - this.height / 2, this.shadow.scale.y = this.shadow.initScale, this.shadow.position.z = this.shadow.initZ, this.boundingBox = null
+							this.status = "stop",
+							this.scale = 1,
+							this.obj.scale.y = 1,
+							this.obj.position.y = 0,
+							this.body.position.y = a.BLOCK.height / 2 - this.height / 2,
+							this.shadow.scale.y = this.shadow.initScale,
+							this.shadow.position.z = this.shadow.initZ,
+							this.boundingBox = null
 						}
 					}, {
 						key: "rebound",
@@ -15901,7 +15917,10 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "update",
 						value: function(e) {
-							"stop" != this.status && ("prepare" == this.status ? this._prepare() : "jump" == this.status ? this._jump(e) : "turn" == this.status && this.turn())
+							"stop" != this.status &&
+							("prepare" == this.status ?
+							this._prepare() : "jump" == this.status ?
+							this._jump(e) : "turn" == this.status && this.turn())
 						}
 					}, {
 						key: "lookAt",
@@ -15970,21 +15989,28 @@ define("game.js", function(require, module, exports) {
 						key: "_jump",
 						value: function(e) {
 							var t = new r.Vector3(0, 0, 0);
-							t.z = this.velocity.vz * e, t.y = this.velocity.vy * e - o.GAME.gravity / 2 * e * e - o.GAME.gravity * this.flyingTime * e, this.flyingTime += e, this.obj.translateY(t.y), this.obj.translateOnAxis(this.axis, t.z)
+							t.z = this.velocity.vz * e,
+							t.y = this.velocity.vy * e - o.GAME.gravity / 2 * e * e - o.GAME.gravity * this.flyingTime * e,
+							this.flyingTime += e,
+							this.obj.translateY(t.y),
+							this.obj.translateOnAxis(this.axis, t.z)
 						}
 					}, {
 						key: "squeeze",
 						value: function() {
-							this.obj.position.y = o.BLOCK.height / 2, a.customAnimation.to(this.body.scale, .15, {
+							this.obj.position.y = o.BLOCK.height / 2,
+							a.customAnimation.to(this.body.scale, .15, {
 								y: .9,
 								x: 1.07,
 								z: 1.07
-							}), a.customAnimation.to(this.body.scale, .15, {
+							}),
+							a.customAnimation.to(this.body.scale, .15, {
 								y: 1,
 								x: 1,
 								z: 1,
 								delay: .15
-							}), a.customAnimation.to(this.head.position, .15, {
+							}),
+							a.customAnimation.to(this.head.position, .15, {
 								y: 4.725,
 								delay: .15
 							})
@@ -16037,38 +16063,51 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "jump",
 						value: function(e) {
-							this.resetParticles(), this.status = "jump", this.axis = e, a.customAnimation.to(this.body.scale, .25, {
+							this.resetParticles(),
+							this.status = "jump",
+							this.axis = e,
+							a.customAnimation.to(this.body.scale, .25, {
 								x: 1,
 								y: 1,
 								z: 1
-							}), this.head.position.y = 4.725, this.scale = 1;
+							}),
+							this.head.position.y = 4.725, this.scale = 1;
 							var t = Math.min(Math.max(this.velocity.vz / 35, 1.2), 1.4);
-							this.human.rotation.z = this.human.rotation.x = 0, "straight" === this.direction ? (a.customAnimation.to(this.human.rotation, .14, {
+							this.human.rotation.z = this.human.rotation.x = 0,
+							"straight" === this.direction ?
+							(a.customAnimation.to(this.human.rotation, .14, {
 								z: this.human.rotation.z - Math.PI
-							}), a.customAnimation.to(this.human.rotation, .18, {
+							}),
+							a.customAnimation.to(this.human.rotation, .18, {
 								z: this.human.rotation.z - 2 * Math.PI,
 								delay: .14
-							}), a.customAnimation.to(this.head.position, .1, {
+							}),
+							a.customAnimation.to(this.head.position, .1, {
 								y: this.head.position.y + .9 * t,
 								x: this.head.position.x + .45 * t
-							}), a.customAnimation.to(this.head.position, .1, {
+							}),
+							a.customAnimation.to(this.head.position, .1, {
 								y: this.head.position.y - .9 * t,
 								x: this.head.position.x - .45 * t,
 								delay: .1
-							}), a.customAnimation.to(this.head.position, .15, {
+							}),
+							a.customAnimation.to(this.head.position, .15, {
 								y: 4.725,
 								x: 0,
 								delay: .25
-							}), a.customAnimation.to(this.body.scale, .1, {
+							}),
+							 a.customAnimation.to(this.body.scale, .1, {
 								y: Math.max(t, 1),
 								x: Math.max(Math.min(1 / t, 1), .7),
 								z: Math.max(Math.min(1 / t, 1), .7)
-							}), a.customAnimation.to(this.body.scale, .1, {
+							}),
+							a.customAnimation.to(this.body.scale, .1, {
 								y: Math.min(.9 / t, .7),
 								x: Math.max(t, 1.2),
 								z: Math.max(t, 1.2),
 								delay: .1
-							}), a.customAnimation.to(this.body.scale, .3, {
+							}),
+							a.customAnimation.to(this.body.scale, .3, {
 								y: 1,
 								x: 1,
 								z: 1,
@@ -16115,7 +16154,12 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "stopPrepare",
 						value: function() {
-							this.obj.position.y = o.BLOCK.height / 2, this.stop(), this.body.scale.set(1, 1, 1), this.head.position.y = 4.725, this.head.position.x = 0, this.resetParticles()
+							this.obj.position.y = o.BLOCK.height / 2,
+							this.stop(),
+							this.body.scale.set(1, 1, 1),
+							this.head.position.y = 4.725, t
+							his.head.position.x = 0,
+							this.resetParticles()
 						}
 					}, {
 						key: "getBox",
@@ -21086,9 +21130,17 @@ define("game.js", function(require, module, exports) {
 						key: "loopAnimate",
 						value: function() {
 							var e = this;
-							this.bottle.velocity.vz = Math.min(.7 * d.BOTTLE.velocityZIncrement, 180), this.bottle.velocity.vy = Math.min(d.BOTTLE.velocityY + .7 * d.BOTTLE.velocityYIncrement, 180);
+							this.bottle.velocity.vz = Math.min(.7 * d.BOTTLE.velocityZIncrement, 180),
+							this.bottle.velocity.vy = Math.min(d.BOTTLE.velocityY + .7 * d.BOTTLE.velocityYIncrement, 180);
 							var t = new o.Vector3(this.nextBlock.obj.position.x - this.bottle.obj.position.x, 0, this.nextBlock.obj.position.z - this.bottle.obj.position.z);
-							this.direction = new o.Vector2(this.nextBlock.obj.position.x - this.bottle.obj.position.x, this.nextBlock.obj.position.z - this.bottle.obj.position.z), this.hit = this.checkHit2(this.bottle, this.currentBlock, this.nextBlock), this.thirdBlock = this.generateNextBlock(), this.thirdBlock.obj.position.set(39.7, 0, 0), this.tailSystem && this.tailSystem.correctPosition(), this.bottle.jump(t.normalize()), this.animateTimer = setTimeout(function() {
+							this.direction = new o.Vector2(this.nextBlock.obj.position.x - this.bottle.obj.position.x, this.nextBlock.obj.position.z - this.bottle.obj.position.z),
+							this.hit = this.checkHit2(this.bottle, this.currentBlock, this.nextBlock),
+							this.thirdBlock = this.generateNextBlock(),
+							this.thirdBlock.obj.position.set(39.7, 0, 0),
+							this.tailSystem && this.tailSystem.correctPosition(),
+							this.bottle.jump(
+								t.normalize()),
+								this.animateTimer = setTimeout(function() {
 								e.loopAnimate()
 							}, 3e3)
 						}
@@ -21359,7 +21411,7 @@ define("game.js", function(require, module, exports) {
 										if ("game" != e.stage);
 										else {
 											if ("observe" === e.mode) return;
-											"stop" !==  e.bottle.status || 
+											"stop" !==  e.bottle.status ||
 											e.pendingReset ||
 											e.guider && e.animating ||
 											(e.stopBlockMusic(),
@@ -21386,9 +21438,19 @@ define("game.js", function(require, module, exports) {
 													if ("game" == e.stage && !("prepare" !== e.bottle.status || e.pendingReset || e.guider && e.animating)) {
 														e.audioManager.scale_intro.stop(), e.audioManager.scale_loop.stop(), e.currentBlock.rebound();
 														var i = (Date.now() - e.mouseDownTime) / 1e3;
-														e.bottle.velocity.vz = Math.min(i * d.BOTTLE.velocityZIncrement, 150), e.bottle.velocity.vz = +e.bottle.velocity.vz.toFixed(2), e.bottle.velocity.vy = Math.min(d.BOTTLE.velocityY + i * d.BOTTLE.velocityYIncrement, 180), e.bottle.velocity.vy = +e.bottle.velocity.vy.toFixed(2), e.direction = new o.Vector2(e.nextBlock.obj.position.x - e.bottle.obj.position.x, e.nextBlock.obj.position.z - e.bottle.obj.position.z), e.direction.x = +e.direction.x.toFixed(2), e.direction.y = +e.direction.y.toFixed(2);
+														e.bottle.velocity.vz = Math.min(i * d.BOTTLE.velocityZIncrement, 150),
+														e.bottle.velocity.vz = +e.bottle.velocity.vz.toFixed(2),
+														e.bottle.velocity.vy = Math.min(d.BOTTLE.velocityY + i * d.BOTTLE.velocityYIncrement, 180),
+														e.bottle.velocity.vy = +e.bottle.velocity.vy.toFixed(2),
+														e.direction = new o.Vector2(e.nextBlock.obj.position.x - e.bottle.obj.position.x, e.nextBlock.obj.position.z - e.bottle.obj.position.z),
+														 e.direction.x = +e.direction.x.toFixed(2),
+														 e.direction.y = +e.direction.y.toFixed(2);
 														var n = new o.Vector3(e.direction.x, 0, e.direction.y);
-														if (e.bottle.jump(n.normalize()), e.hideCombo(), e.hit = e.checkHit2(e.bottle, e.currentBlock, e.nextBlock), 15 == e.currentBlock.order && e.currentBlock.hideGlow(), e.distance = d.BLOCK.minDistance + (0, L.random)() * (d.BLOCK.maxDistance - d.BLOCK.minDistance), e.distance = +e.distance.toFixed(2), e.straight = (0, L.random)() > .5 ? 1 : 0, 1 === e.hit || 7 === e.hit) {
+														if (e.bottle.jump(n.normalize()),
+														e.hideCombo(),
+														e.hit = e.checkHit2(e.bottle, e.currentBlock, e.nextBlock),
+														15 == e.currentBlock.order && e.currentBlock.hideGlow(),
+														e.distance = d.BLOCK.minDistance + (0, L.random)() * (d.BLOCK.maxDistance - d.BLOCK.minDistance), e.distance = +e.distance.toFixed(2), e.straight = (0, L.random)() > .5 ? 1 : 0, 1 === e.hit || 7 === e.hit) {
 															var r = e.generateNextBlock();
 															e.thirdBlock = r, e.quick = Date.now() - e.lastSucceedTime < 800 || !1, "player" === e.mode && (++e.seq, e.gameSocket.sendCommand(e.seq, {
 																type: 1,
@@ -21518,7 +21580,10 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "handleInterrupt",
 						value: function() {
-							"prepare" == this.bottle.status && (this.bottle.stopPrepare(), this.currentBlock.reset(), this.audioManager.scale_loop.stop())
+							"prepare" == this.bottle.status &&
+							(this.bottle.stopPrepare(),
+							this.currentBlock.reset(),
+							this.audioManager.scale_loop.stop())
 						}
 					}, {
 						key: "handleWxOnError",

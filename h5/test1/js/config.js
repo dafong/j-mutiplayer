@@ -8,5 +8,9 @@ export default {
     frustumsize : 8,
     ratio : window.innerWidth / window.innerHeight,
     width : window.innerWidth,
-    height: window.innerHeight 
+    height: window.innerHeight,
+    floor_height:2,
+    gravity: 9.8,
+    speedY:12,
+    speedZ:15
 }

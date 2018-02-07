@@ -1,5 +1,12 @@
 import * as t from 'libs/three.js'
-
+import * as tw from 'libs/tween.js'
+let ChargeSpeed = 5
+var State = {
+	Idle : "idle",
+    Prepare: "prepare",
+	Charge : "charge",
+    Jump : "jump"
+}
 export default class Player{
 
     constructor(){
@@ -7,15 +14,96 @@ export default class Player{
     }
 
     setup(){
+        this.root = new t.Object3D
+
         var o = new t.MeshLambertMaterial({
             color: 0x000000
         })
-        var p = new t.CylinderGeometry(.5,.5,2,32)
-        this.root = new t.Mesh(p,o)
-        this.root.name = "player"
+        var p = new t.CylinderGeometry(.5,.5, 2, 32)
+        this.body = new t.Mesh(p,o)
+        this.body.name = "player"
+        this.root.add(this.body)
+        this.flyingTime = 0
     }
 
-    charge(){
-        
+    init(){
+        this.state = State.Idle
+    }
+
+    prepare(){
+        this.downtime = Date.now()/1000
+
+        this.state = State.Prepare
+        console.log("prepare")
+        this.squeeze()
+    }
+
+    charge(delta){
+
+    }
+
+    jump(){
+        var presstime = Date.now()/1000 - this.downtime
+        console.log("presstime="+presstime )
+        this.state = State.Jump
+        this.stopprepare()
+        this.speed = {y : g.config.speedY * presstime, z : g.config.speedZ * presstime}
+        var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
+        this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
+        console.log(this.speed.z+" "+this.speed.y)
+        var self = this
+        var tr = new tw.Tween({r : 0})
+        .to({r : 0 - 2 * Math.PI },0.32)
+        .onUpdate(function(){
+            if(g.step.dir == 1){
+                self.body.rotation.z = this.r
+            }else{
+                self.body.rotation.x = this.r
+            }
+
+        }).start()
+    }
+
+    move(delta){
+        var s = new t.Vector3(0, 0, 0)
+        s.z = this.speed.z * delta
+        s.y = this.speed.y * delta - g.config.gravity / 2 * delta * delta - g.config.gravity * this.flyingTime * delta
+        this.flyingTime += delta
+        // console.log(s.z+" "+s.y)
+        this.root.translateY(s.y)
+        this.root.translateOnAxis(this.axis, s.z)
+    }
+
+    update(delta){
+        if(this.state  == State.Prepare){
+            return this.charge(delta)
+        }
+        if(this.state == State.Jump){
+            this.move(delta)
+        }
+    }
+
+    stopprepare(){
+        for(var a of this.anis){
+            a.stop()
+        }
+        this.root.scale.set(1,1,1)
+        this.root.position.y = _py(g.config.floor_height,g.step.baseheight)
+    }
+
+    squeeze(){
+        var self = this
+        this.anis = []
+        var tws = new tw.Tween(this.root.scale)
+        .to(new t.Vector3(1.07,0.5,1.07), 2.5)
+        .onUpdate(function(){
+            self.root.scale.set(this.x,this.y,this.z)
+        }).start()
+        var twy = new tw.Tween({y:this.root.position.y})
+        .to({y: this.root.position.y - 2 * (1-0.5) * 0.5},2.5)
+        .onUpdate(function(){
+            self.root.position.y = this.y
+        }).start()
+        this.anis.push(tws,twy)
     }
 }

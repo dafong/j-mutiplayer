@@ -13,9 +13,12 @@ var cols = [
 	["rgba(207, 207, 207, 1)", "rgba(199, 196, 201, 1)"]
 ]
 var State = {
-	Start : 0,
-	Charge : 1,
+	Start : "start"
 }
+
+
+let _centerZ = 0
+let _centerX = 9
 export default class Step{
 
 	constructor(s){
@@ -23,16 +26,16 @@ export default class Step{
 		this.init()
 		var cam = Camera.get()
 		cam.camera.add(this.root)
-		g.util.dump_3d(scene)
+
 	}
 
 	init(){
 		this.root = new t.Object3D
-		this.root.name = "world"
+		this.root.name = "root"
 		this.addground()
-		this.addfloor()
-		this.addlight()
-		this.addplayer()
+		this.world= new t.Object3D
+		this.world.name = "world"
+		scene.add(this.world)
 	}
 
 	addground(){
@@ -59,6 +62,7 @@ export default class Step{
 			this.root.children[i].visible = false
 		}
 	}
+
 	// radius: 5,
 	// width: 10,
 	// minRadiusScale: .8,
@@ -72,34 +76,66 @@ export default class Step{
 	// reduction: r.reduction,
 	// moveDownVelocity: .07,
 	// fullHeight: 5.5 / 21 * 40
-	addfloor(){
+	addfloor(distance){
 		var o = new t.MeshLambertMaterial({
 			color: 0x619066
 		})
-		var s = new t.BoxGeometry(2 , 1, 2 );
+		var s = new t.BoxGeometry(2 , g.config.floor_height, 2 );
 		var m = new t.Mesh(s, o)
-		scene.add(m)
+		this.world.add(m)
 		m.name="floor"
-		m.position.set(12,_py(1,0),0)
+		if(this.dir == 1){
+			m.position.set((_centerX + distance/2 * this.dir),_py(1,0),0)
+		}else{
+			m.position.set(_centerX,_py(2,0),distance/2 * this.dir)
+		}
+		this.targetpos = m.position
+		this.targetpos.y += g.config.floor_height
 	}
 
-	stargame(){
+	startgame(){
 		this.state = State.Start
 	}
+
 	addtable(){
 
 	}
 
-	addplayer(){
-		this.player = new Player()
-		scene.add(this.player.root)
-		this.player.root.position.set(8,_py(2,0),0)
+	update(delta){
+		this.player.update(delta)
 	}
 
-	 addlight(){
+	addbase(distance){
+		var o = new t.MeshLambertMaterial({
+			color: 0x000000
+		})
+		var p = new t.CylinderGeometry(.5,.5, g.config.floor_height,32)
+		this.base = new t.Mesh(p,o)
+		this.base.name = "base"
+		this.world.add(this.base)
+		if(this.dir == 1){
+			this.base.position.set((_centerX - distance/2 * this.dir),_py(2,0),0)
+		}else{
+			this.base.position.set(_centerX ,_py(g.config.floor_height,0),- distance/2 * this.dir)
+		}
+		this.baseheight = g.config.floor_height
+	}
+
+	addplayer(distance){
+		this.player = new Player()
+		if(this.dir == 1){
+			this.player.root.position.set((_centerX - distance/2 * this.dir),_py(g.config.floor_height,this.baseheight),0)
+		}else{
+		    this.player.root.position.set(_centerX ,_py(g.config.floor_height,this.baseheight),- distance/2 * this.dir)
+		}
+		this.world.add(this.player.root)
+		this.player.init()
+	}
+
+	addlight(){
 	    var e = new t.AmbientLight(0xffffff, .8);
 	    e.name = "ambient light"
-	    scene.add(e)
+	    this.world.add(e)
 	}
 
 	changecolor(){
@@ -116,18 +152,32 @@ export default class Step{
 	}
 
 	reset(){
-		// g.util.dump_3d(this.scene)
+		for( var i = this.world.children.length - 1; i >= 0; i--) {
+			this.world.remove(this.world.children[i]);
+		}
+
+		this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
+		var distance =  3.5 + Math.random() * 2.5
+		this.addfloor(distance)
+		this.addbase(distance)
+		this.addplayer(distance)
+		this.addlight()
+		this.startgame()
+		g.util.dump_3d(scene)
 	}
 
 	ontouchstart(t,x,y){
-		if(State.Start == this.state){
-			this.state = State.Charge
+		if(State.Start != this.state){
+			return
 		}
-		console.log("game start")
+		this.player.prepare()
     }
 
     ontouchend(t,x,y){
-		
+		if(State.Start != this.state){
+			return
+		}
+		this.player.jump()
     }
 
     ontouchmove(t,x,y){

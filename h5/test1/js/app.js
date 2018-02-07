@@ -1,5 +1,5 @@
 import * as t from 'libs/three.js'
-
+import * as tw from 'libs/tween.js'
 import CameraController from 'cameracontroller.js'
 // import StepHigh from 'stephigh.js'
 import Step from 'step.js'
@@ -14,6 +14,7 @@ let mesh
 
 export default class App{
 	constructor() {
+		this.oldTime = undefined
 		this.init()
 	}
 
@@ -52,16 +53,30 @@ export default class App{
 	}
 
 	setupEvent(){
+			this.evthandler = undefined
+			var self = this
 			var handler = function(func,log,t){
 				var x = ~~_tx(t.changedTouches[0].clientX)
 				var y = ~~_ty(t.changedTouches[0].clientY)
 				console.log("[touch] "+ log + " " + x +" " + y)
-				var isd = false
-				if(g.ui){
-					isd = g.ui[func](t,x,y)
+				if(func != "ontouchstart" && self.evthandler){
+					self.evthandler[func](t,x,y)
+					return
 				}
-				if(isd) return;
-				g.step[func](t,x,y)
+				var isd = false
+				var hdl
+				if(g.ui){
+					hdl  = g.ui
+					isd = hdl[func](t,x,y) || false
+				}
+				if(!isd) {
+					hdl = g.step
+					hdl[func](t,x,y)
+				}
+				if(func == "ontouchstart"){
+					self.evthandler = hdl
+				}
+
 			}
 
 			canvas.addEventListener("touchstart",function(t) {
@@ -69,6 +84,7 @@ export default class App{
 			})
 			canvas.addEventListener("touchend",function(t) {
 				handler("ontouchend","end",t)
+				this.evthandler = undefined
 			})
 			canvas.addEventListener("touchmove",function(t) {
 				handler("ontouchmove","end",t)
@@ -86,14 +102,16 @@ export default class App{
 		g.ui.showMainPage()
 		g.step = new Step(this.scene)
 		g.step.reset()
-
+		this.oldTime = Date.now()
 		this.loop()
 	}
 
 
-	update(){
-
+	update(delta){
 		var cam = CameraController.get()
+		g.ui.update(delta)
+		g.step.update(delta)
+		tw.update()
 	}
 
 	render() {
@@ -101,12 +119,14 @@ export default class App{
 		renderer.render(this.scene, cam.camera)
 	}
 
-	loop() {
-		this.update()
+	loop(time) {
+		var delta = (Date.now()  - this.oldTime)/1000
+		this.update(delta)
 		this.render()
 		window.requestAnimationFrame(
 		   this.loop.bind(this)
 		)
+		this.oldTime = Date.now()
 	}
 
 }
