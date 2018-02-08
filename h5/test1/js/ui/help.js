@@ -36,7 +36,7 @@ var l = {
             o.geo = new t.PlaneGeometry(g.config.ratio * size, size)
             o.root= new t.Mesh(o.geo,o.mat)
             o.root.name="[ui] layer" + i
-            o.root.position.set(0,0,10 + 0.01 * i)
+            o.root.position.set(0,0,-5 + 0.1 * i)
             this.layers[i] = o
         }
     },
@@ -55,7 +55,13 @@ var l = {
         }
     },
 
+    hideLayer : function(i){
+        cam.camera.remove(this.layers[i].root)
+    },
+
     drawText : function(txt,l,x,y,size,sty,font,align,bl){
+        x     = x || 0
+        y     = y || 0
         align = align || 'center'
         sty   = sty || '#000'
         bl    = bl || 'middle'
@@ -81,13 +87,14 @@ var l = {
         x=_cx(x),y=_cy(y)
         if(px == undefined) px = 0.5
         if(py == undefined) py = 0.5
-
+        w = _cx(w),h=_cy(h)
         var img = wx.createImage()
         var ctx = this.layers[l].ctx
         var tex = this.layers[l].tex
         var self= this
         var p = new Promise(function(resolve,reject){
             img.onload = function(){
+                console.log(img.src + " loaded")
                 w = (w || img.width) * wr
                 h = (h || img.height) * hr
                 x = x - w * px
@@ -108,6 +115,10 @@ var l = {
     clearRect : function(l,x,y,w,h){
         x=_cx(x),y=_cy(y),w=_cw(w),h=_ch(h)
         this.layers[l].ctx.clearRect(x,y,w,h)
+    },
+
+    clearLayer : function(l){
+        this.clearRect(l, 0, 0, g.config.design.x, g.config.design.y)
     },
 
     fillStyle : function(l,sty){

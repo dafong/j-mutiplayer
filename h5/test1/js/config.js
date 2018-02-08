@@ -12,5 +12,6 @@ export default {
     floor_height:2,
     gravity: 9.8,
     speedY:12,
-    speedZ:15
+    speedZ:15,
+    design:{x : 414 ,y : 736}
 }

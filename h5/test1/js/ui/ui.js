@@ -1,7 +1,9 @@
 import * as t from '../libs/three.js'
 import Camera from '../cameracontroller.js'
 import MainPage from './mainpage.js'
-
+import RoomPage from './roompage.js'
+import EndPage from './endpage.js'
+import GamePage from './gamepage.js'
 export default class UI{
     constructor(){
         this.page = undefined
@@ -41,16 +43,25 @@ export default class UI{
 
     }
 
-    showRoomPage(){
-
+    showRoomPage(options){
+        if(this.page)
+            this.page.hide()
+        this.page = new RoomPage(options)
+        this.page.show()
     }
 
-    showGamePage(){
-
+    showGamePage(options){
+        if(this.page)
+            this.page.hide()
+        this.page = new GamePage(options)
+        this.page.show()
     }
 
-    showEndPage(){
-
+    showEndPage(options){
+        if(this.page)
+            this.page.hide()
+        this.page = new EndPage(options)
+        this.page.show()
     }
 
     showWarnDialog(){
