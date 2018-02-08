@@ -11,6 +11,6 @@ export default {
     height: window.innerHeight,
     floor_height:2,
     gravity: 9.8,
-    speedY:12,
+    speedY:6,
     speedZ:15
 }

@@ -85,11 +85,13 @@ export default class Step{
 		this.world.add(m)
 		m.name="floor"
 		if(this.dir == 1){
-			m.position.set((_centerX + distance/2 * this.dir),_py(1,0),0)
+			m.position.set((_centerX + distance/2 * this.dir),_py(g.config.floor_height,0),0)
 		}else{
-			m.position.set(_centerX,_py(2,0),distance/2 * this.dir)
+			m.position.set(_centerX,_py(g.config.floor_height,0),distance/2 * this.dir)
 		}
-		this.targetpos = m.position
+	    m.position.y = 1
+
+		this.targetpos = m.position.clone()
 		this.targetpos.y += g.config.floor_height
 	}
 

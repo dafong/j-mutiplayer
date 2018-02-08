@@ -5,7 +5,8 @@ var State = {
 	Idle : "idle",
     Prepare: "prepare",
 	Charge : "charge",
-    Jump : "jump"
+    Jump : "jump",
+	Land : "land"
 }
 export default class Player{
 
@@ -15,13 +16,13 @@ export default class Player{
 
     setup(){
         this.root = new t.Object3D
-
+		this.root.name = "player"
         var o = new t.MeshLambertMaterial({
             color: 0x000000
         })
         var p = new t.CylinderGeometry(.5,.5, 2, 32)
         this.body = new t.Mesh(p,o)
-        this.body.name = "player"
+        this.body.name = "body"
         this.root.add(this.body)
         this.flyingTime = 0
     }
@@ -38,19 +39,15 @@ export default class Player{
         this.squeeze()
     }
 
-    charge(delta){
-
-    }
 
     jump(){
         var presstime = Date.now()/1000 - this.downtime
-        console.log("presstime="+presstime )
         this.state = State.Jump
         this.stopprepare()
         this.speed = {y : g.config.speedY * presstime, z : g.config.speedZ * presstime}
         var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
         this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
-        console.log(this.speed.z+" "+this.speed.y)
+        console.log("[speed] "+ this.speed.z+" "+this.speed.y)
         var self = this
         var tr = new tw.Tween({r : 0})
         .to({r : 0 - 2 * Math.PI },0.32)
@@ -60,9 +57,31 @@ export default class Player{
             }else{
                 self.body.rotation.x = this.r
             }
-
         }).start()
     }
+
+	stopjump(y){
+		console.log("stoped")
+		this.root.position.y = y+g.config.floor_height/2
+		this.state = State.Land
+		g.util.dump_3d(g.step.world)
+	}
+
+	checkhit(){
+		var y = this.root.position.y - g.config.floor_height/2
+
+		if(y < 0){
+			this.stopjump(y)
+		}
+		// check if the player can land the table
+		// has intersect and baseline is close to the table's top
+		// if true stopit
+		// and enter land state will check land is safe
+		// if false
+		// check if player's baseline is lower than 0
+		// if true stop it
+
+	}
 
     move(delta){
         var s = new t.Vector3(0, 0, 0)
@@ -72,12 +91,13 @@ export default class Player{
         // console.log(s.z+" "+s.y)
         this.root.translateY(s.y)
         this.root.translateOnAxis(this.axis, s.z)
+		this.checkhit()
     }
 
+
+
     update(delta){
-        if(this.state  == State.Prepare){
-            return this.charge(delta)
-        }
+
         if(this.state == State.Jump){
             this.move(delta)
         }
