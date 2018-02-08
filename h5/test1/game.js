@@ -1,13 +1,13 @@
 import './js/libs/weapp-adapter'
 import './js/libs/symbol'
+GameGlobal['g'] = {}
 import config from './js/config.js'
+g.config = config
 import util from './js/util.js'
+g.util = util
 import helper from './js/ui/help.js'
-GameGlobal['g'] = {
-    config : config,
-    util   : util,
-    h   : helper
-}
+g.h = helper
+
 g.h.init()
 
 

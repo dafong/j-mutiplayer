@@ -4,7 +4,6 @@ import CameraController from 'cameracontroller.js'
 // import StepHigh from 'stephigh.js'
 import Step from 'step.js'
 import UI from 'ui/ui.js'
-import Text from 'ui/text.js'
 
 let ctx = canvas.getContext('webgl')
 let renderer
@@ -99,7 +98,8 @@ export default class App{
 		var cam = CameraController.get()
 		this.scene.add(cam.camera)
 		g.ui = new UI
-		g.ui.showMainPage()
+		// g.ui.showMainPage()
+		g.ui.showGamePage()
 		g.step = new Step(this.scene)
 		g.step.reset()
 		this.oldTime = Date.now()

@@ -47,7 +47,7 @@ export default class Player{
         this.speed = {y : g.config.speedY * presstime, z : g.config.speedZ * presstime}
         var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
         this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
-        console.log("[speed] "+ this.speed.z+" "+this.speed.y)
+        console.log("[speed] "+ this.speed.z.toFixed(1)+" "+this.speed.y.toFixed(1))
         var self = this
         var tr = new tw.Tween({r : 0})
         .to({r : 0 - 2 * Math.PI },0.32)
@@ -64,7 +64,6 @@ export default class Player{
 		console.log("stoped")
 		this.root.position.y = y+g.config.floor_height/2
 		this.state = State.Land
-		g.util.dump_3d(g.step.world)
 	}
 
 	checkhit(){
@@ -73,6 +72,7 @@ export default class Player{
 		if(y < 0){
 			this.stopjump(y)
 		}
+
 		// check if the player can land the table
 		// has intersect and baseline is close to the table's top
 		// if true stopit

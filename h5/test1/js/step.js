@@ -99,8 +99,51 @@ export default class Step{
 		this.state = State.Start
 	}
 
-	addtable(){
+	addtable(distance){
+		var o = new t.MeshLambertMaterial({
+			color: 0x619066
+		})
 
+		var r = new t.Geometry
+
+		var s = new t.ConeGeometry(1,g.config.floor_height,32)
+		this.merge(r,s,0,{
+			x:0,
+			y:0.5,
+			z:0
+
+		})
+
+		var c = new t.CylinderGeometry(1.5,1.5,0.2,32)
+		this.merge(r,c,0,{
+			x:0,
+			y:0.9,
+			z:0
+		})
+
+		var m = new t.Mesh(r,[o])
+		m.name = "table"
+		if(this.dir == 1){
+			m.position.set((_centerX + distance/2 * this.dir),_py(g.config.floor_height,0),0)
+		}else{
+			m.position.set(_centerX,_py(g.config.floor_height,0),distance/2 * this.dir)
+		}
+		m.position.y = 1
+
+		this.targetpos = m.position.clone()
+		this.targetpos.y += g.config.floor_height
+		this.world.add(m)
+	}
+
+	merge(src,dest,mat_i,pos){
+		var o = dest.faces.length
+		for(var i = 0; i < o; i++){
+			dest.faces[i].materialIndex = 0
+		}
+		var r = new t.Mesh(dest)
+		r.position.set(pos.x,pos.y,pos.z)
+		r.updateMatrix()
+		src.merge(r.geometry,r.matrix,mat_i)
 	}
 
 	update(delta){
@@ -160,7 +203,8 @@ export default class Step{
 
 		this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
 		var distance =  3.5 + Math.random() * 2.5
-		this.addfloor(distance)
+		//this.addfloor(distance)
+		this.addtable(distance)
 		this.addbase(distance)
 		this.addplayer(distance)
 		this.addlight()
