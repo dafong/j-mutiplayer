@@ -6,7 +6,7 @@ var State = {
     Prepare: "prepare",
 	Charge : "charge",
     Jump : "jump",
-	Land : "land"
+	Landing : "land"
 }
 export default class Player{
 
@@ -20,7 +20,7 @@ export default class Player{
         var o = new t.MeshLambertMaterial({
             color: 0x000000
         })
-        var p = new t.CylinderGeometry(.5,.5, 2, 32)
+        var p = new t.CylinderGeometry(g.config.floor_radius,g.config.floor_radius, g.config.floor_height, 32)
         this.body = new t.Mesh(p,o)
         this.body.name = "body"
         this.root.add(this.body)
@@ -63,16 +63,19 @@ export default class Player{
 	stopjump(y){
 		console.log("stoped")
 		this.root.position.y = y+g.config.floor_height/2
-		this.state = State.Land
+		this.state = State.Landing
+	}
+
+	landing(issucc){
+		this.state = State.Landing
+		this.root.position.y = g.step.targetpos.y
+		if(issucc){
+			g.step.addfloor(this)
+		}
+
 	}
 
 	checkhit(){
-		var y = this.root.position.y - g.config.floor_height/2
-
-		if(y < 0){
-			this.stopjump(y)
-		}
-
 		// check if the player can land the table
 		// has intersect and baseline is close to the table's top
 		// if true stopit
@@ -80,6 +83,34 @@ export default class Player{
 		// if false
 		// check if player's baseline is lower than 0
 		// if true stop it
+		var y = this.root.position.y - g.config.floor_height/2
+		var basey = g.step.targetbase
+		var h = y - basey
+		if(h > 0 && h < 0.05){
+			var r1 = g.step.targetradius
+			var r2 = g.config.floor_radius
+			var dir = new t.Vector2(this.root.position.x - g.step.targetpos.x,this.root.position.z - g.step.targetpos.z)
+			var tlen = r1*r1 + 2*r1*r2 + r2*r2
+			var slen = dir.lengthSq()
+			if(slen < r1 * r1){
+				return this.landing(true)
+				// landing success
+			}
+
+			if(slen < tlen){
+				return this.landing(false)
+				// landing failed
+
+			}else{
+				// failed do nothing
+			}
+		}
+
+		if(h < 0){
+
+			this.stopjump(y)
+		}
+
 
 	}
 
@@ -93,8 +124,6 @@ export default class Player{
         this.root.translateOnAxis(this.axis, s.z)
 		this.checkhit()
     }
-
-
 
     update(delta){
 

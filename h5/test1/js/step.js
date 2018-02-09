@@ -63,38 +63,6 @@ export default class Step{
 		}
 	}
 
-	// radius: 5,
-	// width: 10,
-	// minRadiusScale: .8,
-	// maxRadiusScale: 1,
-	// height: 5.5,
-	// radiusSegments: [4, 50],
-	// floatHeight: 0,
-	// minDistance: 1,
-	// maxDistance: 17,
-	// minScale: r.minScale,
-	// reduction: r.reduction,
-	// moveDownVelocity: .07,
-	// fullHeight: 5.5 / 21 * 40
-	addfloor(distance){
-		var o = new t.MeshLambertMaterial({
-			color: 0x619066
-		})
-		var s = new t.BoxGeometry(2 , g.config.floor_height, 2 );
-		var m = new t.Mesh(s, o)
-		this.world.add(m)
-		m.name="floor"
-		if(this.dir == 1){
-			m.position.set((_centerX + distance/2 * this.dir),_py(g.config.floor_height,0),0)
-		}else{
-			m.position.set(_centerX,_py(g.config.floor_height,0),distance/2 * this.dir)
-		}
-	    m.position.y = 1
-
-		this.targetpos = m.position.clone()
-		this.targetpos.y += g.config.floor_height
-	}
-
 	startgame(){
 		this.state = State.Start
 	}
@@ -109,7 +77,7 @@ export default class Step{
 		var s = new t.ConeGeometry(1,g.config.floor_height,32)
 		this.merge(r,s,0,{
 			x:0,
-			y:0.5,
+			y:0,
 			z:0
 
 		})
@@ -132,6 +100,8 @@ export default class Step{
 
 		this.targetpos = m.position.clone()
 		this.targetpos.y += g.config.floor_height
+		this.targetbase = m.position.y + g.config.floor_height/2
+		this.targetradius=1.5
 		this.world.add(m)
 	}
 
@@ -148,6 +118,14 @@ export default class Step{
 
 	update(delta){
 		this.player.update(delta)
+	}
+
+	addfloor(floor){
+		this.targetpos = floor.root.position.clone()
+		this.targetpos.y+=g.config.floor_height
+		this.targetbase = this.targetpos.y + g.config.floor_height/2
+		this.targetradius = g.config.floor_radius
+		g.util.dump_3d(this.world)
 	}
 
 	addbase(distance){
