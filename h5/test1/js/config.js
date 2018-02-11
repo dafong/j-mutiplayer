@@ -10,6 +10,7 @@ export default {
     width : window.innerWidth,
     height: window.innerHeight,
     floor_height:2,
+    floor_radius:0.5,
     gravity: 9.8,
     speedY:12,
     speedZ:15,

@@ -98,8 +98,8 @@ export default class App{
 		var cam = CameraController.get()
 		this.scene.add(cam.camera)
 		g.ui = new UI
-		// g.ui.showMainPage()
-		g.ui.showGamePage()
+		g.ui.showMainPage()
+		// g.ui.showGamePage()
 		g.step = new Step(this.scene)
 		g.step.reset()
 		this.oldTime = Date.now()
