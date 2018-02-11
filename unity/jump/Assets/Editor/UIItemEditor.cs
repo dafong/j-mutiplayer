@@ -9,7 +9,8 @@ using UnityEditor.UI;
 public class UIItemEditor : Editor {
 
     public float ToFixed(float r){
-        return r - r % 0.1f;
+        r = r + 0.5f;
+        return r - r % 1f;
     }
 
     public override void OnInspectorGUI() {
@@ -32,19 +33,19 @@ public class UIItemEditor : Editor {
         pivot.y =  - pivot.y;
         center  = center + new Vector2(pivot.x * itemSize.x, pivot.y * itemSize.y);
 
-        center.x = ToFixed(center.x);
-        center.y = ToFixed(center.y);
+        center.x = ToFixed(center.x/2);
+        center.y = ToFixed(center.y/2);
 
         EditorGUILayout.Vector2Field("position",center);
 
         EditorGUILayout.Vector2Field("min",new Vector2(
-            ToFixed(cs.referenceResolution.x / 2 + bounds.min.x),
-            ToFixed(cs.referenceResolution.y / 2 - bounds.min.y - itemSize.y)
+            ToFixed((cs.referenceResolution.x / 2 + bounds.min.x)/2),
+            ToFixed((cs.referenceResolution.y / 2 - bounds.min.y - itemSize.y)/2)
         ));
 
         EditorGUILayout.Vector2Field("max",new Vector2(
-            ToFixed(cs.referenceResolution.x / 2 + bounds.max.x),
-            ToFixed(cs.referenceResolution.y / 2 - bounds.max.y + itemSize.y)
+            ToFixed((cs.referenceResolution.x / 2 + bounds.max.x)/2),
+            ToFixed((cs.referenceResolution.y / 2 - bounds.max.y + itemSize.y)/2)
         ));
 
 
