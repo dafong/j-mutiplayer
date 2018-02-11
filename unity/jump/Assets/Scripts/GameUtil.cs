@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 
 public enum State{
@@ -36,7 +35,6 @@ public class GameUtil : MonoBehaviour {
 
 	public float jumpPower;
 	void Start(){
-		cameraUtil.MoveCameraCenter (curFloor);
 		state = State.Gaming;
 	}
 
@@ -58,17 +56,11 @@ public class GameUtil : MonoBehaviour {
 		jumpPower = 0;
         float scaleChange = maxScaleDuration * scaleSpeed;
 
-        float halfHeight = curFloor.GetComponent<Floor>().ScaleY(scaleChange,maxScaleDuration);
-
-        player.GetComponent<Player>().PressUp(scaleChange, 2 * halfHeight, maxScaleDuration);
     }
 
 	public void OnPressUp(){
-		curFloor.DOKill ();
-		player.DOKill ();
+		
 		state = State.Jump;
-        curFloor.GetComponent<Floor>().Revert(0.1f);
-        player.GetComponent<Player>().JumpTo(targetFloor.transform.position);
 	}
 
 
