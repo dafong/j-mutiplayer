@@ -1,6 +1,7 @@
 import * as t from 'libs/three.js'
 import Camera from 'cameracontroller.js'
 import Player from 'player.js'
+import * as tw from 'libs/tween.js'
 var scene
 var cols = [
 	["rgba(215, 219, 230, 1)", "rgba(188, 190, 199, 1)"],
@@ -21,190 +22,252 @@ let _centerZ = 0
 let _centerX = 9
 export default class Step{
 
-	constructor(s){
-		scene = s
-		this.init()
-		var cam = Camera.get()
-		cam.camera.add(this.root)
+		constructor(s){
+			scene = s
+			this.init()
+			var cam = Camera.get()
+			cam.camera.add(this.root)
+		}
 
-	}
+		init(){
+			this.idx = 0
+			this.root = new t.Object3D
+			this.root.name = "root"
 
-	init(){
-		this.root = new t.Object3D
-		this.root.name = "root"
-		this.addground()
-		this.world= new t.Object3D
-		this.world.name = "world"
-		scene.add(this.world)
-	}
+			this.addground()
 
-	addground(){
-		var size = g.config.frustumsize * 2
-		var p = new t.PlaneGeometry(g.config.ratio * size ,size)
-		this.mats = []
-	    for(var i = 0;i < 7; i++){
-			var l = new t.Texture(g.util.get_world_canvas(cols[i][0],cols[i][1]))
-			l.needsUpdate = true
-			var m = new t.MeshBasicMaterial({
-				map :l,
-				opacity : 1,
-				transparent : true
+			this.world= new t.Object3D
+			this.world.name = "world"
+			scene.add(this.world)
+		}
+
+		addground(){
+			var size = g.config.frustumsize * 2
+			var p = new t.PlaneGeometry(g.config.ratio * size ,size)
+			this.mats = []
+		    for(var i = 0;i < 7; i++){
+				var l = new t.Texture(g.util.get_world_canvas(cols[i][0],cols[i][1]))
+				l.needsUpdate = true
+				var m = new t.MeshBasicMaterial({
+					map :l,
+					opacity : 1,
+					transparent : true
+				})
+				this.mats.push(m)
+				var m = new t.Mesh(p,m)
+				m.position.z = .1 * -(i + 1)
+				m.name = 'bg_'+i
+				this.root.add(m)
+			}
+			this.root.position.z = -84
+			this.cur = 0
+			for(var i=1;i<7;i++){
+				this.root.children[i].visible = false
+			}
+		}
+
+		startgame(){
+			this.state = State.Start
+		}
+
+		reset(){
+			for( var i = this.world.children.length - 1; i >= 0; i--) {
+				this.world.remove(this.world.children[i]);
+			}
+			this.idx = 0
+			this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
+			var distance =  3.5 + Math.random() * 2.5
+			this.addtable(distance)
+			this.addbase(distance)
+			this.spawnnext()
+			this.spawnplayer()
+			this.addlight()
+			this.startgame()
+			g.util.dump_3d(scene)
+		}
+
+		addtable(distance){
+			var o = new t.MeshLambertMaterial({
+				color: 0x619066
 			})
-			this.mats.push(m)
-			var m = new t.Mesh(p,m)
-			m.position.z = .1 * -(i + 1)
-			m.name = 'bg_'+i
-			this.root.add(m)
-		}
-		this.root.position.z = -84
-		this.cur = 0
-		for(var i=1;i<7;i++){
-			this.root.children[i].visible = false
-		}
-	}
 
-	startgame(){
-		this.state = State.Start
-	}
+			var r = new t.Geometry
 
-	addtable(distance){
-		var o = new t.MeshLambertMaterial({
-			color: 0x619066
-		})
+			var s = new t.ConeGeometry(1,g.config.floor_height,32)
+			this.merge(r,s,0,{
+				x:0,
+				y:0,
+				z:0
 
-		var r = new t.Geometry
+			})
 
-		var s = new t.ConeGeometry(1,g.config.floor_height,32)
-		this.merge(r,s,0,{
-			x:0,
-			y:0,
-			z:0
+			var c = new t.CylinderGeometry(1.5,1.5,0.2,32)
+			this.merge(r,c,0,{
+				x:0,
+				y:0.9,
+				z:0
+			})
 
-		})
+			var m = new t.Mesh(r,[o])
+			m.name = "table"
+			if(this.dir == 1){
+				m.position.set((_centerX + distance/2 * this.dir),_py(g.config.floor_height,0),0)
+			}else{
+				m.position.set(_centerX,_py(g.config.floor_height,0),distance/2 * this.dir)
+			}
+			m.position.y = 1
 
-		var c = new t.CylinderGeometry(1.5,1.5,0.2,32)
-		this.merge(r,c,0,{
-			x:0,
-			y:0.9,
-			z:0
-		})
-
-		var m = new t.Mesh(r,[o])
-		m.name = "table"
-		if(this.dir == 1){
-			m.position.set((_centerX + distance/2 * this.dir),_py(g.config.floor_height,0),0)
-		}else{
-			m.position.set(_centerX,_py(g.config.floor_height,0),distance/2 * this.dir)
-		}
-		m.position.y = 1
-
-		this.targetpos = m.position.clone()
-		this.targetpos.y += g.config.floor_height
-		this.targetbase = m.position.y + g.config.floor_height/2
-		this.targetradius=1.5
-		this.world.add(m)
-	}
-
-	merge(src,dest,mat_i,pos){
-		var o = dest.faces.length
-		for(var i = 0; i < o; i++){
-			dest.faces[i].materialIndex = 0
-		}
-		var r = new t.Mesh(dest)
-		r.position.set(pos.x,pos.y,pos.z)
-		r.updateMatrix()
-		src.merge(r.geometry,r.matrix,mat_i)
-	}
-
-	update(delta){
-		this.player.update(delta)
-	}
-
-	addfloor(floor){
-		this.targetpos = floor.root.position.clone()
-		this.targetpos.y+=g.config.floor_height
-		this.targetbase = this.targetpos.y + g.config.floor_height/2
-		this.targetradius = g.config.floor_radius
-		g.util.dump_3d(this.world)
-	}
-
-	addbase(distance){
-		var o = new t.MeshLambertMaterial({
-			color: 0x000000
-		})
-		var p = new t.CylinderGeometry(.5,.5, g.config.floor_height,32)
-		this.base = new t.Mesh(p,o)
-		this.base.name = "base"
-		this.world.add(this.base)
-		if(this.dir == 1){
-			this.base.position.set((_centerX - distance/2 * this.dir),_py(2,0),0)
-		}else{
-			this.base.position.set(_centerX ,_py(g.config.floor_height,0),- distance/2 * this.dir)
-		}
-		this.baseheight = g.config.floor_height
-	}
-
-	addplayer(distance){
-		this.player = new Player()
-		if(this.dir == 1){
-			this.player.root.position.set((_centerX - distance/2 * this.dir),_py(g.config.floor_height,this.baseheight),0)
-		}else{
-		    this.player.root.position.set(_centerX ,_py(g.config.floor_height,this.baseheight),- distance/2 * this.dir)
-		}
-		this.world.add(this.player.root)
-		this.player.init()
-	}
-
-	addlight(){
-	    var e = new t.AmbientLight(0xffffff, .8);
-	    e.name = "ambient light"
-	    this.world.add(e)
-	}
-
-	changecolor(){
-		var n = this.cur + 1 >=7 ? 0 : this.cur + 1
-		// o.customAnimation.to(this.materials[this.current], 5, {
-		// 	opacity: 0,
-		// 	onComplete: function() {
-		// 		e.obj.children[i].visible = !1
-		// 	}
-		// }), this.obj.children[t].visible = !0, o.customAnimation.to(this.materials[t], 4, {
-		// 	opacity: 1
-		// })
-		this.cur = n
-	}
-
-	reset(){
-		for( var i = this.world.children.length - 1; i >= 0; i--) {
-			this.world.remove(this.world.children[i]);
+			this.targetpos = m.position.clone()
+			this.targetpos.y += g.config.floor_height
+			this.targetbase = m.position.y + g.config.floor_height/2
+			this.targetradius=1.5
+			this.world.add(m)
 		}
 
-		this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
-		var distance =  3.5 + Math.random() * 2.5
-		//this.addfloor(distance)
-		this.addtable(distance)
-		this.addbase(distance)
-		this.addplayer(distance)
-		this.addlight()
-		this.startgame()
-		g.util.dump_3d(scene)
-	}
 
-	ontouchstart(t,x,y){
-		if(State.Start != this.state){
-			return
+		addbase(distance){
+			var o = new t.MeshLambertMaterial({
+				color: 0xff0000
+			})
+			var p = new t.CylinderGeometry(.5,.5, g.config.floor_height,32)
+			this.base = new t.Mesh(p,o)
+			this.base.name = "base"
+			this.world.add(this.base)
+			if(this.dir == 1){
+				this.base.position.set((_centerX - distance/2 * this.dir),_py(2,0),0)
+			}else{
+				this.base.position.set(_centerX ,_py(g.config.floor_height,0),- distance/2 * this.dir)
+			}
+			this.baseheight = g.config.floor_height
+			var pos = this.base.position.clone()
+			pos.y = pos.y + g.config.floor_height
+			this.spawnpos = pos
 		}
-		this.player.prepare()
-    }
 
-    ontouchend(t,x,y){
-		if(State.Start != this.state){
-			return
+		spawnplayer(){
+			if(this.player == undefined)
+				this.player = new Player()
+			this.player.attach(this.next)
+			this.player.init()
 		}
-		this.player.jump()
-    }
 
-    ontouchmove(t,x,y){
 
-    }
+		detach(node){
+			this.base.remove(node)
+		}
+
+		spawnnext(){
+			this.idx++
+			var root = new t.Object3D
+			root.name="player-"+this.idx
+			var o = new t.MeshLambertMaterial({
+				color : this.idx * 400
+			})
+			var p = new t.CylinderGeometry(
+				g.config.floor_radius,
+				g.config.floor_radius,
+				g.config.floor_height,
+				32
+			)
+			var body = new t.Mesh(p,o)
+			body.name="body"
+			root.add(body)
+
+
+			this.world.add(root)
+
+			var tscale = this.base.position.y + 1
+			root.position.set(this.base.position.x,this.base.position.y*2+1,this.base.position.z)
+			this.next = root
+
+			// animation
+			var self = this
+			var tws = new tw.Tween({ s : this.base.scale.y })
+			.to({ s : this.idx },0.5)
+			.easing(tw.Easing.Back.Out)
+			.onUpdate(function(){
+				self.base.scale.y = this.s
+			}).onComplete(function(){
+
+			})
+
+			var twy = new tw.Tween({ y : this.base.position.y })
+			.to({ y : this.idx },0.5)
+			.easing(tw.Easing.Back.Out)
+			.onUpdate(function(){
+				self.base.position.y = this.y
+			}).onComplete(function(){
+
+			})
+
+			var twn = new tw.Tween({ y :  root.position.y })
+			.to({ y : this.idx * 2 + 1},0.5)
+			.easing(tw.Easing.Back.Out)
+			.onUpdate(function(){
+				root.position.y = this.y
+			}).onComplete(function(){
+
+			})
+			tws.start()
+			twy.start()
+			twn.start()
+
+		}
+
+		merge(src,dest,mat_i,pos){
+			var o = dest.faces.length
+			for(var i = 0; i < o; i++){
+				dest.faces[i].materialIndex = 0
+			}
+			var r = new t.Mesh(dest)
+			r.position.set(pos.x,pos.y,pos.z)
+			r.updateMatrix()
+			src.merge(r.geometry,r.matrix,mat_i)
+		}
+
+		update(delta){
+			if(this.player)
+				this.player.update(delta)
+		}
+
+		addfloor(floor){
+			this.targetpos = floor.root.position.clone()
+			this.targetpos.y+=g.config.floor_height
+			this.targetbase = this.targetpos.y - g.config.floor_height/2
+			this.targetradius = g.config.floor_radius
+			this.spawnplayer()
+			g.util.dump_3d(this.world)
+		}
+
+		addlight(){
+		    var e = new t.AmbientLight(0xffffff, .8);
+		    e.name = "ambient light"
+		    this.world.add(e)
+		}
+
+		changecolor(){
+			var n = this.cur + 1 >=7 ? 0 : this.cur + 1
+			this.cur = n
+		}
+
+
+
+		ontouchstart(t,x,y){
+			if(State.Start != this.state){
+				return
+			}
+
+			this.player.prepare()
+	    }
+
+	    ontouchend(t,x,y){
+			if(State.Start != this.state){
+				return
+			}
+			this.player.jump()
+	    }
+
+	    ontouchmove(t,x,y){
+
+	    }
 }

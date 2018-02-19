@@ -1,0 +1,286 @@
+# BEGIN lua-resty-http
+
+dist lua-resty-http-0.09
+  aliases resty.http
+  modules lua-resty-http-0.09
+
+module lua-resty-http-0.09
+  aliases resty.http
+  section 18 175 lua-resty-http
+  section 175 211 status
+  section 211 576 features
+  section 576 3219 api
+  section 1147 3219 synopsis
+  section 3219 6440 connection
+  section 3240 3382 new
+  section 3382 4130 connect
+  section 4130 4285 set_timeout
+  section 4285 4572 ssl_handshake
+  section 4572 5649 set_keepalive
+  section 5649 6229 get_reused_times
+  section 6229 6440 close
+  section 6440 9581 requesting
+  section 6461 7663 request
+  section 7663 8363 request_uri
+  section 8363 9581 request_pipeline
+  section 9581 10615 response
+  section 9600 10338 res.body_reader
+  section 10338 10446 res:read_body
+  section 10446 10615 res:read_trailers
+  section 10615 11810 proxy
+  section 11161 11522 proxy_request
+  section 11522 11810 proxy_response
+  section 11810 13033 utility
+  section 11828 12040 parse_uri
+  section 12040 13033 get_client_body_reader
+  section 13033 13265 author
+  section 13265 14713 licence
+
+# END lua-resty-http
+# BEGIN lua-resty-template
+
+dist lua-resty-template-1.9
+  aliases resty.template
+  modules changes lua-resty-template-1.9
+
+module changes
+  section 18 2544 change log
+  section 148 248 added
+  section 248 371 changed
+  section 371 497 added
+  section 497 701 fixed
+  section 701 800 added
+  section 800 1059 added
+  section 1059 1208 fixed
+  section 1208 1299 added
+  section 1299 1673 changed
+  section 1673 1809 added
+  section 1809 1948 fixed
+  section 1948 2149 fixed
+  section 2149 2290 added
+  section 2290 2472 changed
+  section 2472 2544 added
+
+module lua-resty-template-1.9
+  aliases resty.template
+  section 18 46610 lua-resty-template
+  section 537 1305 hello world with lua-resty-template
+  section 846 960 view.html
+  section 960 1305 output
+  section 1305 2442 contents
+  section 2442 7295 template syntax
+  section 3864 4311 short escaping syntax
+  section 4311 4802 a word about complex keys in context table
+  section 4802 5290 a word about html escaping
+  section 5290 5307 example
+  section 5307 5594 lua
+  section 5594 5781 view.html
+  section 5781 5917 header.html
+  section 5917 5964 footer.html
+  section 5964 6910 reserved context keys and remarks
+  section 6910 6957 lua
+  section 6957 7072 view.html
+  section 7072 7295 view.html
+  section 7295 8000 installation
+  section 7596 8000 using luarocks or moonrocks
+  section 8000 10152 nginx / openresty configuration
+  section 8648 9049 using document_root
+  section 9049 9530 using template_root
+  section 9530 10152 using template_location
+  section 10152 18729 lua api
+  section 10170 10940 boolean template.caching(boolean or nil)
+  section 10940 11679 table template.new(view, layout)
+  section 11679 12200 example
+  section 12200 13006 function, boolean template.compile(view, key, plain)
+  section 13006 13397 example
+  section 13397 13967 template.render(view, context, key, plain)
+  section 13967 14163 example
+  section 14163 14760 string template.parse(view, plain)
+  section 14760 15774 string template.precompile(view, path, strip)
+  section 15774 18133 template.load
+  section 18133 18729 template.print
+  section 18729 19752 template precompilation
+  section 19378 19567 precompiling template, and output it as a binary file
+  section 19567 19752 load precompiled template file, and run it with context parameters
+  section 19752 22101 template helpers
+  section 20732 21045 example
+  section 21045 21645 lua
+  section 21645 22101 output
+  section 22101 36941 usage examples
+  section 22126 23061 template including
+  section 22466 22657 lua
+  section 22657 22831 include.html
+  section 22831 22898 user.html
+  section 22898 23061 outut
+  section 23061 25156 views with layouts
+  section 23178 24160 lua
+  section 24160 24206 view.html
+  section 24206 24368 layout.html
+  section 24368 24437 alternatively you can define the layout in a view as well:
+  section 24437 24619 lua
+  section 24619 24697 view.html
+  section 24697 24772 section.html
+  section 24772 24934 layout.html
+  section 24934 25156 output
+  section 25156 26411 using blocks
+  section 25305 25555 lua
+  section 25555 25747 view.html
+  section 25747 26029 layout.html
+  section 26029 26411 output
+  section 26411 28349 grandfather-father-son inheritance
+  section 26717 26797 lua
+  section 26797 27147 base.html
+  section 27147 27385 layout1.html
+  section 27385 27671 layout2.html
+  section 27671 28013 page.html
+  section 28013 28349 page.html
+  section 28349 30673 macros
+  section 30673 30985 calling methods in templates
+  section 30786 30940 lua
+  section 30940 30985 output
+  section 30985 32445 embedding angular or other tags / templating inside the templates
+  section 32445 33897 embedding markdown inside the templates
+  section 32733 32996 lua
+  section 32996 33248 output
+  section 33248 33558 lua
+  section 33558 33897 output
+  section 33897 36941 lua server pages (lsp) with openresty
+  section 34656 35287 nginx.conf:
+  section 35287 35801 index.lsp
+  section 35801 36024 layouts/default.lsp
+  section 36024 36149 include/header.lsp
+  section 36149 36941 output
+  section 36941 37497 faq
+  section 36955 37187 how do i clear the template cache
+  section 37187 37497 where is lua-resty-template used
+  section 37497 40309 alternatives
+  section 40309 44708 benchmarks
+  section 40662 40888 lua
+  section 40888 41507 lua 5.1.5  copyright (c) 1994-2012 lua.org, puc-rio
+  section 41507 42126 lua 5.2.3  copyright (c) 1994-2013 lua.org, puc-rio
+  section 42126 42745 lua 5.3.0  copyright (c) 1994-2015 lua.org, puc-rio
+  section 42745 43382 luajit 2.0.2 -- copyright (c) 2005-2013 mike pall. http://luajit.org/
+  section 43382 44025 luajit 2.1.0-alpha -- copyright (c) 2005-2014 mike pall. http://luajit.org/
+  section 44025 44708 resty (resty 0.01, nginx version: openresty/1.7.7.2)
+  section 44708 44874 changes
+  section 44874 46610 license
+
+# END lua-resty-template
+# BEGIN lua-resty-cookie
+
+dist lua-resty-cookie-0.01
+  aliases resty.cookie
+  modules lua-resty-cookie-0.01
+
+module lua-resty-cookie-0.01
+  aliases resty.cookie
+  section 18 176 name
+  section 176 2188 synopsis
+  section 2188 3400 methods
+  section 2207 2392 new
+  section 2392 2547 get
+  section 2547 2715 get_all
+  section 2715 3400 set
+  section 3400 3934 installation
+  section 3934 4079 authors
+  section 4079 5626 copyright and license
+
+# END lua-resty-cookie
+# BEGIN lua-resty-redis
+
+dist lua-resty-redis-0.25
+  aliases resty.redis
+  modules lua-resty-redis-0.25
+
+module lua-resty-redis-0.25
+  aliases resty.redis
+  section 18 165 name
+  section 165 576 description
+  section 576 3724 synopsis
+  section 3724 13033 methods
+  section 5872 6018 new
+  section 6018 6874 connect
+  section 6874 7028 set_timeout
+  section 7028 7744 set_keepalive
+  section 7744 8323 get_reused_times
+  section 8323 8540 close
+  section 8540 9199 init_pipeline
+  section 9199 9598 commit_pipeline
+  section 9598 9904 cancel_pipeline
+  section 9904 10261 hmset
+  section 10261 10471 array_to_hash
+  section 10471 12123 read_reply
+  section 12123 13033 add_commands
+  section 13033 14081 redis authentication
+  section 14081 15422 redis transactions
+  section 15422 16009 load balancing and failover
+  section 16009 16401 debugging
+  section 16401 16948 automatic error logging
+  section 16948 19309 check list for issues
+  section 19309 20196 limitations
+  section 20196 20948 installation
+  section 20948 20964 todo
+  section 20964 21251 community
+  section 20985 21121 english mailing list
+  section 21121 21251 chinese mailing list
+  section 21251 21500 bugs and patches
+  section 21500 21599 author
+  section 21599 23082 copyright and license
+  section 23082 23460 see also
+
+# END lua-resty-redis
+# BEGIN lua-resty-websocket
+
+dist lua-resty-websocket-0.05
+  aliases resty.websocket
+  modules lua-resty-websocket-0.05
+
+module lua-resty-websocket-0.05
+  aliases resty.websocket
+  section 18 155 name
+  section 155 596 description
+  section 596 2709 synopsis
+  section 2709 13655 modules
+  section 2728 7218 resty.websocket.server
+  section 2855 7218 methods
+  section 2875 3917 new
+  section 3917 4049 set_timeout
+  section 4049 4342 send_text
+  section 4342 4641 send_binary
+  section 4641 5051 send_ping
+  section 5051 5386 send_pong
+  section 5386 5832 send_close
+  section 5832 6459 send_frame
+  section 6459 7218 recv_frame
+  section 7218 13056 resty.websocket.client
+  section 8254 13056 methods
+  section 8274 9180 client:new
+  section 9180 10610 client:connect
+  section 10610 10795 client:close
+  section 10795 11527 client:set_keepalive
+  section 11527 11670 client:set_timeout
+  section 11670 11822 client:send_text
+  section 11822 11980 client:send_binary
+  section 11980 12171 client:send_ping
+  section 12171 12362 client:send_pong
+  section 12362 12563 client:send_close
+  section 12563 12901 client:send_frame
+  section 12901 13056 client:recv_frame
+  section 13056 13655 resty.websocket.protocol
+  section 13189 13655 methods
+  section 13209 13363 recv_frame
+  section 13363 13502 build_frame
+  section 13502 13655 send_frame
+  section 13655 14155 automatic error logging
+  section 14155 14949 limitations
+  section 14949 16004 installation
+  section 16004 16020 todo
+  section 16020 16307 community
+  section 16041 16177 english mailing list
+  section 16177 16307 chinese mailing list
+  section 16307 16606 bugs and patches
+  section 16606 16705 author
+  section 16705 18188 copyright and license
+  section 18188 18809 see also
+
+# END lua-resty-websocket

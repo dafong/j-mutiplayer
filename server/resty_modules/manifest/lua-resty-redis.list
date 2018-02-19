@@ -1,0 +1,2 @@
+lualib/resty/redis.lua
+pod/lua-resty-redis-0.25/lua-resty-redis-0.25.pod

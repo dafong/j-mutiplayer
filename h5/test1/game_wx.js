@@ -15822,8 +15822,12 @@ define("game.js", function(require, module, exports) {
 					return n(e, [{
 						key: "merge",
 						value: function(e, t, i, n) {
-							for (var a = 0, o = t.faces.length; a < o; ++a) t.faces[a].materialIndex = 0;
-							for (var s = new r.Mesh(t), a = 0, o = n.length; a < o; ++a) s.position.set(n[a].x, n[a].y, n[a].z), s.updateMatrix(), e.merge(s.geometry, s.matrix, i)
+							for (var a = 0, o = t.faces.length; a < o; ++a) t
+							.faces[a].materialIndex = 0;
+							for (var s = new r.Mesh(t), a = 0, o = n.length; a < o; ++a)
+							s.position.set(n[a].x, n[a].y, n[a].z),
+							s.updateMatrix(),
+							e.merge(s.geometry, s.matrix, i)
 						}
 					}, {
 						key: "showAddScore",
