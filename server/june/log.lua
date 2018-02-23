@@ -1,6 +1,7 @@
 require"june.extension"
 local sformat  = string.format
 local dgetinfo = debug.getinfo
+local tbl2str  = require"utils".tableToString
 local FILE_NAME= "app.log"
 local shorts = {
    [ngx.STDERR] = "f",

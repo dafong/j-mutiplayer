@@ -13684,7 +13684,10 @@ define("game.js", function(require, module, exports) {
 								method: "POST",
 								data: t,
 								success: function(e) {
-									200 === e.statusCode && 0 === e.data.base_resp.errcode && (e.data.version > a.default.serverConfig.version || !a.default.serverConfig.version) && (a.default.setServerConfig(e.data), o.default.saveServerConfig(e.data))
+									200 === e.statusCode &&
+									0 === e.data.base_resp.errcode &&
+									(e.data.version > a.default.serverConfig.version || !a.default.serverConfig.version) &&
+									(a.default.setServerConfig(e.data), o.default.saveServerConfig(e.data))
 								},
 								fail: function(e) {}
 							})

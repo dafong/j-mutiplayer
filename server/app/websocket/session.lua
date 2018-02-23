@@ -1,6 +1,6 @@
 local server = require "resty.websocket.server"
 local log = require"june.log"
-
+local json= require"cjson"
 local M = {}
 
 function M:new(sessionid)
@@ -41,6 +41,7 @@ function M:send_pong(data)
 end
 
 function M:close(...)
+	log:i("[session close] %s",self.sid )
 	local bytes,err = self.wb:send_close(...)
 	self.connected = false
 	if bytes == nil then
@@ -57,6 +58,18 @@ function M:send_text(data)
 	end
 	return bytes
 end
+
+function M:send_json(tbl)
+	self:send_text(json.encode(tbl or {}))
+end
+
+function M:send_cmd(cmd,tbl)
+	self:send_json({
+		t = cmd,
+		data = tbl or {}
+	})
+end
+
 
 function M:send_binary(data)
 	local bytes, err = self.wb:send_binary(data)

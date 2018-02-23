@@ -1,6 +1,7 @@
 import * as t from 'libs/three.js'
 import * as tw from 'libs/tween.js'
 import Network from 'network.js'
+import User from 'user.js'
 import CameraController from 'cameracontroller.js'
 // import StepHigh from 'stephigh.js'
 import Step from 'step.js'
@@ -94,6 +95,7 @@ export default class App{
 	init(){
 		this.setupRender()
 		this.setupEvent()
+		g.user = new User
 		g.network = new Network
 		this.scene = new t.Scene();
 		this.scene.name="scene"

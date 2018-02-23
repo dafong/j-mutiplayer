@@ -4,8 +4,8 @@ local Http = require"june.http"
 local M = {}
 
 
-function M:create_http()
-    local http = Http:new(self.conf)
+function M:create_http(conf)
+    local http = Http:new(conf)
     return http
 end
 

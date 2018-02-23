@@ -14,5 +14,8 @@ export default {
     gravity: 9.8,
     speedY:12,
     speedZ:15,
-    design:{x : 414 ,y : 736}
+    design:{x : 414 ,y : 736},
+    ajax:'http://127.0.0.1:8000',
+    socket:'ws://127.0.0.1:4000/ws',
+    noop:function(){}
 }

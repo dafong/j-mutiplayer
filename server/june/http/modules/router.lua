@@ -2,7 +2,6 @@ local M={}
 local utils = require"utils"
 local log = require"june.log"
 function M:process(req,resp)
-    log:e(req.origin_uri)
     local path = ngx.re.sub(req.origin_uri, "^/+", "")
     path       = ngx.re.sub(path, "\\?.*", "")
     local pathinfo = path:split("/")
@@ -21,7 +20,8 @@ function M:process(req,resp)
             handler_func = func
         })
     else
-        ngx.log(ngx.ERR,e)
+        ngx.status = 404
+        log:e(e)
     end
 end
 

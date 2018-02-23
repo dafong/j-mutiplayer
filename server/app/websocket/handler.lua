@@ -19,15 +19,21 @@ function M:handle(session)
 		end
 
 		if not data then
-			log:e("rev frame err:" .. err)
+			log:e("[session err]" .. err)
 			break
 		end
-		log:i("rec data: %s %s",session.sid,data )
+
+		log:i("[session recv] %s %s",session.sid,data )
+
+		if data == "" then
+			break
+		end
+
 
 
 		xpcall(function()
 			local msg = json.decode(data)
-			local func = self.cache[msg.cmd]
+			local func = self.cache[msg.t]
 			if func then
 				func(msg,session)
 			end
@@ -48,6 +54,7 @@ function M:handle(session)
 		--
 		-- end
 	end
+
 	session:close()
 end
 

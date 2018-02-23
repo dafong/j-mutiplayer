@@ -1,16 +1,27 @@
-local req = ngx.req
+local log = require"june.log"
+local json= require"cjson"
 
 local M = {}
 
 function M:new(http)
+    local req = ngx.req
     req.read_body()
+    local header = req.get_headers()
+    local ctype = header['Content-Type']
+    local arg = nil
+    if ctype == "application/json" then
+        local data = ngx.req.get_body_data()
+        arg = json.decode(data)
+    else
+        arg = req.get_post_args()
+    end
     local ins = {
         __modules = {},
         origin_uri = ngx.var.request_uri,
         path   = ngx.var.uri,
-        headers= ngx.req.get_headers(),
+        headers= req.get_headers(),
         method = req.get_method(),
-        post   = req.get_post_args(),
+        post   = arg,
         query  = req.get_uri_args(),
         http   = http
     }
