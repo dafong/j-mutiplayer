@@ -27,7 +27,6 @@ end
 function M:get(url,params)
     local hc = http.new()
     local p  = "?"..paramize(params)
-    log:i(p)
     local res,err = hc:request_uri(string.format("%s%s",url,#p > 1 and p or ""),{
         method = "GET"
     })

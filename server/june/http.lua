@@ -8,6 +8,7 @@ local M={}
 function M:new(conf)
     local ins = {
         modules = {},
+        list    = {},
         conf    = conf.http or {},
         base_dir= ""
     }
@@ -17,18 +18,22 @@ function M:new(conf)
 end
 
 function M:_init()
-    local mf = self.conf.modules
-    if mf == nil then
-        self:_check_default_module()
-        return
+    self:_check_default_module()
+    for k,v in pairs(self.conf) do
+        if type(v) == "table" then
+            if v.lua ~= nil then
+                self:use(k,v.lua)
+            end
+        end
     end
-    if type(mf) ~= "function" then
-        return
-    end
-    mf(self)
 end
 
 function M:_check_default_module()
+
+    if self.modules.cookie == nil then
+        self:use("cookie","june.http.modules.cookie")
+    end
+
     if self.modules.router == nil then
         self:use("router","june.http.modules.router")
     end
@@ -37,9 +42,6 @@ function M:_check_default_module()
         self:use("filter","june.http.modules.filter")
     end
 
-    if self.modules.cookie == nil then
-        self:use("cookie","june.http.modules.cookie")
-    end
 end
 
 function M:use(name,luafile)
@@ -47,6 +49,7 @@ function M:use(name,luafile)
         error("module with same name " .. name .." already exist")
     end
     self.modules[name] = require(luafile)(name,self.conf)
+    self.list[#self.list+1] = name
 end
 
 function M:run()
@@ -60,11 +63,12 @@ function M:run()
     -- iterator all modules
     local i,handlers =0, {}
 
-    for n,m in pairs(self.modules) do
+    for _,n in pairs(self.list) do
+        local m = self.modules[n]
         local handler = m:process(req,resp)
         if type(handler) == "function" then
             i=i+1
-            handlers[i] = {m=m,h=handler}
+            handlers[i] = {m = m, h = handler}
         end
     end
 

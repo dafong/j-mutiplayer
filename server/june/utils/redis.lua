@@ -32,7 +32,7 @@ setmetatable(M, { __index = function(t,k)
     return function(self, ...)
         local c = redis:new()
         c:set_timeout(1000)
-        local conf = june.conf.redis
+        local conf = require"config".redis
         local ok,err = c:connect(conf.host,conf.port)
         if not ok then log:e("redis connect error "..err) end
         local res,err = c[k](c , ... )

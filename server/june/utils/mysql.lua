@@ -9,7 +9,7 @@ local function query(this,statement,est_nrows)
     if not db then
         log:e("mysql create failed")
     end
-    local conf = june.conf.mysql
+    local conf = require"config".mysql
     --time out 1sec
     db:set_timeout(1000)
     local res, err = db:connect(conf)

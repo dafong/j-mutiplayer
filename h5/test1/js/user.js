@@ -1,8 +1,13 @@
 export default class User{
 	constructor(){
 		this.sessionId = undefined
+		this.token = wx.getStorageSync("token")
+		this.uid   = wx.getStorageSync("uid")
 	}
 
+	init(){
+
+	}
 
 
 	login(cb){
@@ -22,6 +27,12 @@ export default class User{
 			},function(e){
 
 			})
+		})
+	}
+
+	ping(){
+		g.network.post('/step/ping',{},function(e){
+
 		})
 	}
 

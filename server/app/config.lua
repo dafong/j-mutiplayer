@@ -10,8 +10,11 @@ return {
         host = "127.0.0.1",
         port = 3306,
         user = "root",
-        password  = ""
+        password  = "wa1234",
+        database="step"
     },
+
+
 
     http = {
         filters = function(f)
@@ -23,6 +26,10 @@ return {
             -- default process filter
             f:add("june.http.filters.default")
         end,
+
+        player = {
+            lua = "modules.player",
+        },
     },
 
     socket = {

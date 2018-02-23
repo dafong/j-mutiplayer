@@ -284,3 +284,20 @@ module lua-resty-websocket-0.05
   section 18188 18809 see also
 
 # END lua-resty-websocket
+# BEGIN lua-resty-string
+
+dist lua-resty-string-0.10
+  aliases resty.string
+  modules lua-resty-string-0.10
+
+module lua-resty-string-0.10
+  aliases resty.string
+  section 18 118 name
+  section 118 268 status
+  section 268 449 description
+  section 449 5573 synopsis
+  section 5573 5655 author
+  section 5655 7149 copyright and license
+  section 7149 7251 see also
+
+# END lua-resty-string

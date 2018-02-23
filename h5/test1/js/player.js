@@ -29,6 +29,7 @@ export default class Player{
 			if(this.state != State.Idle) return
 	        this.downtime = Date.now()/1000
 	        this.state = State.Prepare
+
 	        console.log("[prepareing...]")
 	        this.squeeze()
 	    }
@@ -43,7 +44,7 @@ export default class Player{
 	        var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
 	        this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
 	        console.log("[jump with speed] "+ this.speed.z.toFixed(1)+" "+this.speed.y.toFixed(1))
-
+			this.flyingTime = 0
 	        var self = this
 	        var tr = new tw.Tween({r : 0})
 	        .to({r : 0 - 2 * Math.PI },0.32)

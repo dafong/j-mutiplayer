@@ -1,4 +1,11 @@
 local M={}
+local resty_md5 = require"resty.md5"
+local resty_string = require"resty.string"
+function M:md5(str)
+    local md5 = resty_md5:new()
+    md5:update(str)
+    return resty_string.to_hex(md5:final())
+end
 
 function M:merge(...)
     local t = {}

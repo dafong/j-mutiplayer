@@ -124,6 +124,7 @@ export default class Network{
 
 	post(url,param,succ,failf){
 		failf = failf || g.config.noop
+		param = param || {}
 		wx.request({
 			url: g.config.ajax + url,
 			method: "POST",
