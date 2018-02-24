@@ -7,6 +7,7 @@ local _gen_session_id = function()
 	_incr_id = _incr_id + 1
 	return (ngx_worker_id + 1) * 100000 + _incr_id
 end
+
 local M = {
 	sessions = {}
 }
@@ -24,9 +25,12 @@ function M:open()
 	return se
 end
 
+
+
 function M:remove_session(s)
 	self.sessions[s.sid] = nil
 end
+
 
 
 return M

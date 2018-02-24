@@ -94,7 +94,7 @@ var l = {
         var self= this
         var p = new Promise(function(resolve,reject){
             img.onload = function(){
-                console.log(img.src + " loaded")
+                // console.log(img.src + " loaded")
                 w = (w || img.width) * wr
                 h = (h || img.height) * hr
                 x = x - w * px

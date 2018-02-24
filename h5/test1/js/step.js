@@ -83,7 +83,7 @@ export default class Step{
 			this.spawnplayer()
 			this.addlight()
 			this.startgame()
-			g.util.dump_3d(scene)
+			// g.util.dump_3d(scene)
 		}
 
 		addtable(distance){
@@ -236,7 +236,7 @@ export default class Step{
 			this.targetbase = this.targetpos.y - g.config.floor_height/2
 			this.targetradius = g.config.floor_radius
 			this.spawnplayer()
-			g.util.dump_3d(this.world)
+			// g.util.dump_3d(this.world)
 		}
 
 		addlight(){

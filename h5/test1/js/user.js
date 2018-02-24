@@ -12,23 +12,54 @@ export default class User{
 
 	login(cb){
 		var self = this
-		this.reSessionId(function(succ){
-			if(!succ){
-				console.log("[user] session get failed")
-				return
-			}
-			wx.getUserInfo({
-				success : function(data){
-					console.log(data)
-				}
-			})
+		if(this.uid != undefined && this.token != undefined){
 			g.network.post('/step/init',{
 				sid : self.sessionId
 			},function(e){
-
+				var data = e.data
+				if(data.ec == 0){
+					self.onLoginSuccess(data.data)
+					if(cb)cb()
+				}else{
+					self.onLoginFailed(data.data)
+				}
 			})
-		})
+		}else{
+			this.reSessionId(function(succ){
+				if(!succ){
+					console.log("[user] session get failed")
+					return
+				}
+				wx.setStorageSync("session_id",self.sessionId)
+				g.network.post('/step/init',{
+					sid : self.sessionId
+				},function(e){
+					var data = e.data
+					if(data.ec == 0){
+						self.onLoginSuccess(data.data)
+						if(cb)cb()
+					}else{
+						self.onLoginFailed(data.data)
+					}
+
+				})
+			})
+		}
 	}
+
+	onLoginFailed(data){
+
+	}
+
+	onLoginSuccess(data){
+		this.uid = data.uid
+		this.token = data.token
+		wx.setStorageSync("uid",data.uid)
+		wx.setStorageSync("token",data.token)
+		g.network.connect()
+		console.log("[login succ] " + this.uid + " " + this.token)
+	}
+
 
 	ping(){
 		g.network.post('/step/ping',{},function(e){

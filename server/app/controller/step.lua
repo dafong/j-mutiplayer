@@ -26,18 +26,23 @@ function M:init(req,resp)
 		local row   = db:query("insert into player(score) values (0)")
 		local token = util:md5(row.insert_id .. "")
 		local ret = db:query(string.format('update player set token = "%s" where id = %s',token,row.insert_id))
-		ngx.say(json.encode(ret))
-		req.cookie:set({
-			key='token',
-			value=token,
-			path="/",
-			max_age = 3600
+		redis:set("token."..token,row.insert_id.."")
+		resp:json({
+			ec = 0,
+			data = {
+				uid = row.insert_id,
+				token = token
+			}
 		})
-		-- row.insert_id
-		-- db.query("")
-		-- row.insert_id
 	else
-		log:i("logined user with id %s",id)
+		log:i("logined user with id %s",req.player.id)
+		resp:json({
+			ec = 0,
+			data = {
+				uid = req.player.id,
+				token = util:md5(req.player.id)
+			}
+		})
 		-- old user
 	end
 
@@ -50,20 +55,27 @@ function M:init(req,resp)
 end
 
 function M:ping(req,resp)
-	req.cookie:set({
-		key='token',
-		value='1111',
-		domain='127.0.0.1:8000',
-		path="/",
-		max_age = 3600
-	})
-	log:i("cookie: %s",req.cookie:get("token"))
+
 end
 
 
 function M:createroom(req,resp)
+	local room_id = redis:incr("room.req")
+	redis:hset("room."..room_id,"owner",req.player.id)
+	resp:json({
+		ec = 0,
+		data = {
+			room_id = room_id
+		}
+	})
+
+	--save in redis and record the owner expire time is 60 * 5
 
 	--room info save in redis
+end
+
+function M:joinroom(req,resp)
+	-- join the room and broadcast msg through socket
 end
 
 return M

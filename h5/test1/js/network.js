@@ -14,6 +14,16 @@ export default class Network{
 
 	constructor(){
 		this.state = State.Close
+		this.cache = {}
+		this.register_cmd()
+	}
+
+	register_cmd(){
+		this.use(Type.Auth,this.onauth)
+	}
+
+	use(cmd,func){
+		this.cache["c_"+cmd] = func.bind(this)
 	}
 
 	connect(){
@@ -36,7 +46,7 @@ export default class Network{
 	}
 
 	onsuccess(){
-		console.log("[network] [success] ")
+		console.log("[network succ] ")
 		var self = this
 		this.state = State.Open
 		this.socket.onMessage(function(data){
@@ -53,8 +63,39 @@ export default class Network{
 			console.log(" on closed ")
 		})
 		this.heartbeat()
+		this.auth()
 	}
 
+	auth(){
+	    this.send({t: Type.Auth,token : g.user.token})
+	}
+
+	onauth(data){
+		if(data.ec == 0){
+			g.ui.toast({
+				title : "长连接 ID:" + data.sid,
+				icon : 'success',
+				duration : 2000
+			})
+			console.log("[auth succ] sid="+data.sid)
+			this.sid = data.sid
+		}else{
+			console.log("[auth failed] "+ data.ec)
+		}
+	}
+
+	onmessage(o){
+		var data = JSON.parse(o.data)
+		var func = this.cache["c_"+data.cmd]
+		if(data.cmd == Type.Heartbeat){
+			return
+		}
+
+		if(func)
+			func(data)
+		else
+			console.log(data.cmd + " not have a handler")
+	}
 
 	onfail(){
 		var self = this
@@ -76,10 +117,6 @@ export default class Network{
 		clearTimeout(this.tid)
 	}
 
-	onmessage(data){
-		console.log('recv msg')
-		console.log(data)
-	}
 
 	send(data){
 		this.socket.send({
@@ -103,10 +140,12 @@ export default class Network{
 
 	get(url,param,succ,failf){
 		failf = failf || g.config.noop
+		param = param || {}
+		param.token = g.user.token
 		wx.request({
 			url: g.config.ajax + url,
 			method: "GET",
-			data: param || {},
+			data: param,
 			success: function(e){
 				if(e.statusCode == 200){
 					succ(e)
@@ -125,10 +164,11 @@ export default class Network{
 	post(url,param,succ,failf){
 		failf = failf || g.config.noop
 		param = param || {}
+		param.token = g.user.token
 		wx.request({
 			url: g.config.ajax + url,
 			method: "POST",
-			data: param || {},
+			data: param,
 			success: function(e){
 				if(e.statusCode == 200){
 					succ(e)

@@ -1,1 +1,1 @@
-print(320/568.0 * 16 )
+print(os.time())

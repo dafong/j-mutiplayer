@@ -51,6 +51,8 @@ export default class App{
 		}else{
 			renderer.setPixelRatio( window.devicePixelRatio ? window.devicePixelRatio : 1)
 		}
+		wx.triggerGC()
+		wx.setPreferredFramesPerSecond(30)
 	}
 
 	setupEvent(){
@@ -108,8 +110,18 @@ export default class App{
 		g.step.reset()
 		this.oldTime = Date.now()
 		this.loop()
+		this.userLogin()
 	}
 
+	userLogin(){
+		g.user.login(function(){
+			g.ui.toast({
+				title : "登录成功 ID:"+g.user.uid,
+				icon : 'success',
+				duration : 2000
+			})
+		})
+	}
 
 	update(delta){
 		var cam = CameraController.get()

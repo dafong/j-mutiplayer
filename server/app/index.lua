@@ -1,5 +1,6 @@
 local function main()
     require"june.log":override_ngx_log()
+    require"config":init()
     -- require"june.log".rolling = true
     local june = require"june.june"
     local http = june:create_http(require"config")

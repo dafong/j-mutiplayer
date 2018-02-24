@@ -7,7 +7,8 @@ import GamePage from './gamepage.js'
 export default class UI{
     constructor(){
         this.page = undefined
-
+        this.toastQueue = []
+        this.toastShowing = false
     }
 
     ontouchstart(t,x,y){
@@ -30,6 +31,30 @@ export default class UI{
 
     update(delta){
 
+    }
+
+    toast(param){
+        if(param == undefined) return
+
+        if(!this.toastShowing){
+            this.showToast(param)
+        }else{
+            this.toastQueue.push(param)
+        }
+    }
+
+    nextToast(){
+        var param = this.toastQueue.shift()
+        if(param)
+            this.showToast(param)
+        else
+            this.toastShowing = false
+    }
+
+    showToast(param){
+        this.toastShowing = true
+        wx.showToast(param)
+        setTimeout(this.nextToast.bind(this),param.duration)
     }
 
     showMainPage(options){

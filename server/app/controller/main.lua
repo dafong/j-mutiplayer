@@ -6,6 +6,7 @@ local redis = require"june.utils.redis"
 local json = require"cjson"
 local log = require"june.log"
 local resty = require"resty.md5"
+local cache = require"cache"
 
 function M:redis(req,resp)
 	ngx.say(redis:hget("testkey","property"))
@@ -13,7 +14,11 @@ end
 
 function M:mysql(req,resp)
 
-
+	local counter = cache:get_cache():get("counter")
+	counter = counter or 0
+	counter = counter + 1
+	cache:get_cache():set("counter",counter)
+	log:i("c = %d",counter)
 	ngx.say(util:md5("1"))
 	-- local row = db:query("insert into step.player(score) values (0)")
 	-- insert_id

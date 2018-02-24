@@ -1,6 +1,8 @@
 local M={}
 local resty_md5 = require"resty.md5"
 local resty_string = require"resty.string"
+
+
 function M:md5(str)
     local md5 = resty_md5:new()
     md5:update(str)
@@ -20,10 +22,10 @@ function M:merge(...)
     end
 end
 
-local function tableToString(self,t)
+local function tbl_2_str(self,t)
     local address = {}
     if type(t) == "userdata" then
-        return tableToString(self,getmetatable(t))
+        return tbl_2_str(self,getmetatable(t))
     end
     if type(t) ~= "table" then
         print(t)
@@ -55,6 +57,6 @@ local function tableToString(self,t)
     return ret
 end
 
-M.tableToString = tableToString
+M.tbl_2_str = tbl_2_str
 
 return M

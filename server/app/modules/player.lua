@@ -3,14 +3,15 @@ local utils  = require"utils"
 local log = require"june.log"
 local redis = require"june.utils.redis"
 
+
 function M:process(req,resp)
 
-    local token = req.cookie:get("token")
+    local token = req:arg("token")
     local id = redis:get(table.concat({'token.',token}))
 
     if id == ngx.null then id = nil end
     req:reg_module(self.name,{
-        id = id
+        id = id,
     })
 end
 

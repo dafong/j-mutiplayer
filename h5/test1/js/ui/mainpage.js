@@ -47,7 +47,12 @@ export default class MainPage{
 
     ontouchend(t,x,y){
         if(this.evt == "create_room"){
-            console.log("create room clicked")
+            g.network.post("/step/createroom",{},function(resp){
+                var data = resp.data
+
+                g.user.room_id = data.data.room_id
+                console.log("[room created] " + data.data.room_id)
+            })
         }
         if(this.evt == "reset"){
             g.step.reset()

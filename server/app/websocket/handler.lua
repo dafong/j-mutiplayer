@@ -23,13 +23,11 @@ function M:handle(session)
 			break
 		end
 
-		log:i("[session recv] %s %s",session.sid,data )
+		-- log:i("[session recv] %s %s",session.sid,data )
 
 		if data == "" then
 			break
 		end
-
-
 
 		xpcall(function()
 			local msg = json.decode(data)

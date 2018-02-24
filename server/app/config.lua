@@ -34,6 +34,10 @@ return {
 
     socket = {
 
-    }
+    },
 
+    init = function()
+        require"cache":init_cache("conns")
+        require"cache":init_cache("default")
+    end
 }

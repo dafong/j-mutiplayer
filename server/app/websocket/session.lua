@@ -8,11 +8,17 @@ function M:new(sessionid)
 		sid       = sessionid,
 		uid       = 0,
 		wb        = nil,
-		connected = false
+		connected = false,
+		lastheart = 0,
+		isAuth    = false
     }
     setmetatable(ins,{__index = self})
     ins:_init()
     return ins
+end
+
+function M:update_heartbeat()
+	self.lastheart = os.time()
 end
 
 function M:_init()
@@ -23,9 +29,15 @@ function M:_init()
 		log:e( "failed to new websocket: " .. err)
 		return ngx.exit(444)
 	end
+	log:i("[session open] %s",self.sid)
 	self.connected = true
+	self.lastheart = os.time()
 	wb:set_timeout(30*1000)
 	self.wb = wb
+end
+
+function M:is_alive()
+	return self.connected  and os.time() - self.lastheart < 30
 end
 
 function M:recv_frame()
@@ -65,7 +77,7 @@ end
 
 function M:send_cmd(cmd,tbl)
 	self:send_json({
-		t = cmd,
+		cmd = cmd,
 		data = tbl or {}
 	})
 end
