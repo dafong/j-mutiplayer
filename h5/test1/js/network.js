@@ -7,7 +7,11 @@ var State = {
 
 var Type = {
 	Heartbeat : 101,
-	Auth : 102
+	Auth : 102,
+	CreateRoom : 103,
+	JoinRoom : 104,
+	NtfMemberChanged : 1105, // contains member join or leave and owner changed
+	NtfRoomStateChanged : 1106,// room state changed
 }
 
 export default class Network{
@@ -19,7 +23,11 @@ export default class Network{
 	}
 
 	register_cmd(){
-		this.use(Type.Auth,this.onauth)
+		this.use(Type.Auth, this.onauth)
+		this.use(Type.CreateRoom, this.oncreateroom)
+		this.use(Type.JoinRoom, this.onjoinroom)
+		this.use(Type.NtfMemberChanged,this.onmemberchanged)
+		this.use(Type.NtfRoomStateChanged,this.onroomchanged)
 	}
 
 	use(cmd,func){
@@ -70,6 +78,10 @@ export default class Network{
 	    this.send({t: Type.Auth,token : g.user.token})
 	}
 
+	createroom(){
+		this.send({t: Type.CreateRoom})
+	}
+
 	onauth(data){
 		if(data.ec == 0){
 			g.ui.toast({
@@ -81,6 +93,35 @@ export default class Network{
 			this.sid = data.sid
 		}else{
 			console.log("[auth failed] "+ data.ec)
+		}
+	}
+
+	oncreateroom(data){
+		if(data.ec == 0){
+			console.log("[room create succ] room_id ="+data.room_id)
+			g.ui.toast({ title:"房间 " + data.room_id })
+			g.user.initRoom(data)
+			g.ui.showRoomPage()
+		}
+	}
+	onjoinroom(data){
+		if(data.ec == 0){
+			console.log("[room join succ] room_id ="+data.room_id)
+			g.ui.toast({ title:"房间 加入" + data.room_id })
+			g.user.initRoom(data)
+			g.ui.showRoomPage()
+		}
+	}
+
+	onmemberchanged(data){
+		if(data.ec == 0){
+			g.user.onMemberChanged(data)
+		}
+	}
+
+	onroomchanged(data){
+		if(data.ec == 0){
+			console.log("[room changed]")
 		}
 	}
 
@@ -122,7 +163,7 @@ export default class Network{
 		this.socket.send({
 			data : JSON.stringify(data),
 			success : function(){
-				console.log('send success')
+				// console.log('send success')
 			},
 			fail:function(){
 				console.log('send failed')

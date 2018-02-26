@@ -35,7 +35,8 @@ export default class UI{
 
     toast(param){
         if(param == undefined) return
-
+        param.icon = param.icon || 'success'
+        param.duration = param.duration || 2000
         if(!this.toastShowing){
             this.showToast(param)
         }else{

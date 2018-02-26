@@ -1,6 +1,7 @@
 local server = require "resty.websocket.server"
-local log = require"june.log"
-local json= require"cjson"
+local log  = require"june.log"
+local json = require"cjson"
+local sessionmgr = require "websocket.sessionmanager"
 local M = {}
 
 function M:new(sessionid)
@@ -10,7 +11,7 @@ function M:new(sessionid)
 		wb        = nil,
 		connected = false,
 		lastheart = 0,
-		isAuth    = false
+		is_auth   = false
     }
     setmetatable(ins,{__index = self})
     ins:_init()
@@ -34,6 +35,12 @@ function M:_init()
 	self.lastheart = os.time()
 	wb:set_timeout(30*1000)
 	self.wb = wb
+end
+
+function M:auth(uid)
+	self.uid = uid
+	self.is_auth = true
+	sessionmgr:onauth(self)
 end
 
 function M:is_alive()
@@ -74,6 +81,7 @@ end
 function M:send_json(tbl)
 	self:send_text(json.encode(tbl or {}))
 end
+
 
 function M:send_cmd(cmd,tbl)
 	self:send_json({

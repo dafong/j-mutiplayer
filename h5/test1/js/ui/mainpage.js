@@ -28,7 +28,7 @@ export default class MainPage{
     }
 
     hide(){
-        g.h.hideall()
+        g.h.clearall()
     }
 
     ontouchstart(t,x,y){
@@ -47,12 +47,7 @@ export default class MainPage{
 
     ontouchend(t,x,y){
         if(this.evt == "create_room"){
-            g.network.post("/step/createroom",{},function(resp){
-                var data = resp.data
-
-                g.user.room_id = data.data.room_id
-                console.log("[room created] " + data.data.room_id)
-            })
+            g.network.createroom()
         }
         if(this.evt == "reset"){
             g.step.reset()

@@ -42,8 +42,14 @@ var l = {
     },
     hideall : function(){
         var cam = Camera.get()
-        for(var o in this.layers){
+        for(var o of this.layers){
             cam.camera.remove(o.root)
+        }
+    },
+
+    clearall : function(){
+        for(var o in this.layers){
+            this.clearLayer(o)
         }
     },
 
@@ -119,6 +125,8 @@ var l = {
 
     clearLayer : function(l){
         this.clearRect(l, 0, 0, g.config.design.x, g.config.design.y)
+        var tex = this.layers[l].tex
+        tex.needsUpdate = true
     },
 
     fillStyle : function(l,sty){

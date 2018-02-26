@@ -9,10 +9,6 @@ export default class RoomPage{
 
     show(){
 
-        g.h.clearRect(0,0,0)
-        // g.h.fillStyle(0,'#fcf3bd')
-        // g.h.fillRect(0,0,0,g.config.design.x,g.config.design.y)
-
         var self = this
         g.h.drawImage("images/back.png",0,15,20,.5,.5)
         g.h.drawImage("images/roomno.png",0,100,20,.5,.5).then(function(){
@@ -37,8 +33,6 @@ export default class RoomPage{
         for(var i=0;i<4;i++){
             drawmember(i)
         }
-
-
         //temp test
         g.h.drawImage("images/commonbt.png",0,pcx-100,600,.5,.5).then(function(){
             return g.h.drawText("邀请朋友",0,pcx - 100,600,20,'#fff')
@@ -51,12 +45,16 @@ export default class RoomPage{
         g.h.showLayer([0,1,2])
     }
 
+    onMemberChanged(){
+
+    }
+
     refresh(){
 
     }
 
     hide(){
-        g.h.hideall()
+        g.h.clearall()
     }
 
     ontouchstart(t,x,y){

@@ -14,12 +14,12 @@ end
 
 function M:mysql(req,resp)
 
-	local counter = cache:get_cache():get("counter")
-	counter = counter or 0
-	counter = counter + 1
-	cache:get_cache():set("counter",counter)
-	log:i("c = %d",counter)
-	ngx.say(util:md5("1"))
+	-- local counter = cache:get_cache():get("counter")
+	-- counter = counter or 0
+	-- counter = counter + 1
+	-- cache:get_cache():set("counter",counter)
+	-- log:i("c = %d",counter)
+	-- ngx.say(util:md5("1"))
 	-- local row = db:query("insert into step.player(score) values (0)")
 	-- insert_id
 	-- ngx.say(json.encode(row))
@@ -27,6 +27,7 @@ function M:mysql(req,resp)
 	-- ngx.say(json.encode(row))
 	-- row = db:query("update test.user set name='asd' where id = 1 ")
 	-- ngx.say(json.encode(row))
+	ngx.say(json.encode(db:query("select * from player where id = 1")))
 end
 
 function M:json(req,resp)

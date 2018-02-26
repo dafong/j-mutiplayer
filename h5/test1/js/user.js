@@ -1,14 +1,44 @@
+var RoomState = {
+	None : 0,
+	Preparing : 1,
+	Ready : 2,
+	Start : 3
+}
+
 export default class User{
 	constructor(){
 		this.sessionId = undefined
 		this.token = wx.getStorageSync("token")
 		this.uid   = wx.getStorageSync("uid")
+
+		this.exitRoom()
 	}
 
-	init(){
-
+	exitRoom(){
+		this.roomId = -1
+		this.members= undefined
+		this.roomState= RoomState.None
+		this.score = undefined
+		this.isOwner= false
 	}
 
+
+	initRoom(data){
+		console.log("[room init]")
+		this.roomId = data.roomt_id
+		this.score  = data.score
+		this.roomState = RoomState.Preparing
+	}
+
+	onMemberChanged(data){
+		console.log("[member changed]")
+		console.log(data)
+		this.isOwner = data.owner == this.uid
+		this.members = data.members
+		if(g.ui.page && g.ui.page.onMemberChanged){
+			g.ui.page.onMemberChanged()
+		}
+	}
 
 	login(cb){
 		var self = this

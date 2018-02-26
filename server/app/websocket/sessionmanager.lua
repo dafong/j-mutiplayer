@@ -1,4 +1,4 @@
-local session = require"websocket.session"
+
 
 local ngx_worker_id = ngx.worker.id()
 local _incr_id = 0
@@ -9,7 +9,8 @@ local _gen_session_id = function()
 end
 
 local M = {
-	sessions = {}
+	sessions = {},
+	utos = {}
 }
 
 function clear()
@@ -17,6 +18,7 @@ function clear()
 end
 
 function M:open()
+	local session = require"websocket.session"
 	local sid = _gen_session_id()
 	local se  = session:new(sid)
 	if se then
@@ -25,10 +27,19 @@ function M:open()
 	return se
 end
 
+function M:onauth(session)
+	self.utos[session.uid] = session
+end
+
+function M:get_session(uid)
+	return self.utos[uid]
+end
 
 
 function M:remove_session(s)
+	self.utos[s.uid] = nil
 	self.sessions[s.sid] = nil
+
 end
 
 

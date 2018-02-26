@@ -7,7 +7,7 @@ local http = require"http"
 local log = require"june.log"
 local json = require"cjson"
 local md5 = require"resty.md5"
-
+-- local roommgr = require"roommanager"
 -- local sid = req:arg('sid')
 -- log:i('sid=%s',req:arg('sid'))
 -- local data = http:get('https://api.weixin.qq.com/sns/jscode2session',{
@@ -25,7 +25,7 @@ function M:init(req,resp)
 		-- create user
 		local row   = db:query("insert into player(score) values (0)")
 		local token = util:md5(row.insert_id .. "")
-		local ret = db:query(string.format('update player set token = "%s" where id = %s',token,row.insert_id))
+		local ret   = db:query(string.format('update player set token = "%s" where id = %s',token,row.insert_id))
 		redis:set("token."..token,row.insert_id.."")
 		resp:json({
 			ec = 0,
@@ -58,24 +58,5 @@ function M:ping(req,resp)
 
 end
 
-
-function M:createroom(req,resp)
-	local room_id = redis:incr("room.req")
-	redis:hset("room."..room_id,"owner",req.player.id)
-	resp:json({
-		ec = 0,
-		data = {
-			room_id = room_id
-		}
-	})
-
-	--save in redis and record the owner expire time is 60 * 5
-
-	--room info save in redis
-end
-
-function M:joinroom(req,resp)
-	-- join the room and broadcast msg through socket
-end
 
 return M
