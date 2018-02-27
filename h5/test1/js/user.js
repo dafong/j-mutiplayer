@@ -15,26 +15,29 @@ export default class User{
 	}
 
 	exitRoom(){
-		this.roomId = -1
-		this.members= undefined
+		this.roomId   = -1
+		this.members  = undefined
 		this.roomState= RoomState.None
-		this.score = undefined
-		this.isOwner= false
+		this.score    = 0
+		this.totalScore = 0
+		this.ownerId  = -1
+
 	}
 
 
 	initRoom(data){
-		console.log("[room init]")
-		this.roomId = data.roomt_id
+		console.log(`[room init] id = ${data.room_id} score=${data.score}` )
+		this.roomId = data.room_id
 		this.score  = data.score
 		this.roomState = RoomState.Preparing
 	}
 
 	onMemberChanged(data){
 		console.log("[member changed]")
-		console.log(data)
-		this.isOwner = data.owner == this.uid
+		
+		this.ownerId = data.owner
 		this.members = data.members
+		this.totalScore = data.total
 		if(g.ui.page && g.ui.page.onMemberChanged){
 			g.ui.page.onMemberChanged()
 		}

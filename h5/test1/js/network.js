@@ -10,6 +10,9 @@ var Type = {
 	Auth : 102,
 	CreateRoom : 103,
 	JoinRoom : 104,
+	Prepare : 105,
+	JumpStart:106,
+	JumpEnd:107,
 	NtfMemberChanged : 1105, // contains member join or leave and owner changed
 	NtfRoomStateChanged : 1106,// room state changed
 }
@@ -54,7 +57,7 @@ export default class Network{
 	}
 
 	onsuccess(){
-		console.log("[network succ] ")
+		console.log("[socket succ] ")
 		var self = this
 		this.state = State.Open
 		this.socket.onMessage(function(data){
@@ -82,6 +85,10 @@ export default class Network{
 		this.send({t: Type.CreateRoom})
 	}
 
+	prepare(){
+		this.send({t: Type.Prepare})
+	}
+
 	onauth(data){
 		if(data.ec == 0){
 			g.ui.toast({
@@ -95,6 +102,8 @@ export default class Network{
 			console.log("[auth failed] "+ data.ec)
 		}
 	}
+
+
 
 	oncreateroom(data){
 		if(data.ec == 0){
@@ -131,6 +140,8 @@ export default class Network{
 		if(data.cmd == Type.Heartbeat){
 			return
 		}
+
+		console.log(data)
 
 		if(func)
 			func(data)

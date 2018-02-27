@@ -51,44 +51,44 @@ handler:use(103,function(data,session)
 	room:join(session.uid)
 end)
 
-
 -- join room
 handler:use(104,function(data,session)
 	-- join the room and broadcast msg through socket
-	local key = table.concant({"room." , data.room_id})
-	local owner_id = redis:hget(key,"owner")
-	if owner_id == ngx.null then
+	local room = roommgr:get_room(data.room_id)
+	if room == nil then
 		return session:send_json{
-			cmd = 104,
+			cmd = 1105,
 			ec  = 1002
 		}
 	end
-	local state = redis:hget(key,"state")
-	local members = json.decode(redis:hget(key,"members"))
-
-	if state ~= 0 then
-		return session:send_json{
-			cmd = 104,
-			ec = 1004
-		}
-	end
-
-
-	if #members >= 4 then
-		return session:send_json{
-			cmd = 104,
-			ec = 1003
-		}
-	end
-
-	members[#members + 1] = session.uid
-	redis:hset(key,"members",json.encode(members))
-	session:send_json{
-		cmd = 104,
-		ec = 0
-	}
-
-	local room = roommgr:get_room(data.room_id)
 	room:join(session.uid)
+end)
 
+-- prepare game
+handler:use(105,function(data,session)
+	local room = roommgr:get_room(session.rid)
+	if room == nil then
+		return session:send_json{
+			cmd = 1106,
+			ec  = 1002
+		}
+	end
+	room:prepare(session.uid)
+	-- if all is prepared then init the game info
+	-- send
+	-- NtfRoomStateChanged
+end)
+
+-- jump start
+handler:use(106,function(data,session)
+
+end)
+
+-- jump end
+handler:use(107,function(data,session)
+
+
+	-- if landing successful then next send room state change
+
+	-- if landing fail  , end game and send room state change
 end)

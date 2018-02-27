@@ -83,6 +83,7 @@ export default class Step{
 			this.spawnplayer()
 			this.addlight()
 			this.startgame()
+			Camera.get().reset()
 			// g.util.dump_3d(scene)
 		}
 
@@ -236,6 +237,9 @@ export default class Step{
 			this.targetbase = this.targetpos.y - g.config.floor_height/2
 			this.targetradius = g.config.floor_radius
 			this.spawnplayer()
+			if(self.idx != 1){
+				Camera.get().moveup()
+			}
 			// g.util.dump_3d(this.world)
 		}
 
@@ -249,8 +253,6 @@ export default class Step{
 			var n = this.cur + 1 >=7 ? 0 : this.cur + 1
 			this.cur = n
 		}
-
-
 
 		ontouchstart(t,x,y){
 			if(State.Start != this.state){

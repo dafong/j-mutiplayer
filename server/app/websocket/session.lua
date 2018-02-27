@@ -7,7 +7,8 @@ local M = {}
 function M:new(sessionid)
 	local ins = {
 		sid       = sessionid,
-		uid       = 0,
+		uid       = nil,
+		rid       = 0,
 		wb        = nil,
 		connected = false,
 		lastheart = 0,
@@ -43,6 +44,10 @@ function M:auth(uid)
 	sessionmgr:onauth(self)
 end
 
+function M:room(rid)
+	self.rid = rid
+end
+
 function M:is_alive()
 	return self.connected  and os.time() - self.lastheart < 30
 end
@@ -66,8 +71,13 @@ function M:close(...)
 	if bytes == nil then
 		log:e(err)
 	end
+	self:on_close()
 	require "websocket.sessionmanager":remove_session(self)
 	return bytes
+end
+
+function M:on_close()
+	require"roommanager":exit_room(self.uid,self.rid)
 end
 
 function M:send_text(data)
