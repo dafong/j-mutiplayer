@@ -21,7 +21,7 @@ export default class RoomPage{
     }
 
     refreshScore(){
-        g.h.drawText(`消耗:${g.user.score}  底分:${g.user.totalScore}`,1,80,50,15,'#29965e')
+        g.h.drawText(`消耗:${g.user.score}  底分:${g.user.totalScore}`,0,80,50,15,'#29965e')
     }
 
     refreshMember(){
@@ -45,26 +45,42 @@ export default class RoomPage{
                 var txt = g.user.ownerId == id ? "房主" : ""
                 return g.h.drawText(txt,1,left + 10 + 80/2,185,10,'#fff')
             })
+            return id == g.user.curId
         }
-
+        var idx = -1
         for(var i=0;i<4;i++){
-            drawmember(i)
+            if(drawmember(i))
+                idx = i
         }
 
-        g.h.drawImage("images/commonbt.png",0,pcx-100,600,.5,.5).then(function(){
-            return g.h.drawText("邀请朋友",0,pcx - 100,600,20,'#fff')
-        })
+        if(g.user.roomState == RoomState.Preparing){
+            g.h.drawImage("images/commonbt.png",2,pcx-100,600,.5,.5).then(function(){
+                return g.h.drawText("邀请朋友",2,pcx - 100,600,20,'#fff')
+            })
 
-        g.h.drawImage("images/commonbt.png",0,pcx+100,600,.5,.5).then(function(){
-            return g.h.drawText("准备",0,pcx + 100,600,20,'#fff')
-        })
-
+            g.h.drawImage("images/commonbt.png",2,pcx+100,600,.5,.5).then(function(){
+                return g.h.drawText("准备",2,pcx + 100,600,20,'#fff')
+            })
+        }else{
+            g.h.clearLayer(2)
+            var x = idx * (80 + 24) + (80 + 24) /2
+            g.h.drawImage("images/turnarrow.png",2,x,230)
+        }
     }
 
     onMemberChanged(){
         var mems = g.user.members
         this.refreshScore()
         this.refreshMember()
+    }
+
+    startGame(){
+        this.refreshMember()
+        
+    }
+
+    nextRound(){
+
     }
 
     refresh(){
@@ -76,21 +92,12 @@ export default class RoomPage{
     }
 
     ontouchstart(t,x,y){
-        if(x > 146 && x < 265 && y > 578 && y < 621 ){
-            this.evt = "create_room"
-            return true;
+        if(g.user.roomState == RoomState.Preparing){
+            if(x > 245 && x < 365 && y > 577 && y < 620){
+                this.evt ="prepare"
+                return true
+            }
         }
-
-        if(x > 146 && x < 265 && y > 678 && y < 720 ){
-            this.evt = "reset"
-            return true;
-        }
-
-        if(x > 245 && x < 365 && y > 577 && y < 620){
-            this.evt ="prepare"
-            return true
-        }
-
         this.evt = undefined
     }
 

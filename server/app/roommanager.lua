@@ -8,9 +8,10 @@ local sessionmgr = require"websocket.sessionmanager"
 local Room = {}
 
 local RoomState = {
-    Prepare = 0,
-    Start   = 1,
-    End     = 2
+    None    = 0,
+    Prepare = 1,
+    Start   = 2,
+    End     = 3
 }
 
 local MemberState = {
@@ -18,6 +19,11 @@ local MemberState = {
     Prepared  = 1,
     Idle      = 2,
     Playing   = 3
+}
+
+local Type = {
+    GameInit = 0,
+    RoundChange = 1
 }
 
 function Room:new(rid)
@@ -29,6 +35,9 @@ function Room:new(rid)
         score = 100,
         total = 0,
         curr  = 0,
+        dir   = 0,
+        dis   = 0,
+        destpos = nil,
         members = {
             -- {id,state}
         },
@@ -38,9 +47,65 @@ function Room:new(rid)
     return ins
 end
 
-function Room:start_game()
-    self.state = RoomState.Start
+function Room:jump_start(uid)
+    if self.state ~= RoomState.Start then
+        return self:send(uid,{
+            ec  = 1009,
+            cmd = 106,
+        })
+    end
+
+    local mem = self.members[self.cur]
+    if mem == nil then
+        return self:send(uid,{
+            ec  = 1007,
+            cmd = 106,
+        })
+    end
+
+    if mem.id ~= uid then
+        return self:send(uid,{
+            ec = 1008,
+            cmd= 106
+        })
+    end
+
+    self:sync({
+        cmd = 106,
+        uid = uid
+    })
+end
+
+function Room:jump_end(uid,data)
+
+    self:send(107,{
+        ec = 0,
+        destpos = 0,
+        isover = false
+    })
+
     self:next_round()
+end
+
+function Room:start_game()
+    if self.state == RoomState.Start then
+        return
+    end
+    self.state = RoomState.Start
+    local rand1 = math.random() * 2
+    rand1 = rand1 - rand1 % 1
+    rand1 = (rand1 - 0.5) * 2
+    self.dir = rand1
+    self.dis = 3.5 + math.random() * 2.5
+    self.curr = 1
+    self:sync({
+        ec = 0,
+        cmd= 1106,
+        type = Type.GameInit,
+        dir  = self.dir,
+        dis  = self.dis,
+        curr = self.members[self.curr].id
+    })
 end
 
 function Room:next_round()
@@ -49,7 +114,7 @@ function Room:next_round()
     self:sync({
         ec   = 0,
         cmd  = 1106,
-        state= self.state ,
+        type = Type.RoundChange,
         curr = self.members[self.curr].id
     })
 end
@@ -95,7 +160,6 @@ function Room:prepare(uid)
             members = self.members
         })
     end
-
 end
 
 function Room:chage_state()

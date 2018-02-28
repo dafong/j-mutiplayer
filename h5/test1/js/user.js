@@ -1,9 +1,4 @@
-var RoomState = {
-	None : 0,
-	Preparing : 1,
-	Ready : 2,
-	Start : 3
-}
+
 
 export default class User{
 	constructor(){
@@ -21,12 +16,15 @@ export default class User{
 		this.score    = 0
 		this.totalScore = 0
 		this.ownerId  = -1
-
+		this.curId  =  -1
+		this.dir = undefined
+		this.dis = undefined
+		this.isLocalRound = false
 	}
 
 
 	initRoom(data){
-		console.log(`[room init] id = ${data.room_id} score=${data.score}` )
+		console.log(`[room init] id = ${data.room_id} score = ${data.score}` )
 		this.roomId = data.room_id
 		this.score  = data.score
 		this.roomState = RoomState.Preparing
@@ -34,13 +32,60 @@ export default class User{
 
 	onMemberChanged(data){
 		console.log("[member changed]")
-		
+
 		this.ownerId = data.owner
 		this.members = data.members
 		this.totalScore = data.total
 		if(g.ui.page && g.ui.page.onMemberChanged){
 			g.ui.page.onMemberChanged()
 		}
+
+	}
+
+	onNtfJumpStart(data){
+		if(data.uid != this.curId) return
+		if(data.uid == this.uid){
+			//it's me do nothing
+		}else{
+			//it's other
+			g.step.onSimJumpStart(data)
+		}
+	}
+
+	onNtfJumpEnd(data){
+		// the host's jump maybe or not over
+		// the server will return the position calculated
+		// local should be fix that position or lerp to it
+        g.step.onServerJumpEnd()
+	}
+
+	onRoomChanged(data){
+
+		if(data.type == Type.GameInit){
+			return this.startGame(data)
+		}else if(data.type == Type.RoundChange){
+			return this.nextRound(data)
+		}
+	}
+
+	startGame(data){
+		if(this.roomState != RoomState.Preparing) return
+		console.log(`[room start] dir=${data.dir} dis=${data.dis}`)
+		this.dir = data.dir
+		this.dis = data.dis
+		this.curId = data.curr
+		this.roomState = RoomState.Start
+		this.isLocalRound = this.curId == this.uid
+		if(g.ui.page && g.ui.page.startGame){
+			g.ui.page.startGame()
+		}
+		g.step.reset(1)
+		g.step.startgame()
+	}
+
+	nextRound(data){
+		this.curId = data.curr
+		this.isLocalRound = this.curId == this.uid
 	}
 
 	login(cb){

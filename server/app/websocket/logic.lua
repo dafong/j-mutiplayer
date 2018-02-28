@@ -74,19 +74,23 @@ handler:use(105,function(data,session)
 		}
 	end
 	room:prepare(session.uid)
-	-- if all is prepared then init the game info
-	-- send
-	-- NtfRoomStateChanged
 end)
 
 -- jump start
 handler:use(106,function(data,session)
-
+	local room = roommgr:get_room(session.rid)
+	if room == nil then
+		return session:send_json{
+			cmd = 1106,
+			ec  = 1002
+		}
+	end
+	room:jump_start(session.uid)
 end)
 
 -- jump end
 handler:use(107,function(data,session)
-
+	
 
 	-- if landing successful then next send room state change
 

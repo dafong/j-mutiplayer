@@ -2,6 +2,7 @@ import * as t from 'libs/three.js'
 import * as tw from 'libs/tween.js'
 let ChargeSpeed = 5
 var State = {
+	None : "none",
 	Idle : "idle",
     Prepare: "prepare",
 	Charge : "charge",
@@ -11,6 +12,8 @@ var State = {
 export default class Player{
 
 	    constructor(){
+			this.state = State.None
+			this.net = false
 	    }
 
 
@@ -18,18 +21,18 @@ export default class Player{
 			this.oldy = root.position.y
 			this.root = root
 			this.body = this.root.children[0]
+			this.state = State.Idle
+			this.flyingTime = 0
+			this.hitchecked = false
 		}
 
-	    init(){
-	        this.state = State.Idle
-			this.flyingTime = 0
-	    }
 
 	    prepare(){
 			if(this.state != State.Idle) return
 	        this.downtime = Date.now()/1000
 	        this.state = State.Prepare
-
+			if(this.net)
+				g.network.prepare()
 	        console.log("[prepareing...]")
 	        this.squeeze()
 	    }
@@ -40,6 +43,9 @@ export default class Player{
 	        var presstime = Date.now()/1000 - this.downtime
 	        this.state = State.Jump
 	        this.stopprepare()
+			if(this.net)
+				g.network.jump()
+
 	        this.speed = {y : g.config.speedY * presstime, z : g.config.speedZ * presstime}
 	        var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
 	        this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
@@ -59,21 +65,41 @@ export default class Player{
 
 	    }
 
+
+		landing(issucc,needrot){
+			if(needrot == undefined) needrot = true
+			if(issucc or needrot){
+				console.log("[landing...]" + issucc)
+				this.state = State.Landing
+				this.root.position.y = g.step.targetpos.y
+				// if(issucc){
+					g.step.addfloor(this)
+				// }
+			}
+			this.hitchecked = true
+			if(this.net){
+				var self = this
+				var result = g.user.getResult()
+				if(result.pendding){
+					result.oncomplete(this.onServerResult.bind(this))
+				}else{
+					this.onServerResult(result)
+				}
+			}
+		}
+
+		onServerResult(result){
+			//force fix the finnal position
+			//display the result
+		}
+
 		stopjump(y){
 			console.log("stoped")
 			this.root.position.y = y+g.config.floor_height/2
 			this.state = State.Landing
-			g.step.spawnplayer()
+			g.step.bindplayer()
 		}
 
-		landing(issucc){
-			console.log("[landing...]" + issucc)
-			this.state = State.Landing
-			this.root.position.y = g.step.targetpos.y
-			// if(issucc){
-				g.step.addfloor(this)
-			// }
-		}
 
 		checkhit(){
 			// check if the player can land the table
@@ -100,18 +126,12 @@ export default class Player{
 				if(slen < tlen){
 					return this.landing(false)
 					// landing failed
-
+					// should roll
 				}else{
 					// failed do nothing
+					return this.landing(false,false)
 				}
 			}
-
-
-			if(this.root.position.y  < 0){
-
-				this.stopjump(y)
-			}
-
 
 		}
 
@@ -124,6 +144,12 @@ export default class Player{
 
 	        this.root.translateY(s.y)
 	        this.root.translateOnAxis(this.axis, s.z)
+			if(this.hitchecked){
+				if(this.root.position.y < 0){
+					this.state  =  State.None
+				}
+				return
+			}
 			this.checkhit()
 	    }
 

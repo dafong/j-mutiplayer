@@ -31,6 +31,8 @@ export default class Network{
 		this.use(Type.JoinRoom, this.onjoinroom)
 		this.use(Type.NtfMemberChanged,this.onmemberchanged)
 		this.use(Type.NtfRoomStateChanged,this.onroomchanged)
+		this.use(Type.JumpStart,this.onjumpstart)
+		this.use(Type.JumpEnd,this.onjumpend)
 	}
 
 	use(cmd,func){
@@ -89,6 +91,15 @@ export default class Network{
 		this.send({t: Type.Prepare})
 	}
 
+	jumpstart(){
+		this.send({t: Type.JumpStart })
+	}
+
+	jumpend(data){
+		this.send({t: Type.JumpEnd })
+	}
+
+
 	onauth(data){
 		if(data.ec == 0){
 			g.ui.toast({
@@ -130,7 +141,19 @@ export default class Network{
 
 	onroomchanged(data){
 		if(data.ec == 0){
-			console.log("[room changed]")
+			g.user.onRoomChanged(data)
+		}
+	}
+
+	onjumpstart(data){
+		if(data.ec == 0){
+			g.user.onNtfJumpStart(data)
+		}
+	}
+
+	onjumpend(data){
+		if(data.ec == 0){
+			g.user.NtfJumpEnd()
 		}
 	}
 

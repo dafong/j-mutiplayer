@@ -38,7 +38,8 @@ end
 
 local function write(lv,s)
     local info=dgetinfo(3,"Sl")
-    local s = sformat("[%s][%d][%s]%s:%d %s\n",ngx.localtime():sub(6,19),ngx.worker.id(),shorts[lv],info.short_src,info.currentline,s)
+    -- ngx.worker.id()
+    local s = sformat("[%s][%s]%s:%d %s\n",ngx.localtime():sub(6,19),shorts[lv],info.short_src,info.currentline,s)
     if fd == nil then
         fd  = io.open(get_log_path(),"a+")
     end

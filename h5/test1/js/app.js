@@ -106,6 +106,7 @@ export default class App{
 		g.ui = new UI
 		g.ui.showMainPage()
 		// g.ui.showGamePage()
+		// g.ui.showRoomPage()
 		g.step = new Step(this.scene)
 		g.step.reset()
 		this.oldTime = Date.now()

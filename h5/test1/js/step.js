@@ -14,9 +14,13 @@ var cols = [
 	["rgba(207, 207, 207, 1)", "rgba(199, 196, 201, 1)"]
 ]
 var State = {
-	Start : "start"
+	Start : 0
 }
 
+var Mode = {
+	Offline : 0,
+	Online : 1
+}
 
 let _centerZ = 0
 let _centerX = 9
@@ -29,13 +33,17 @@ export default class Step{
 			cam.camera.add(this.root)
 		}
 
+		mode(m){
+			this.mode = m
+		}
+
 		init(){
 			this.idx = 0
 			this.root = new t.Object3D
 			this.root.name = "root"
+			this.mode = Mode.offline
 
 			this.addground()
-
 			this.world= new t.Object3D
 			this.world.name = "world"
 			scene.add(this.world)
@@ -67,22 +75,31 @@ export default class Step{
 		}
 
 		startgame(){
-			this.state = State.Start
+			if(this.mode == Mode.online){
+				this.state = State.Start
+			}
 		}
 
-		reset(){
+		reset(mode){
+			if(mode == undefined) mode = Mode.offline
+			this.mode = mode
 			for( var i = this.world.children.length - 1; i >= 0; i--) {
 				this.world.remove(this.world.children[i]);
 			}
 			this.idx = 0
-			this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
-			var distance =  3.5 + Math.random() * 2.5
+			this.dir = g.user.dir
+			var distance =  g.user.dis
+
+			if(this.mode == Mode.offline){
+				dir = (parseInt(Math.random() * 2) - 0.5) * 2
+				distance = 3.5 + Math.random() * 2.5
+			}
+
 			this.addtable(distance)
 			this.addbase(distance)
 			this.spawnnext()
 			this.spawnplayer()
 			this.addlight()
-			this.startgame()
 			Camera.get().reset()
 			// g.util.dump_3d(scene)
 		}
@@ -99,7 +116,6 @@ export default class Step{
 				x:0,
 				y:0,
 				z:0
-
 			})
 
 			var c = new t.CylinderGeometry(1.5,1.5,0.2,32)
@@ -146,12 +162,14 @@ export default class Step{
 		}
 
 		spawnplayer(){
-			if(this.player == undefined)
-				this.player = new Player()
-			this.player.attach(this.next)
-			this.player.init()
+			this.player = new Player()
+			if(this.mode == Mode.Online)
+				this.player.net = true
 		}
 
+		bindplayer(){
+			this.player.bind(this.next)
+		}
 
 		detach(node){
 			this.base.remove(node)
@@ -236,7 +254,7 @@ export default class Step{
 			this.targetpos.y+=g.config.floor_height
 			this.targetbase = this.targetpos.y - g.config.floor_height/2
 			this.targetradius = g.config.floor_radius
-			this.spawnplayer()
+			this.bindplayer()
 			if(self.idx != 1){
 				Camera.get().moveup()
 			}
@@ -254,8 +272,23 @@ export default class Step{
 			this.cur = n
 		}
 
+		onSimJumpStart(data){
+			if(State.Start != this.state){
+				return
+			}
+			this.player.prepare()
+		}
+
+		onServerJumpEnd(data){
+
+		}
+
 		ontouchstart(t,x,y){
 			if(State.Start != this.state){
+				return
+			}
+
+			if(!g.user.isLocalRound){
 				return
 			}
 
@@ -264,6 +297,9 @@ export default class Step{
 
 	    ontouchend(t,x,y){
 			if(State.Start != this.state){
+				return
+			}
+			if(!g.user.isLocalRound){
 				return
 			}
 			this.player.jump()
