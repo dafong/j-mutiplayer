@@ -17,7 +17,7 @@ export default class Player{
 	    }
 
 
-		attach(root){
+		bind(root){
 			this.oldy = root.position.y
 			this.root = root
 			this.body = this.root.children[0]
@@ -29,6 +29,7 @@ export default class Player{
 
 	    prepare(){
 			if(this.state != State.Idle) return
+			this.hitchecked = false
 	        this.downtime = Date.now()/1000
 	        this.state = State.Prepare
 			if(this.net)
@@ -44,7 +45,7 @@ export default class Player{
 	        this.state = State.Jump
 	        this.stopprepare()
 			if(this.net)
-				g.network.jump()
+				g.network.jump(presstime)
 
 	        this.speed = {y : g.config.speedY * presstime, z : g.config.speedZ * presstime}
 	        var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
@@ -68,8 +69,9 @@ export default class Player{
 
 		landing(issucc,needrot){
 			if(needrot == undefined) needrot = true
-			if(issucc or needrot){
-				console.log("[landing...]" + issucc)
+			console.log("[landing...]" + issucc)
+			if(issucc || needrot){
+
 				this.state = State.Landing
 				this.root.position.y = g.step.targetpos.y
 				// if(issucc){
@@ -145,7 +147,7 @@ export default class Player{
 	        this.root.translateY(s.y)
 	        this.root.translateOnAxis(this.axis, s.z)
 			if(this.hitchecked){
-				if(this.root.position.y < 0){
+				if(this.root.position.y < 1){
 					this.state  =  State.None
 				}
 				return

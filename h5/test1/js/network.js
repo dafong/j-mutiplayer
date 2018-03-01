@@ -95,8 +95,8 @@ export default class Network{
 		this.send({t: Type.JumpStart })
 	}
 
-	jumpend(data){
-		this.send({t: Type.JumpEnd })
+	jumpend(time){
+		this.send({t: Type.JumpEnd,time : time })
 	}
 
 

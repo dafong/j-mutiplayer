@@ -91,7 +91,7 @@ export default class Step{
 			var distance =  g.user.dis
 
 			if(this.mode == Mode.offline){
-				dir = (parseInt(Math.random() * 2) - 0.5) * 2
+				this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
 				distance = 3.5 + Math.random() * 2.5
 			}
 
@@ -99,6 +99,7 @@ export default class Step{
 			this.addbase(distance)
 			this.spawnnext()
 			this.spawnplayer()
+			this.bindplayer()
 			this.addlight()
 			Camera.get().reset()
 			// g.util.dump_3d(scene)
@@ -284,24 +285,25 @@ export default class Step{
 		}
 
 		ontouchstart(t,x,y){
-			if(State.Start != this.state){
-				return
-			}
 
-			if(!g.user.isLocalRound){
-				return
-			}
+			// if(State.Start != this.state){
+			// 	return
+			// }
+			//
+			// if(!g.user.isLocalRound){
+			// 	return
+			// }
 
 			this.player.prepare()
 	    }
 
 	    ontouchend(t,x,y){
-			if(State.Start != this.state){
-				return
-			}
-			if(!g.user.isLocalRound){
-				return
-			}
+			// if(State.Start != this.state){
+			// 	return
+			// }
+			// if(!g.user.isLocalRound){
+			// 	return
+			// }
 			this.player.jump()
 	    }
 
