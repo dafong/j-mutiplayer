@@ -284,8 +284,22 @@ export default class Step{
 			this.player.prepare()
 		}
 
-		onServerJumpEnd(data){
+		onLocalJumpOver(){
+			var result = g.user.getResult()
+			result.oncomplete(this.onServerJumpEnd.bind(this))
+		}
 
+		onServerJumpEnd(data){
+			console.log("[local and remote over]")
+			// the server will return the position calculated
+			if(data.result == 0){
+				//fix position
+				//next round
+				
+			}else{
+				//failed
+
+			}
 		}
 
 		ontouchstart(t,x,y){

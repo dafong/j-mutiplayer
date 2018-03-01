@@ -5,7 +5,7 @@ export default class User{
 		this.sessionId = undefined
 		this.token = wx.getStorageSync("token")
 		this.uid   = wx.getStorageSync("uid")
-
+		this.result= undefined
 		this.exitRoom()
 	}
 
@@ -22,8 +22,39 @@ export default class User{
 		this.isLocalRound = false
 	}
 
+	penddingResult(){
+		if(this.result == undefined){
+			this.result = {
+				pendding : true,
+				callback : undefined,
+				data : undefined,
+				oncomplete : function(func){
+					if(this.pendding == false){
+						func(this.data)
+					}else{
+						this.callback = func
+					}
+				}
+				notify : function(data){
+					this.pendding = false
+					this.data = data
+					if(this.callback){
+						this.callback(this.data)
+						this.callback = undefined
+					}
+				}
+			}
+		}
+		this.result.pendding = true
+	}
+
+	notifyResult(data){
+		if(this.result == undefined) return;
+		this.result.notify(data)
+	}
+
 	getResult(){
-		
+		return this.result;
 	}
 
 	initRoom(data){
@@ -56,10 +87,7 @@ export default class User{
 	}
 
 	onNtfJumpEnd(data){
-		// the host's jump maybe or not over
-		// the server will return the position calculated
-		// local should be fix that position or lerp to it
-        g.step.onServerJumpEnd()
+        this.notifyResult(data)
 	}
 
 	onRoomChanged(data){

@@ -73,7 +73,7 @@ end
 
 function _M:e(...)
     if ngx.ERR  > self.level then return end
-    local trace = self:trace(3)
+    local trace = self:trace(4)
     write(ngx.ERR,sformat(...) .. trace)
 end
 

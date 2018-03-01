@@ -77,36 +77,24 @@ export default class Player{
 
 			console.log(`[landing] ${issucc} ${needrot}`)
 			console.log(`[landing] time=${this.flyingTime} x=${this.root.position.x} z = ${this.root.position.z}`)
-			if(issucc || needrot){
-
-				this.state = State.Landing
-				this.root.position.y = g.step.targetpos.y
-				// if(issucc){
-					g.step.addfloor(this)
-				// }
-			}
-			if(!issucc && needrot){
+			if(issucc){
 				this.state = State.Landing
 				this.root.position.y = g.step.targetpos.y
 				g.step.addfloor(this)
+				g.step.onLocalJumpOver()
+			}else{
+				if(needrot){
+					this.state = State.Landing
+					this.root.position.y = g.step.targetpos.y
+					g.step.addfloor(this)
+					g.step.onLocalJumpOver()
+					//start rotate
+				}else{
+					setTimeout(function(){
+						g.step.onLocalJumpOver()
+					},1)
+				}
 			}
-
-
-			if(this.net){
-				var self = this
-				var result = g.user.getResult()
-				// if(result.pendding){
-				// 	result.oncomplete(this.onServerResult.bind(this))
-				// }else{
-				// 	this.onServerResult(result)
-				// }
-			}
-		}
-
-		onServerResult(result){
-
-			//force fix the finnal position
-			//display the result
 		}
 
 		stopjump(y){

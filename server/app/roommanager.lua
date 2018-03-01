@@ -120,7 +120,7 @@ function Room:jump_end(uid,data)
     local len2 = (dest - self.dest):Magnitude()
 
     local result = -1
-    
+
     if len2 < len1 then
         result = 1
     end
@@ -137,10 +137,10 @@ function Room:jump_end(uid,data)
         cmd=107,
         speedy = speedy,
         speedz = speedz,
-        result  = result,
-        time = time,
-        start = {x = self.start.x, y = self.start.y},
-        dest  = {x = self.dest.x,  y = self.dest.y},
+        result = result,
+        time   = time,
+        start  = {x = self.start.x, y = self.start.y},
+        dest   = {x = self.dest.x,  y = self.dest.y},
         destpos = { x = dest.x , y = dest.y }
     })
 
@@ -184,12 +184,12 @@ function Room:next_round()
     self.seq = self.seq + 1
     self.tseq= self.tseq+ 1
     if self.seq > #self.members then self.seq = 1 end
-    self:sync({
-        ec   = 0,
-        cmd  = 1106,
-        type = Type.RoundChange,
-        curr = self.members[self.seq].id
-    })
+    -- self:sync({
+    --     ec   = 0,
+    --     cmd  = 1106,
+    --     type = Type.RoundChange,
+    --     curr = self.members[self.seq].id
+    -- })
 end
 
 function Room:prepare(uid)
