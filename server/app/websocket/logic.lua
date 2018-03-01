@@ -90,7 +90,14 @@ end)
 
 -- jump end
 handler:use(107,function(data,session)
-	
+	local room = roommgr:get_room(session.rid)
+	if room == nil then
+		return session:send_json{
+			cmd = 1106,
+			ec  = 1002
+		}
+	end
+	room:jump_end(session.uid,data)
 
 	-- if landing successful then next send room state change
 

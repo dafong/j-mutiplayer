@@ -57,9 +57,24 @@ function _M:d(...)
     write(ngx.DEBUG,sformat(...))
 end
 
+function _M:trace (level)
+    level = level or 2
+    local buffer = {"\n"}
+    while true do
+        local info = debug.getinfo(level, "Sl")
+        if not info then break end
+        if info.what ~= "C" then
+            buffer[#buffer+1] = string.format("[%s]:%d\n",info.short_src, info.currentline)
+        end
+        level = level + 1
+    end
+    return table.concat(buffer)
+end
+
 function _M:e(...)
     if ngx.ERR  > self.level then return end
-    write(ngx.ERR,sformat(...))
+    local trace = self:trace(3)
+    write(ngx.ERR,sformat(...) .. trace)
 end
 
 function _M:override_ngx_log()

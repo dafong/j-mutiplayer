@@ -11,11 +11,15 @@ export default {
     height: window.innerHeight,
     floor_height:2,
     floor_radius:0.5,
-    gravity: 9.8,
-    speedY:12,
-    speedZ:15,
+    gravity: 144,
+    baseY :30,
+    speedY:6,
+    speedZ:25,
     design:{x : 414 ,y : 736},
     ajax:'http://127.0.0.1:8000',
     socket:'ws://127.0.0.1:4000/ws',
     noop:function(){}
 }
+// velocityYIncrement: 15,
+// velocityY: 135,
+// velocityZIncrement: 70

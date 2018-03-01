@@ -49,6 +49,10 @@ export default class Step{
 			scene.add(this.world)
 		}
 
+		dump_world(){
+			g.util.dump_3d(this.world)
+		}
+
 		addground(){
 			var size = g.config.frustumsize * 2
 			var p = new t.PlaneGeometry(g.config.ratio * size ,size)

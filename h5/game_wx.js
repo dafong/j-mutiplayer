@@ -16057,8 +16057,14 @@ define("game.js", function(require, module, exports) {
 					}, {
 						key: "_prepare",
 						value: function() {
-							if (this.scale -= o.BOTTLE.reduction, this.scale = Math.max(o.BOTTLE.minScale, this.scale), !(this.scale <= o.BOTTLE.minScale)) {
-								this.body.scale.y = this.scale, this.body.scale.x += .007, this.body.scale.z += .007, this.head.position.y -= .018;
+							if (this.scale -= o.BOTTLE.reduction,
+								this.scale = Math.max(o.BOTTLE.minScale, this.scale),
+								!(this.scale <= o.BOTTLE.minScale)
+							) {
+								this.body.scale.y = this.scale,
+								this.body.scale.x += .007,
+								this.body.scale.z += .007,
+								this.head.position.y -= .018;
 								this.obj.position.y -= o.BLOCK.reduction / 2 * o.BLOCK.height / 2 + .027
 							}
 						}
@@ -21104,11 +21110,20 @@ define("game.js", function(require, module, exports) {
 							});
 							this.combo = new o.Mesh(new o.CircleGeometry(.6, 40), r), this.combo.name = "combo", this.combo.position.x = -50, this.combo.rotation.x = -Math.PI / 2, this.scene.add(this.combo), this.renderer.shadowMap.enabled && (this.shadowTarget = new o.Mesh(new o.PlaneGeometry(.1, .1), r), this.shadowTarget.visible = !1, this.shadowTarget.name = "shadowTarget", this.scene.add(this.shadowTarget)), this.currentBlock = new s.default(0), this.initNextBlock = this.nextBlock = new s.default(1), this.nextBlock.obj.position.x = 20, this.bottle = new u.default, this.bottle.obj.position.set(-10, -d.BLOCK.height / 2, 0), this.scene.add(this.bottle.obj), this.guider && (this.bottle.obj.position.set(-11, 50, 0), this.camera.position.x -= 19, setTimeout(function() {
 								e.bottle.showup()
-							}, 800), this.currentBlock.obj.position.x = -11, this.currentBlock.change(null, "gray", .7), this.scene.add(this.currentBlock.obj), this.guiderTimer = setInterval(function() {
-								e.bottle.velocity.vz = 0, e.bottle.velocity.vy = 150, e.direction = new o.Vector2(1, 0);
-								var t = new o.Vector3(1, 0, 0);
-								e.bottle.jump(t.normalize()), e.hit = e.checkHit2(e.bottle, e.currentBlock)
-							}, 3e3)), this.blocksInUse.push(this.nextBlock), this.blocksInUse.push(this.currentBlock);
+							}, 800),
+							this.currentBlock.obj.position.x = -11,
+							this.currentBlock.change(null, "gray", .7),
+							this.scene.add(this.currentBlock.obj),
+							this.guiderTimer = setInterval(
+								function() {
+									e.bottle.velocity.vz = 0,
+									e.bottle.velocity.vy = 150,
+									e.direction = new o.Vector2(1, 0);
+									var t = new o.Vector3(1, 0, 0);
+									e.bottle.jump(t.normalize()),
+									e.hit = e.checkHit2(e.bottle, e.currentBlock)
+								}, 3e3)),
+							this.blocksInUse.push(this.nextBlock), this.blocksInUse.push(this.currentBlock);
 							for (var a = 2; a < 30; ++a) {
 								var m = new s.default(a);
 								this.blocksPool.push(m)

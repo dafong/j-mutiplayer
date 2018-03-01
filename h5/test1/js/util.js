@@ -11,7 +11,7 @@ function _dump_3d(o3d,l,s){
 
 function _to_string(o3d){
 
-    return o3d.name + '  [x=' +o3d.position.x.toFixed(1)+',y='+o3d.position.y.toFixed(1)+',z='+o3d.position.z.toFixed(1) +'] [sy = '+o3d.scale.y+']'
+    return o3d.name + '  [x=' +o3d.position.x.toFixed(2)+',y='+o3d.position.y.toFixed(2)+',z='+o3d.position.z.toFixed(2) +'] [sy = '+o3d.scale.y+']'
 }
 
 

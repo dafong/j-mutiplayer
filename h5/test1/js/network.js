@@ -153,7 +153,7 @@ export default class Network{
 
 	onjumpend(data){
 		if(data.ec == 0){
-			g.user.NtfJumpEnd()
+			g.user.onNtfJumpEnd()
 		}
 	}
 

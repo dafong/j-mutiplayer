@@ -22,6 +22,9 @@ export default class User{
 		this.isLocalRound = false
 	}
 
+	getResult(){
+		
+	}
 
 	initRoom(data){
 		console.log(`[room init] id = ${data.room_id} score = ${data.score}` )

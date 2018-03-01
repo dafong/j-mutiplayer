@@ -4,6 +4,19 @@ local log = require"june.log"
 local util = require"utils"
 local redis = require"june.utils.redis"
 local sessionmgr = require"websocket.sessionmanager"
+require"vector3"
+require"vector2"
+
+local config ={
+    gravity = 144,
+    basey   = 30,
+    speedy  = 6,
+    speedz  = 25,
+    table_r = 1.5,
+    floor_r = 0.5
+}
+
+local center= vector2(9,0)
 
 local Room = {}
 
@@ -34,13 +47,16 @@ function Room:new(rid)
         state = RoomState.Prepare,
         score = 100,
         total = 0,
-        curr  = 0,
+        seq   = 0,
+        tseq  = 0,
         dir   = 0,
         dis   = 0,
-        destpos = nil,
+        start = nil,
+        dest  = nil, -- dest pos
         members = {
             -- {id,state}
         },
+        history = {},
         memcache={}
     }
     setmetatable(ins , { __index = self })
@@ -77,14 +93,61 @@ function Room:jump_start(uid)
 end
 
 function Room:jump_end(uid,data)
+    local time = data.time
+    local dir = self.dest - self.start
+    dir = dir:Normalize()
 
-    self:send(107,{
+    local speedy = config.basey + time * config.speedy
+    speedy = speedy - speedy % 0.01
+
+    local speedz = time * config.speedz
+    speedz = speedz - speedz % 0.01
+
+    local time = speedy / config.gravity * 2
+
+    local dest = self.start + dir * time * speedz
+
+    local r1 = config.table_r
+
+    local r2 = config.floor_r
+
+    if self.tseq > 1 then
+        r1 = config.floor_r
+    end
+
+    local len1 = (r1 + r2) * (r1 + r2)
+
+    local len2 = (dest - self.dest):Magnitude()
+
+    local result = -1
+    
+    if len2 < len1 then
+        result = 1
+    end
+
+    if len2 < (r1 * r1) then
+        result = 0
+    end
+
+
+    log:i("[jump result] %s",result)
+
+    self:sync({
         ec = 0,
-        destpos = 0,
-        isover = false
+        cmd=107,
+        speedy = speedy,
+        speedz = speedz,
+        result  = result,
+        time = time,
+        start = {x = self.start.x, y = self.start.y},
+        dest  = {x = self.dest.x,  y = self.dest.y},
+        destpos = { x = dest.x , y = dest.y }
     })
 
-    self:next_round()
+    if result == 0 then
+        self.dest = destpos
+        self:next_round()
+    end
 end
 
 function Room:start_game()
@@ -95,27 +158,37 @@ function Room:start_game()
     local rand1 = math.random() * 2
     rand1 = rand1 - rand1 % 1
     rand1 = (rand1 - 0.5) * 2
-    self.dir = rand1
-    self.dis = 3.5 + math.random() * 2.5
-    self.curr = 1
+    self.dir  = rand1
+    self.dis  = to_fixed(3.5 + math.random() * 2.5,2)
+    self.seq  = 1
+    self.tseq = 1
+    local half = to_fixed(self.dis/2 * self.dir,2)
+    if self.dir > 0 then
+        self.start = vector2(center.x - half,0)
+        self.dest  = vector2(center.x + half,0 )
+    else
+        self.start = vector2(center.x ,-  half)
+        self.dest  = vector2(center.x , half)
+    end
     self:sync({
         ec = 0,
         cmd= 1106,
         type = Type.GameInit,
         dir  = self.dir,
         dis  = self.dis,
-        curr = self.members[self.curr].id
+        curr = self.members[self.seq].id
     })
 end
 
 function Room:next_round()
-    self.curr = self.curr + 1
-    if self.curr > #self.members then self.curr = 1 end
+    self.seq = self.seq + 1
+    self.tseq= self.tseq+ 1
+    if self.seq > #self.members then self.seq = 1 end
     self:sync({
         ec   = 0,
         cmd  = 1106,
         type = Type.RoundChange,
-        curr = self.members[self.curr].id
+        curr = self.members[self.seq].id
     })
 end
 
@@ -170,6 +243,7 @@ function Room:send(uid,data)
     local session = sessionmgr:get_session(uid)
     if session == nil then
         log:i("no session %s",uid)
+        return
     end
     session:send_json(data)
 end
@@ -235,7 +309,7 @@ function Room:leave(uid)
     end
     --
     if #self.members == 0 then
-        require"roommanager":del_room(self.id)
+        return require"roommanager":del_room(self.id)
     end
     self.total = #self.members * self.score
 

@@ -45,12 +45,16 @@ export default class Player{
 	        this.state = State.Jump
 	        this.stopprepare()
 			if(this.net)
-				g.network.jump(presstime)
+				g.network.jumpend(presstime)
 
 	        this.speed = {y : g.config.speedY * presstime, z : g.config.speedZ * presstime}
+
+			this.speed.z = +this.speed.z.toFixed(2)
+
+			this.speed.y = +Math.min(this.speed.y + g.config.baseY, 180).toFixed(2)
 	        var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
 	        this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
-	        console.log("[jump with speed] "+ this.speed.z.toFixed(1)+" "+this.speed.y.toFixed(1))
+	        console.log(`[jump with speed] z=${this.speed.z} y=${this.speed.y}`)
 			this.flyingTime = 0
 	        var self = this
 	        var tr = new tw.Tween({r : 0})
@@ -68,8 +72,11 @@ export default class Player{
 
 
 		landing(issucc,needrot){
+			this.hitchecked = true
 			if(needrot == undefined) needrot = true
-			console.log("[landing...]" + issucc)
+
+			console.log(`[landing] ${issucc} ${needrot}`)
+			console.log(`[landing] time=${this.flyingTime} x=${this.root.position.x} z = ${this.root.position.z}`)
 			if(issucc || needrot){
 
 				this.state = State.Landing
@@ -78,19 +85,26 @@ export default class Player{
 					g.step.addfloor(this)
 				// }
 			}
-			this.hitchecked = true
+			if(!issucc && needrot){
+				this.state = State.Landing
+				this.root.position.y = g.step.targetpos.y
+				g.step.addfloor(this)
+			}
+
+
 			if(this.net){
 				var self = this
 				var result = g.user.getResult()
-				if(result.pendding){
-					result.oncomplete(this.onServerResult.bind(this))
-				}else{
-					this.onServerResult(result)
-				}
+				// if(result.pendding){
+				// 	result.oncomplete(this.onServerResult.bind(this))
+				// }else{
+				// 	this.onServerResult(result)
+				// }
 			}
 		}
 
 		onServerResult(result){
+
 			//force fix the finnal position
 			//display the result
 		}
@@ -149,10 +163,12 @@ export default class Player{
 			if(this.hitchecked){
 				if(this.root.position.y < 1){
 					this.state  =  State.None
+					this.root.position.y = 1
 				}
 				return
 			}
 			this.checkhit()
+
 	    }
 
 	    update(delta){
