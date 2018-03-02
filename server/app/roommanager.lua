@@ -133,8 +133,8 @@ function Room:jump_end(uid,data)
     log:i("[jump result] %s",result)
 
     self:sync({
-        ec = 0,
-        cmd=107,
+        ec  = 0,
+        cmd = 107,
         speedy = speedy,
         speedz = speedz,
         result = result,

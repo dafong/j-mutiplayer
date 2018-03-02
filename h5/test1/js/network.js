@@ -97,6 +97,7 @@ export default class Network{
 
 	jumpend(time){
 		this.send({t: Type.JumpEnd,time : time })
+		g.user.penddingResult()
 	}
 
 

@@ -11,6 +11,7 @@ export default {
     height: window.innerHeight,
     floor_height:2,
     floor_radius:0.5,
+    table_radius:1.5,
     gravity: 144,
     baseY :30,
     speedY:6,

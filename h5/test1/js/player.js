@@ -41,9 +41,11 @@ export default class Player{
 
 	    jump(){
 			if(this.state != State.Prepare) return
+
 	        var presstime = Date.now()/1000 - this.downtime
-	        this.state = State.Jump
+
 	        this.stopprepare()
+
 			if(this.net)
 				g.network.jumpend(presstime)
 
@@ -52,10 +54,49 @@ export default class Player{
 			this.speed.z = +this.speed.z.toFixed(2)
 
 			this.speed.y = +Math.min(this.speed.y + g.config.baseY, 180).toFixed(2)
-	        var dir = new t.Vector2(g.step.targetpos.x-this.root.position.x,g.step.targetpos.z-this.root.position.z)
+
+			var start = new t.Vector2(+this.root.position.x.toFixed(2), +this.root.position.z.toFixed(2))
+
+			var dest  = new t.Vector2(+g.step.targetpos.x.toFixed(2), +g.step.targetpos.z.toFixed(2))
+
+	        var dir   =  new t.Vector2().subVectors(dest, start )
+
 	        this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
-	        console.log(`[jump with speed] z=${this.speed.z} y=${this.speed.y}`)
+
 			this.flyingTime = 0
+
+			var downtime = this.speed.y / g.config.gravity * 2
+
+			this.caldest =  new t.Vector2().addVectors(start , dir.normalize().multiplyScalar(downtime * this.speed.z) )
+
+			var r1 = g.config.table_radius
+
+			var r2 = g.config.floor_radius
+
+			if(g.step.idx > 1){
+				r1 = g.config.floor_radius
+			}
+
+			var len1 = (r1 + r2) * (r1 + r2)
+
+			var len2 = new t.Vector2().subVectors(this.caldest, dest).lengthSq()
+
+			var result = -1
+
+			if(len2 < len1){
+				result = 1
+			}
+
+			if(len2 < (r1 * r1)){
+				result = 0
+			}
+
+			this.result = result
+
+			this.desireTime = downtime
+
+			console.log(`[jump] speed.z=${this.speed.z} speed.y=${this.speed.y} result=${result} desire=${this.desireTime}`)
+
 	        var self = this
 	        var tr = new tw.Tween({r : 0})
 	        .to({r : 0 - 2 * Math.PI },0.32)
@@ -66,101 +107,55 @@ export default class Player{
 	                self.body.rotation.x = this.r
 	            }
 	        }).start()
+
 			g.step.spawnnext()
 
+			this.state = State.Jump
 	    }
 
 
-		landing(issucc,needrot){
-			this.hitchecked = true
-			if(needrot == undefined) needrot = true
-
-			console.log(`[landing] ${issucc} ${needrot}`)
-			console.log(`[landing] time=${this.flyingTime} x=${this.root.position.x} z = ${this.root.position.z}`)
-			if(issucc){
+		triggerEnd(){
+			console.log(`[end triggered] flyingTime=${this.flyingTime} `)
+			if(this.result == 0){
 				this.state = State.Landing
-				this.root.position.y = g.step.targetpos.y
+				this.root.position.set(this.caldest.x , g.step.targetpos.y , this.caldest.y )
+				g.step.addfloor(this)
+				g.step.onLocalJumpOver()
+			}else if(this.result == 1){
+				this.state = State.Landing
+				this.root.position.set(this.caldest.x , g.step.targetpos.y , this.caldest.y )
 				g.step.addfloor(this)
 				g.step.onLocalJumpOver()
 			}else{
-				if(needrot){
-					this.state = State.Landing
-					this.root.position.y = g.step.targetpos.y
-					g.step.addfloor(this)
-					g.step.onLocalJumpOver()
-					//start rotate
-				}else{
-					setTimeout(function(){
-						g.step.onLocalJumpOver()
-					},1)
-				}
+				setTimeout( function(){ g.step.onLocalJumpOver() } , 1 )
 			}
-		}
-
-		stopjump(y){
-			console.log("stoped")
-			this.root.position.y = y+g.config.floor_height/2
-			this.state = State.Landing
-			g.step.bindplayer()
-		}
-
-
-		checkhit(){
-			// check if the player can land the table
-			// has intersect and baseline is close to the table's top
-			// if true stopit
-			// and enter land state will check land is safe
-			// if false
-			// check if player's baseline is lower than 0
-			// if true stop it
-			var y = this.root.position.y - g.config.floor_height/2
-			var basey = g.step.targetbase
-			var h = y - basey
-			if( h < 0 ){
-				var r1 = g.step.targetradius
-				var r2 = g.config.floor_radius
-				var dir = new t.Vector2(this.root.position.x - g.step.targetpos.x,this.root.position.z - g.step.targetpos.z)
-				var tlen = (r1 + r2) * (r1 + r2)
-				var slen = dir.lengthSq()
-				if(slen < r1 * r1){
-					return this.landing(true)
-					// landing success
-				}
-
-				if(slen < tlen){
-					return this.landing(false)
-					// landing failed
-					// should roll
-				}else{
-					// failed do nothing
-					return this.landing(false,false)
-				}
-			}
-
 		}
 
 	    move(delta){
-
+			if(this.flyingTime + delta >= this.desireTime){
+				this.triggerEnd()
+				if(this.result != -1) return
+			}
+			this.p = this.p || 0
+			this.n = this.n || 0
 	        var s = new t.Vector3(0, 0, 0)
 	        s.z = this.speed.z * delta
 	        s.y = this.speed.y * delta - g.config.gravity / 2 * delta * delta - g.config.gravity * this.flyingTime * delta
-	        this.flyingTime += delta
-
+			// console.log(`moving ${delta} ${s.y} ${this.p} ${this.n}` )
+			this.flyingTime += delta
+			if(s.y > 0)
+				this.p += s.y
+			else
+				this.n += s.y
 	        this.root.translateY(s.y)
 	        this.root.translateOnAxis(this.axis, s.z)
-			if(this.hitchecked){
-				if(this.root.position.y < 1){
-					this.state  =  State.None
-					this.root.position.y = 1
-				}
-				return
+			if(this.root.position.y < 1){
+				this.state  =  State.None
+				this.root.position.y = 1
 			}
-			this.checkhit()
-
 	    }
 
 	    update(delta){
-
 	        if(this.state == State.Jump){
 	            this.move(delta)
 	        }

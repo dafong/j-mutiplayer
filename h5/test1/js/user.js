@@ -34,7 +34,7 @@ export default class User{
 					}else{
 						this.callback = func
 					}
-				}
+				},
 				notify : function(data){
 					this.pendding = false
 					this.data = data
@@ -66,14 +66,12 @@ export default class User{
 
 	onMemberChanged(data){
 		console.log("[member changed]")
-
 		this.ownerId = data.owner
 		this.members = data.members
 		this.totalScore = data.total
 		if(g.ui.page && g.ui.page.onMemberChanged){
 			g.ui.page.onMemberChanged()
 		}
-
 	}
 
 	onNtfJumpStart(data){

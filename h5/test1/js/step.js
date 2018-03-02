@@ -35,13 +35,14 @@ export default class Step{
 
 		mode(m){
 			this.mode = m
+			console.log(`set mode ${this.mode}`)
 		}
 
 		init(){
 			this.idx = 0
 			this.root = new t.Object3D
 			this.root.name = "root"
-			this.mode = Mode.offline
+			this.mode = Mode.Offline
 
 			this.addground()
 			this.world= new t.Object3D
@@ -79,13 +80,13 @@ export default class Step{
 		}
 
 		startgame(){
-			if(this.mode == Mode.online){
+			if(this.mode == Mode.Online){
 				this.state = State.Start
 			}
 		}
 
 		reset(mode){
-			if(mode == undefined) mode = Mode.offline
+			if(mode == undefined) mode = Mode.Offline
 			this.mode = mode
 			for( var i = this.world.children.length - 1; i >= 0; i--) {
 				this.world.remove(this.world.children[i]);
@@ -94,7 +95,7 @@ export default class Step{
 			this.dir = g.user.dir
 			var distance =  g.user.dis
 
-			if(this.mode == Mode.offline){
+			if(this.mode == Mode.Offline){
 				this.dir = (parseInt(Math.random() * 2) - 0.5) * 2
 				distance = 3.5 + Math.random() * 2.5
 			}
@@ -123,7 +124,7 @@ export default class Step{
 				z:0
 			})
 
-			var c = new t.CylinderGeometry(1.5,1.5,0.2,32)
+			var c = new t.CylinderGeometry(g.config.table_radius,g.config.table_radius,0.2,32)
 			this.merge(r,c,0,{
 				x:0,
 				y:0.9,
@@ -285,8 +286,13 @@ export default class Step{
 		}
 
 		onLocalJumpOver(){
-			var result = g.user.getResult()
-			result.oncomplete(this.onServerJumpEnd.bind(this))
+
+			if(this.mode == Mode.Offline){
+
+			}else{
+				var result = g.user.getResult()
+				result.oncomplete(this.onServerJumpEnd.bind(this))
+			}
 		}
 
 		onServerJumpEnd(data){
@@ -295,7 +301,7 @@ export default class Step{
 			if(data.result == 0){
 				//fix position
 				//next round
-				
+
 			}else{
 				//failed
 
