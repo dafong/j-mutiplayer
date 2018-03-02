@@ -41,7 +41,7 @@ export default class Player{
 
 	    jump(){
 			if(this.state != State.Prepare) return
-
+			this.triggered  = false
 	        var presstime = Date.now()/1000 - this.downtime
 
 	        this.stopprepare()
@@ -115,6 +115,7 @@ export default class Player{
 
 
 		triggerEnd(){
+			this.triggered = true
 			console.log(`[end triggered] flyingTime=${this.flyingTime} `)
 			if(this.result == 0){
 				this.state = State.Landing
@@ -132,7 +133,7 @@ export default class Player{
 		}
 
 	    move(delta){
-			if(this.flyingTime + delta >= this.desireTime){
+			if(this.flyingTime + delta >= this.desireTime && !this.triggered ){
 				this.triggerEnd()
 				if(this.result != -1) return
 			}
