@@ -27,8 +27,9 @@ function M:mysql(req,resp)
 	-- ngx.say(json.encode(row))
 	-- row = db:query("update test.user set name='asd' where id = 1 ")
 	-- ngx.say(json.encode(row))
-	-- ngx.say(json.encode(db:query("select * from player where id = 1")))
-	ngx.say(to_fixed(1.299999999999999999,2))
+	ngx.say(os.getenv("ENV"))
+	ngx.say(json.encode(db:query("select * from player where id = 1")))
+
 end
 
 function M:json(req,resp)
