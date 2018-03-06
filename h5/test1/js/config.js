@@ -17,8 +17,10 @@ export default {
     speedY:6,
     speedZ:25,
     design:{x : 414 ,y : 736},
-    ajax:'http://127.0.0.1:8000',
-    socket:'ws://127.0.0.1:4000/ws',
+    //ajax:'http://119.28.157.196:8000',
+    //socket:'ws://119.28.157.196:4000/ws',
+    ajax:'http://192.168.2.1:8000',
+    socket:'ws://192.168.2.1:4000/ws',
     noop:function(){}
 }
 // velocityYIncrement: 15,

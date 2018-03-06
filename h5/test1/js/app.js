@@ -13,6 +13,11 @@ let scene
 let camera
 let mesh
 
+var GameType = {
+	Enter : 0,
+	EnterWithRoom : 1
+}
+
 export default class App{
 	constructor() {
 		this.oldTime = undefined
@@ -53,7 +58,9 @@ export default class App{
 		}
 		wx.triggerGC()
 		wx.setPreferredFramesPerSecond(30)
+
 	}
+
 
 	setupEvent(){
 			this.evthandler = undefined
@@ -95,6 +102,7 @@ export default class App{
 	}
 
 	init(){
+		wx.onShow(this.onGameResume.bind(this))
 		this.setupRender()
 		this.setupEvent()
 		g.user = new User
@@ -111,17 +119,30 @@ export default class App{
 		g.step.reset()
 		this.oldTime = Date.now()
 		this.loop()
-		this.userLogin()
+		this.gametype = GameType.Enter
 	}
 
-	userLogin(){
+	onAuthComplete(query){
+		if(this.gametype == GameType.Enter){
+			g.ui.hideLoading()
+		}else{
+			this.gametype = GameType.Enter
+			g.network.join(query.roomId)
+		}
+	}
+
+	onGameResume(param){
+		var self = this
+		if(param.query.roomId)
+			this.gametype = GameType.EnterWithRoom
 		g.user.login(function(){
-			g.ui.toast({
-				title : "登录成功 ID:"+g.user.uid,
-				icon : 'success',
-				duration : 2000
+			var query = param.query
+			g.network.connect(self.onAuthComplete.bind(self,query))
+			g.ui.loading({
+				title : query.roomId != undefined ? '进入房间中..' : '连接中'
 			})
 		})
+
 	}
 
 	update(delta){
@@ -137,13 +158,14 @@ export default class App{
 	}
 
 	loop(time) {
-		var delta = (Date.now()  - this.oldTime)/1000
+		var now   = Date.now()
+		var delta = (now  - this.oldTime)/1000
 		this.update(delta)
 		this.render()
 		window.requestAnimationFrame(
 		   this.loop.bind(this)
 		)
-		this.oldTime = Date.now()
+		this.oldTime = now
 	}
 
 }

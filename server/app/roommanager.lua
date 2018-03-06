@@ -334,10 +334,12 @@ local M = {
 }
 
 function M:get_room(rid)
+    rid = tonumber(rid)
     return self.rooms[rid]
 end
 
 function M:del_room(rid)
+    rid = tonumber(rid)
     self.rooms[rid] = nil
 end
 

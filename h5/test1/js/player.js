@@ -156,6 +156,10 @@ export default class Player{
 			}
 	    }
 
+		drop(delta){
+			
+		}
+
 	    update(delta){
 	        if(this.state == State.Jump){
 	            this.move(delta)

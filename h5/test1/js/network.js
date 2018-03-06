@@ -23,6 +23,7 @@ export default class Network{
 		this.state = State.Close
 		this.cache = {}
 		this.register_cmd()
+		this.isReconnected = false
 	}
 
 	register_cmd(){
@@ -39,7 +40,11 @@ export default class Network{
 		this.cache["c_"+cmd] = func.bind(this)
 	}
 
-	connect(){
+	connect(cb){
+		if(this.state == State.Open){
+			if(this.authCb) this.authCb()
+		}
+		this.authCb = cb
 		if(this.state != State.Close) return;
 
 		this.state = State.Opening
@@ -59,7 +64,10 @@ export default class Network{
 	}
 
 	onsuccess(){
-		console.log("[socket succ] ")
+		console.log("[socket] [succ]")
+		if(this.isReconnected) {
+			g.ui.hideLoading()
+		}
 		var self = this
 		this.state = State.Open
 		this.socket.onMessage(function(data){
@@ -67,9 +75,9 @@ export default class Network{
 		})
 
 		this.socket.onError(function(err){
-			console.log("err:" + err)
+			console.log("[socket] err:" + err)
 			self.close()
-			self.connect()
+			this.reconnect()
 		})
 
 		this.socket.onClose(function(err){
@@ -77,6 +85,12 @@ export default class Network{
 		})
 		this.heartbeat()
 		this.auth()
+	}
+
+	reconnect(){
+		this.isReconnected = true
+		self.connect()
+		g.ui.loading({title : '重连中...'})
 	}
 
 	auth(){
@@ -91,6 +105,10 @@ export default class Network{
 		this.send({t: Type.Prepare})
 	}
 
+	join(rid){
+		this.send({t: Type.JoinRoom , room_id : rid})
+	}
+
 	jumpstart(){
 		this.send({t: Type.JumpStart })
 	}
@@ -103,15 +121,14 @@ export default class Network{
 
 	onauth(data){
 		if(data.ec == 0){
-			g.ui.toast({
-				title : "长连接 ID:" + data.sid,
-				icon : 'success',
-				duration : 2000
-			})
-			console.log("[auth succ] sid="+data.sid)
+			if(this.authCb){
+				this.authCb()
+				this.authCb = undefined
+			}
+			console.log("[auth] [succ] sid="+data.sid)
 			this.sid = data.sid
 		}else{
-			console.log("[auth failed] "+ data.ec)
+			console.log("[auth] [failed] "+ data.ec)
 		}
 	}
 
@@ -119,15 +136,14 @@ export default class Network{
 
 	oncreateroom(data){
 		if(data.ec == 0){
-			console.log("[room create succ] room_id ="+data.room_id)
-			g.ui.toast({ title:"房间 " + data.room_id })
+			console.log("[room] [create] 房间号="+data.room_id)
 			g.user.initRoom(data)
 			g.ui.showRoomPage()
 		}
 	}
 	onjoinroom(data){
 		if(data.ec == 0){
-			console.log("[room join succ] room_id ="+data.room_id)
+			console.log("[room] [join] room_id ="+data.room_id)
 			g.ui.toast({ title:"房间 加入" + data.room_id })
 			g.user.initRoom(data)
 			g.ui.showRoomPage()

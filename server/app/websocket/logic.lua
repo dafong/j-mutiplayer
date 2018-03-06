@@ -54,6 +54,7 @@ end)
 -- join room
 handler:use(104,function(data,session)
 	-- join the room and broadcast msg through socket
+	log:i("%s %s",data.room_id,type(data.room_id))
 	local room = roommgr:get_room(data.room_id)
 	if room == nil then
 		return session:send_json{

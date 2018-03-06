@@ -12,18 +12,21 @@ export default class UI{
     }
 
     ontouchstart(t,x,y){
+        if(this.blockTouch) return true
         if(this.page){
             return this.page.ontouchstart(t,x,y)
         }
     }
 
     ontouchmove(t,x,y){
+        if(this.blockTouch) return true
         if(this.page){
             return  this.page.ontouchmove(t,x,y)
         }
     }
 
     ontouchend(t,x,y){
+        if(this.blockTouch) return true
         if(this.page){
             return this.page.ontouchend(t,x,y)
         }
@@ -43,6 +46,17 @@ export default class UI{
             this.toastQueue.push(param)
         }
     }
+
+    loading(param){
+        this.blockTouch = true
+        wx.showLoading(param)
+    }
+
+    hideLoading(){
+        this.blockTouch = false
+        wx.hideLoading()
+    }
+
 
     nextToast(){
         var param = this.toastQueue.shift()

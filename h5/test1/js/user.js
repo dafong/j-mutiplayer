@@ -16,7 +16,7 @@ export default class User{
 		this.score    = 0
 		this.totalScore = 0
 		this.ownerId  = -1
-		this.curId  =  -1
+		this.curId    = -1
 		this.dir = undefined
 		this.dis = undefined
 		this.isLocalRound = false
@@ -119,6 +119,7 @@ export default class User{
 
 	login(cb){
 		var self = this
+		
 		if(this.uid != undefined && this.token != undefined){
 			g.network.post('/step/init',{
 				sid : self.sessionId
@@ -159,12 +160,11 @@ export default class User{
 	}
 
 	onLoginSuccess(data){
-		this.uid = data.uid
+		this.uid   = data.uid
 		this.token = data.token
-		wx.setStorageSync("uid",data.uid)
+		wx.setStorageSync("uid",  data.uid)
 		wx.setStorageSync("token",data.token)
-		g.network.connect()
-		console.log("[login succ] " + this.uid + " " + this.token)
+		console.log("[login] 用户ID=" + this.uid + " " + this.token)
 	}
 
 

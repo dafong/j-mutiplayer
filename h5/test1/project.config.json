@@ -22,8 +22,15 @@
 			"list": []
 		},
 		"game": {
-			"currentL": -1,
-			"list": []
+			"current": -1,
+			"list": [
+				{
+					"id": -1,
+					"name": "通过小卡片进入",
+					"query": "roomId=12",
+					"scene": "1007"
+				}
+			]
 		},
 		"miniprogram": {
 			"current": -1,

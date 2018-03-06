@@ -76,7 +76,7 @@ export default class RoomPage{
 
     startGame(){
         this.refreshMember()
-        
+
     }
 
     nextRound(){
@@ -97,6 +97,11 @@ export default class RoomPage{
                 this.evt ="prepare"
                 return true
             }
+
+            if(x > 45 && x < 165 && y > 578 && y < 620){
+                this.evt = "invite"
+                return true
+            }
         }
         this.evt = undefined
     }
@@ -110,6 +115,12 @@ export default class RoomPage{
         }
         if(this.evt == "prepare"){
             g.network.prepare()
+        }
+        if(this.evt == "invite"){
+            wx.shareAppMessage({
+                title : '步步高升',
+                query : `roomid=${g.user.roomId}`
+    		})
         }
     }
 
