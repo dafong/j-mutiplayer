@@ -59,6 +59,7 @@ function Room:new(rid)
         history = {},
         memcache={}
     }
+    log:i("[room create] id=%s",rid)
     setmetatable(ins , { __index = self })
     return ins
 end
@@ -184,12 +185,6 @@ function Room:next_round()
     self.seq = self.seq + 1
     self.tseq= self.tseq+ 1
     if self.seq > #self.members then self.seq = 1 end
-    -- self:sync({
-    --     ec   = 0,
-    --     cmd  = 1106,
-    --     type = Type.RoundChange,
-    --     curr = self.members[self.seq].id
-    -- })
 end
 
 function Room:prepare(uid)
@@ -227,7 +222,7 @@ function Room:prepare(uid)
         self:sync({
             ec  = 0,
             cmd = 1105,
-            room_id = self.rid,
+            room_id = self.id,
             owner = self.owner,
             total = self.total,
             members = self.members
@@ -235,9 +230,6 @@ function Room:prepare(uid)
     end
 end
 
-function Room:chage_state()
-
-end
 
 function Room:send(uid,data)
     local session = sessionmgr:get_session(uid)
@@ -245,7 +237,7 @@ function Room:send(uid,data)
         log:i("no session %s",uid)
         return
     end
-    session:send_json(data)
+    session:send(data)
 end
 
 function Room:join(uid)
@@ -275,10 +267,19 @@ function Room:join(uid)
 
     session:room(self.id)
 
+    if self.owner ~= uid then
+        self:send(uid,{
+            ec = 0,
+            cmd= 104,
+            room_id = self.id,
+            score = self.score
+        })
+    end
+
     self:sync({
         ec  = 0,
         cmd = 1105,
-        room_id = self.rid,
+        room_id = self.id,
         owner = self.owner,
         total = self.total,
         members = members
@@ -289,7 +290,7 @@ function Room:sync(data)
     for _,m in ipairs(self.members) do
         local session = sessionmgr:get_session(m.id)
         if session ~= nil then
-            session:send_json(data)
+            session:send(data)
         end
     end
 end
@@ -321,7 +322,7 @@ function Room:leave(uid)
     self:sync({
         ec  = 0,
         cmd = 1105,
-        room_id = self.rid,
+        room_id = self.id,
         owner = self.owner,
         total = self.total,
         members = self.members
@@ -341,10 +342,12 @@ end
 function M:del_room(rid)
     rid = tonumber(rid)
     self.rooms[rid] = nil
+
 end
 
 function M:create_room(uid)
-    local rid  = redis:incr("room.req")
+    -- local rid  = redis:incr("room.req")
+    local rid  = 100
     local room = Room:new(rid,uid)
     self.rooms[rid] = room
     return room

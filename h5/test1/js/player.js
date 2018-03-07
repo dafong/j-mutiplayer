@@ -33,7 +33,7 @@ export default class Player{
 	        this.downtime = Date.now()/1000
 	        this.state = State.Prepare
 			if(this.net)
-				g.network.prepare()
+				g.network.jumpstart()
 	        console.log("[prepareing...]")
 	        this.squeeze()
 	    }
@@ -157,7 +157,7 @@ export default class Player{
 	    }
 
 		drop(delta){
-			
+
 		}
 
 	    update(delta){

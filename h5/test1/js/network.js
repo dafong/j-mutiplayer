@@ -28,8 +28,8 @@ export default class Network{
 
 	register_cmd(){
 		this.use(Type.Auth, this.onauth)
-		this.use(Type.CreateRoom, this.oncreateroom)
-		this.use(Type.JoinRoom, this.onjoinroom)
+		this.use(Type.CreateRoom, this.onroomcreate)
+		this.use(Type.JoinRoom, this.onroomjoin)
 		this.use(Type.NtfMemberChanged,this.onmemberchanged)
 		this.use(Type.NtfRoomStateChanged,this.onroomchanged)
 		this.use(Type.JumpStart,this.onjumpstart)
@@ -40,11 +40,8 @@ export default class Network{
 		this.cache["c_"+cmd] = func.bind(this)
 	}
 
-	connect(cb){
-		if(this.state == State.Open){
-			if(this.authCb) this.authCb()
-		}
-		this.authCb = cb
+	connect(){
+
 		if(this.state != State.Close) return;
 
 		this.state = State.Opening
@@ -121,38 +118,34 @@ export default class Network{
 
 	onauth(data){
 		if(data.ec == 0){
-			if(this.authCb){
-				this.authCb()
-				this.authCb = undefined
-			}
-			console.log("[auth] [succ] sid="+data.sid)
 			this.sid = data.sid
+			g.state.msg("auth.complete")
+			console.log("[auth] [succ] sid="+data.sid)
+
 		}else{
 			console.log("[auth] [failed] "+ data.ec)
 		}
 	}
 
-
-
-	oncreateroom(data){
+	onroomcreate(data){
 		if(data.ec == 0){
-			console.log("[room] [create] 房间号="+data.room_id)
 			g.user.initRoom(data)
-			g.ui.showRoomPage()
+			g.state.msg("room.create")
+			console.log("[room] [create] 房间号="+data.room_id)
 		}
 	}
-	onjoinroom(data){
+
+	onroomjoin(data){
 		if(data.ec == 0){
-			console.log("[room] [join] room_id ="+data.room_id)
-			g.ui.toast({ title:"房间 加入" + data.room_id })
 			g.user.initRoom(data)
-			g.ui.showRoomPage()
+			g.state.msg("room.join")
 		}
 	}
 
 	onmemberchanged(data){
 		if(data.ec == 0){
 			g.user.onMemberChanged(data)
+			g.state.msg("room.memberchanged")
 		}
 	}
 

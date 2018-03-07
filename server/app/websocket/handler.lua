@@ -6,54 +6,14 @@ local M = {
 }
 
 function M:handle(session)
+	session.handler = self
+end
 
-	if not  session.connected then
-		return
+function M:process(data,session)
+	local func = self.cache[data.t]
+	if func then
+		func(data,session)
 	end
-	while true do
-		local data, typ, err = session:recv_frame()
-		while err == 'again' do
-			local cut_data
-	        cut_data, _, err = session:recv_frame()
-	        data = data .. cut_data
-		end
-
-		if not data then
-			log:e("[session err]" .. err)
-			break
-		end
-
-		-- log:i("[session recv] %s %s",session.sid,data )
-
-		if data == "" then
-			break
-		end
-
-		xpcall(function()
-			local msg = json.decode(data)
-			local func = self.cache[msg.t]
-			if func then
-				func(msg,session)
-			end
-		end,function(error)
-			log:e(error)
-		end)
-
-		-- local bytesend = nil
-		-- if typ == 'ping' then
-		-- 	bytesend = session:send_pong(data)
-		-- elseif typ == 'close' then
-		-- 	break
-		-- elseif typ == 'text' then
-		-- 	bytesend = session:send_text(data)
-		-- elseif typ == 'binary' then
-		-- 	bytesend = session:send_binary(data)
-		-- else
-		--
-		-- end
-	end
-
-	session:close()
 end
 
 function M:use(cmd,func)

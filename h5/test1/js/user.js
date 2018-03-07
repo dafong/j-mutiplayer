@@ -69,9 +69,7 @@ export default class User{
 		this.ownerId = data.owner
 		this.members = data.members
 		this.totalScore = data.total
-		if(g.ui.page && g.ui.page.onMemberChanged){
-			g.ui.page.onMemberChanged()
-		}
+
 	}
 
 	onNtfJumpStart(data){
@@ -119,7 +117,7 @@ export default class User{
 
 	login(cb){
 		var self = this
-		
+
 		if(this.uid != undefined && this.token != undefined){
 			g.network.post('/step/init',{
 				sid : self.sessionId

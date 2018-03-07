@@ -2,7 +2,49 @@ local server = require "resty.websocket.server"
 local log  = require"june.log"
 local json = require"cjson"
 local sessionmgr = require "websocket.sessionmanager"
+local semaphore = require "ngx.semaphore"
 local M = {}
+
+
+local read_function = function(session)
+	return function()
+		if not  session.connected then return end
+		while true do
+			local data, typ, err = session:recv_frame()
+			while err == 'again' do
+				local cut_data
+		        cut_data, _, err = session:recv_frame()
+		        data = data .. cut_data
+			end
+
+			if not data or data == ""  then
+				log:e("[session err]" .. err)
+				break
+			end
+			-- log:i("[session recv] %s %s",session.sid,data )
+			xpcall(function()
+				local msg  = json.decode(data)
+				session.handler:process(msg,session)
+			end,function(error)
+				log:e(error)
+			end)
+		end
+
+		session:close()
+	end
+end
+
+local write_function = function(session)
+	return function()
+		local sema = session.sema
+		while session.connected do
+			local ok,err = sema:wait(60)
+			if ok then
+				session:send_in_queue()
+			end
+		end
+	end
+end
 
 function M:new(sessionid)
 	local ins = {
@@ -12,7 +54,10 @@ function M:new(sessionid)
 		wb        = nil,
 		connected = false,
 		lastheart = 0,
-		is_auth   = false
+		is_auth   = false,
+		towrite   = {},
+		first     = 0,
+		last      = -1
     }
     setmetatable(ins,{__index = self})
     ins:_init()
@@ -35,13 +80,35 @@ function M:_init()
 	self.connected = true
 	self.lastheart = os.time()
 	wb:set_timeout(30*1000)
-	self.wb = wb
+	self.wb   = wb
+	self.sema = semaphore:new()
+	self.read = ngx.thread.spawn(read_function(self))
+	self.write= ngx.thread.spawn(write_function(self))
 end
 
 function M:auth(uid)
 	self.uid = uid
 	self.is_auth = true
 	sessionmgr:onauth(self)
+end
+
+function M:send(data)
+	if data == nil then return end
+	self.last = self.last + 1
+	self.towrite[self.last] = data
+	self.sema:post(1)
+end
+
+function M:send_in_queue()
+	while true do
+		if self.first <= self.last then
+			local m = self.towrite[self.first]
+			if m ~= nil then self:_send_json(m) end
+			self.first = self.first + 1
+		else
+			break
+		end
+	end
 end
 
 function M:room(rid)
@@ -56,12 +123,16 @@ function M:recv_frame()
 	return self.wb:recv_frame()
 end
 
-function M:send_pong(data)
-	local bytes,err = self.wb:send_pong(data)
+function M:_send_text(data)
+	local bytes, err = self.wb:send_text(data)
 	if bytes == nil then
 		log:e(err)
 	end
 	return bytes
+end
+
+function M:_send_json(tbl)
+	self:_send_text(json.encode(tbl or {}))
 end
 
 function M:close(...)
@@ -78,35 +149,6 @@ end
 
 function M:on_close()
 	require"roommanager":exit_room(self.uid,self.rid)
-end
-
-function M:send_text(data)
-	local bytes, err = self.wb:send_text(data)
-	if bytes == nil then
-		log:e(err)
-	end
-	return bytes
-end
-
-function M:send_json(tbl)
-	self:send_text(json.encode(tbl or {}))
-end
-
-
-function M:send_cmd(cmd,tbl)
-	self:send_json({
-		cmd = cmd,
-		data = tbl or {}
-	})
-end
-
-
-function M:send_binary(data)
-	local bytes, err = self.wb:send_binary(data)
-	if bytes == nil then
-		log:e(err)
-	end
-	return bytes
 end
 
 
