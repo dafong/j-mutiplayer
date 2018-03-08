@@ -61,7 +61,6 @@ export default class Network{
 	}
 
 	onsuccess(){
-		console.log("[socket] [succ]")
 		if(this.isReconnected) {
 			g.ui.hideLoading()
 		}
@@ -117,11 +116,10 @@ export default class Network{
 
 
 	onauth(data){
+		g.state.msg("auth.complete",data)
 		if(data.ec == 0){
 			this.sid = data.sid
-			g.state.msg("auth.complete")
 			console.log("[auth] [succ] sid="+data.sid)
-
 		}else{
 			console.log("[auth] [failed] "+ data.ec)
 		}
@@ -138,8 +136,8 @@ export default class Network{
 	onroomjoin(data){
 		if(data.ec == 0){
 			g.user.initRoom(data)
-			g.state.msg("room.join")
 		}
+		g.state.msg("room.join",data)
 	}
 
 	onmemberchanged(data){

@@ -285,10 +285,11 @@ export default class Step{
 			this.player.prepare()
 		}
 
-		onLocalJumpOver(){
-
+		onLocalJumpOver(result){
 			if(this.mode == Mode.Offline){
-
+				if(result == 0){
+					g.step.addfloor(this.player)
+				}
 			}else{
 				var result = g.user.getResult()
 				result.oncomplete(this.onServerJumpEnd.bind(this))
@@ -296,15 +297,21 @@ export default class Step{
 		}
 
 		onServerJumpEnd(data){
-			console.log("[local and remote over]")
 			// the server will return the position calculated
+			console.log(data)
 			if(data.result == 0){
-				//fix position
-				//next round
-
+				console.log("[step] [round over] next" + data.tseq)
+				this.player.root.position.set(data.destpos.x , (data.tseq - 0.5) * g.config.floor_height, data.destpos.y )
+				g.step.addfloor(this.player)
+				if(g.ui.page && g.ui.page.nextRound){
+					g.ui.page.nextRound()
+				}
 			}else{
+				console.log("[step] [round over] next" + data.tseq)
+				this.player.root.position.set(data.destpos.x , (data.tseq - 0.5) * g.config.floor_height, data.destpos.y )
+				g.step.addfloor(this.player)
 				//failed
-
+				console.log("[step] [game over]")
 			}
 		}
 

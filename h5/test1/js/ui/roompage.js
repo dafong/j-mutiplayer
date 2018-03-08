@@ -48,12 +48,10 @@ export default class RoomPage{
                 var txt = g.user.ownerId == id ? "房主" : ""
                 return g.h.drawText(txt,2,left + 10 + 80/2,185,10,'#fff')
             })
-            return id == g.user.curId
         }
-        var idx = -1
+
         for(var i=0;i<4;i++){
-            if(drawmember(i))
-                idx = i
+            drawmember(i)
         }
 
         if(g.user.roomState == RoomState.Preparing){
@@ -67,7 +65,7 @@ export default class RoomPage{
             })
         }else{
             g.h.clearLayer(3)
-            var x = idx * (80 + 24) + (80 + 24) /2
+            var x = (g.user.curr - 1) * (80 + 24) + (80 + 24) /2
             g.h.drawImage("images/turnarrow.png",3,x,230)
         }
     }
@@ -84,7 +82,8 @@ export default class RoomPage{
     }
 
     nextRound(){
-
+        console.log('nextRound')
+        this.refreshMember()
     }
 
     refresh(){

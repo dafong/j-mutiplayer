@@ -7,7 +7,9 @@ var State = {
     Prepare: "prepare",
 	Charge : "charge",
     Jump : "jump",
-	Landing : "land"
+	Landing : "land",
+	SimPrepare : "simprepare",
+	SimJump : "simjump",
 }
 export default class Player{
 
@@ -17,27 +19,61 @@ export default class Player{
 	    }
 
 
-		bind(root){
+		bind(root,isLocal){
+			if(isLocal == undefined) isLocal = true
 			this.oldy = root.position.y
 			this.root = root
 			this.body = this.root.children[0]
 			this.state = State.Idle
 			this.flyingTime = 0
-			this.hitchecked = false
+			this.isLocal = isLocal
 		}
 
+		simprepare(data,cb){
+			this.onsimcomplete = cb
+			this.preparetime = data.ptime
+			this.desireTime  = data.time
+			this.result = data.result
+			this.squeeze()
+			this.state = State.SimPrepare
+			this.downtime = Date.now()/1000
+		}
+
+		simjump(){
+			this.stopprepare()
+			this.triggered  = false
+			this.speed      = {y : g.config.speedY * this.preparetime, z : g.config.speedZ * this.preparetime}
+			this.flyingTime = 0
+			this.speed.z    = +this.speed.z.toFixed(2)
+			this.speed.y    = +Math.min(this.speed.y + g.config.baseY, 180).toFixed(2)
+			this.state      = State.SimJump
+		}
+
+		simmove(delta){
+			if(this.flyingTime + delta >= this.desireTime && !this.triggered ){
+				g.step.onLocalJumpOver()
+				if(this.result != -1) return
+			}
+			var s = new t.Vector3(0, 0, 0)
+			s.z = this.speed.z * delta
+			s.y = this.speed.y * delta - g.config.gravity / 2 * delta * delta - g.config.gravity * this.flyingTime * delta
+			this.flyingTime += delta
+
+			this.root.translateY(s.y)
+			this.root.translateOnAxis(this.axis, s.z)
+			if(this.root.position.y < 1){
+				this.state  =  State.None
+				this.root.position.y = 1
+			}
+		}
 
 	    prepare(){
 			if(this.state != State.Idle) return
-			this.hitchecked = false
 	        this.downtime = Date.now()/1000
 	        this.state = State.Prepare
-			if(this.net)
-				g.network.jumpstart()
-	        console.log("[prepareing...]")
+	        console.log("[player] [prepareing]")
 	        this.squeeze()
 	    }
-
 
 	    jump(){
 			if(this.state != State.Prepare) return
@@ -95,7 +131,7 @@ export default class Player{
 
 			this.desireTime = downtime
 
-			console.log(`[jump] speed.z=${this.speed.z} speed.y=${this.speed.y} result=${result} desire=${this.desireTime}`)
+			console.log(`[player] [jump] speed.z=${this.speed.z} speed.y=${this.speed.y} result=${result} desire=${this.desireTime}`)
 
 	        var self = this
 	        var tr = new tw.Tween({r : 0})
@@ -116,17 +152,11 @@ export default class Player{
 
 		triggerEnd(){
 			this.triggered = true
-			console.log(`[end triggered] flyingTime=${this.flyingTime} `)
-			if(this.result == 0){
+			console.log(`[player] [local end] flyingTime=${this.flyingTime} `)
+			if(this.result == 0 || this.result == 1){
 				this.state = State.Landing
 				this.root.position.set(this.caldest.x , g.step.targetpos.y , this.caldest.y )
-				g.step.addfloor(this)
-				g.step.onLocalJumpOver()
-			}else if(this.result == 1){
-				this.state = State.Landing
-				this.root.position.set(this.caldest.x , g.step.targetpos.y , this.caldest.y )
-				g.step.addfloor(this)
-				g.step.onLocalJumpOver()
+				g.step.onLocalJumpOver(this.result)
 			}else{
 				setTimeout( function(){ g.step.onLocalJumpOver() } , 1 )
 			}
@@ -137,17 +167,13 @@ export default class Player{
 				this.triggerEnd()
 				if(this.result != -1) return
 			}
-			this.p = this.p || 0
-			this.n = this.n || 0
+
 	        var s = new t.Vector3(0, 0, 0)
 	        s.z = this.speed.z * delta
 	        s.y = this.speed.y * delta - g.config.gravity / 2 * delta * delta - g.config.gravity * this.flyingTime * delta
-			// console.log(`moving ${delta} ${s.y} ${this.p} ${this.n}` )
+
 			this.flyingTime += delta
-			if(s.y > 0)
-				this.p += s.y
-			else
-				this.n += s.y
+
 	        this.root.translateY(s.y)
 	        this.root.translateOnAxis(this.axis, s.z)
 			if(this.root.position.y < 1){
@@ -164,6 +190,15 @@ export default class Player{
 	        if(this.state == State.Jump){
 	            this.move(delta)
 	        }
+			if(this.state == State.SimPrepare){
+				this.downtime += delta
+				if(this.downtime >= this.preparetime){
+					this.simjump()
+				}
+			}
+			if(this.state == State.SimJump){
+				this.simmove()
+			}
 	    }
 
 	    stopprepare(){

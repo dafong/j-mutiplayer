@@ -54,15 +54,21 @@ end)
 -- join room
 handler:use(104,function(data,session)
 	-- join the room and broadcast msg through socket
-	
+
 	local room = roommgr:get_room(data.room_id)
 	if room == nil then
 		return session:send{
-			cmd = 1105,
+			cmd = 104,
 			ec  = 1002
 		}
 	end
-	room:join(session.uid)
+	local ec = room:join(session.uid)
+	if ec ~= 0 then
+		session:send({
+			cmd = 104,
+			ec  = ec
+		})
+	end
 end)
 
 -- prepare game
@@ -70,11 +76,17 @@ handler:use(105,function(data,session)
 	local room = roommgr:get_room(session.rid)
 	if room == nil then
 		return session:send{
-			cmd = 1106,
+			cmd = 105,
 			ec  = 1002
 		}
 	end
-	room:prepare(session.uid)
+	local ec = room:prepare(session.uid)
+	if ec ~= 0 then
+		session:send({
+			cmd = 105,
+			ec  = ec
+		})
+	end
 end)
 
 -- jump start
@@ -82,11 +94,17 @@ handler:use(106,function(data,session)
 	local room = roommgr:get_room(session.rid)
 	if room == nil then
 		return session:send{
-			cmd = 1106,
+			cmd = 106,
 			ec  = 1002
 		}
 	end
-	room:jump_start(session.uid)
+	local ec = room:jump_start(session.uid)
+	if ec ~= 0 then
+		session:send({
+			cmd = 106,
+			ec  = ec
+		})
+	end
 end)
 
 -- jump end
@@ -94,7 +112,7 @@ handler:use(107,function(data,session)
 	local room = roommgr:get_room(session.rid)
 	if room == nil then
 		return session:send{
-			cmd = 1106,
+			cmd = 107,
 			ec  = 1002
 		}
 	end

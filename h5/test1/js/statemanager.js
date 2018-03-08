@@ -30,11 +30,19 @@ class WaitJoin{
         if (evt == "connecting") {
             g.ui.loading({ title : '进入房间中..' })
         }else if (evt == "auth.complete"){
-            console.log(this.para)
-            g.network.join(this.para.roomId)
+            if(para.ec == 0){
+                g.network.join(this.para.roomId)
+            }else{
+                g.ui.hideLoading()
+                g.state.go("idle")
+            }
         }else if (evt == "room.join"){
             g.ui.hideLoading()
-            g.ui.showRoomPage()
+            if(para.ec == 0){
+                g.ui.showRoomPage()
+            }else{
+                g.state.go("idle")
+            }
         }else if (evt == "room.memberchanged"){
             g.state.go("prepareing")
         }
@@ -56,6 +64,19 @@ class Prepareing{
             }
         }
     }
+}
+
+//local player is play
+class Play{
+
+}
+//local player is sync
+class Sync{
+
+}
+//game end
+class End{
+
 }
 
 

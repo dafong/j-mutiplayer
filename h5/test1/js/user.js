@@ -58,14 +58,13 @@ export default class User{
 	}
 
 	initRoom(data){
-		console.log(`[room init] id = ${data.room_id} score = ${data.score}` )
 		this.roomId = data.room_id
 		this.score  = data.score
 		this.roomState = RoomState.Preparing
 	}
 
 	onMemberChanged(data){
-		console.log("[member changed]")
+		console.log("[room] [member changed]")
 		this.ownerId = data.owner
 		this.members = data.members
 		this.totalScore = data.total
@@ -83,7 +82,17 @@ export default class User{
 	}
 
 	onNtfJumpEnd(data){
+		if(data.result == 0){
+			this.nextRound(data)
+		}
         this.notifyResult(data)
+	}
+
+	nextRound(data){
+		console.log(`[room] [round] ${data.curr}`)
+		this.curr = data.curr
+		var id = this.members[this.curr-1].id
+		this.isLocalRound = id == this.uid
 	}
 
 	onRoomChanged(data){
@@ -97,22 +106,18 @@ export default class User{
 
 	startGame(data){
 		if(this.roomState != RoomState.Preparing) return
-		console.log(`[room start] dir=${data.dir} dis=${data.dis}`)
-		this.dir = data.dir
-		this.dis = data.dis
-		this.curId = data.curr
+		console.log(`[room] [start] dir=${data.dir} dis=${data.dis}`)
+		this.dir  = data.dir
+		this.dis  = data.dis
+		this.curr = data.curr
 		this.roomState = RoomState.Start
-		this.isLocalRound = this.curId == this.uid
+		var id = this.members[this.curr-1].id
+		this.isLocalRound = id == this.uid
 		if(g.ui.page && g.ui.page.startGame){
 			g.ui.page.startGame()
 		}
 		g.step.reset(1)
 		g.step.startgame()
-	}
-
-	nextRound(data){
-		this.curId = data.curr
-		this.isLocalRound = this.curId == this.uid
 	}
 
 	login(cb){
@@ -176,8 +181,7 @@ export default class User{
 		var self = this
 		wx.login({
 			success : function(data){
-				console.log(data)
-				console.log("[use login] " + data.code)
+				console.log("[user] [login] " + data.code)
 				self.sessionId = data.code
 				if(cb) {cb(true)}
 			},

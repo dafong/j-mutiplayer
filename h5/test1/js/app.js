@@ -63,7 +63,7 @@ export default class App{
 		var handler = function(func,log,t){
 			var x = ~~_tx(t.changedTouches[0].clientX)
 			var y = ~~_ty(t.changedTouches[0].clientY)
-			console.log("[touch] "+ log + " " + x +" " + y)
+
 			if(func != "ontouchstart" && self.evthandler){
 				self.evthandler[func](t,x,y)
 				return
@@ -74,10 +74,13 @@ export default class App{
 				hdl  = g.ui
 				isd = hdl[func](t,x,y) || false
 			}
+
 			if(!isd) {
 				hdl = g.step
 				hdl[func](t,x,y)
+				console.log("[touch] "+ log + " " + x +" " + y)
 			}
+
 			if(func == "ontouchstart"){
 				self.evthandler = hdl
 			}

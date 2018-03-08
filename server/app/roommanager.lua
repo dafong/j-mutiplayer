@@ -66,42 +66,34 @@ end
 
 function Room:jump_start(uid)
     if self.state ~= RoomState.Start then
-        return self:send(uid,{
-            ec  = 1009,
-            cmd = 106,
-        })
+        return 1009
     end
 
-    local mem = self.members[self.cur]
+    local mem = self.members[self.seq]
     if mem == nil then
-        return self:send(uid,{
-            ec  = 1007,
-            cmd = 106,
-        })
+        return 1007
     end
 
     if mem.id ~= uid then
-        return self:send(uid,{
-            ec = 1008,
-            cmd= 106
-        })
+        return 1008
     end
 
     self:sync({
         cmd = 106,
         uid = uid
     })
+    return 0
 end
 
 function Room:jump_end(uid,data)
-    local time = data.time
-    local dir = self.dest - self.start
+    local ptime = data.time
+    local dir   = self.dest - self.start
     dir = dir:Normalize()
 
-    local speedy = config.basey + time * config.speedy
+    local speedy = config.basey + ptime * config.speedy
     speedy = speedy - speedy % 0.01
 
-    local speedz = time * config.speedz
+    local speedz = ptime * config.speedz
     speedz = speedz - speedz % 0.01
 
     local time = speedy / config.gravity * 2
@@ -123,7 +115,8 @@ function Room:jump_end(uid,data)
     local result = -1
 
     if len2 < len1 then
-        result = 1
+        -- result = 1
+        result = 0
     end
 
     if len2 < (r1 * r1) then
@@ -132,28 +125,27 @@ function Room:jump_end(uid,data)
 
 
     log:i("[jump result] %s",result)
+    if result == 0 then
+        self.dest = dest
+        self:next_round()
+    end
 
     self:sync({
         ec  = 0,
         cmd = 107,
-        speedy = speedy,
-        speedz = speedz,
         result = result,
-        time   = time,
-        start  = {x = self.start.x, y = self.start.y},
-        dest   = {x = self.dest.x,  y = self.dest.y},
+        ptime  = ptime,
+        dtime  = time,
+        tseq   = self.tseq,
+        curr   = self.seq,
         destpos = { x = dest.x , y = dest.y }
     })
 
-    if result == 0 then
-        self.dest = destpos
-        self:next_round()
-    end
 end
 
 function Room:start_game()
     if self.state == RoomState.Start then
-        return
+        return 1004
     end
     self.state = RoomState.Start
     local rand1 = math.random() * 2
@@ -177,8 +169,9 @@ function Room:start_game()
         type = Type.GameInit,
         dir  = self.dir,
         dis  = self.dis,
-        curr = self.members[self.seq].id
+        curr = self.seq
     })
+    return 0
 end
 
 function Room:next_round()
@@ -189,18 +182,12 @@ end
 
 function Room:prepare(uid)
     if self.state ~= RoomState.Prepare then
-        self:send(uid,{
-            cmd = 1105,
-            ec  = 1005
-        })
+        return 1005
     end
 
     local info = self.memcache[uid]
     if info == nil then
-        self:send(uid,{
-            cmd = 1105,
-            ec  = 1002
-        })
+        return 1002
     end
 
     info.state = MemberState.Prepared
@@ -211,12 +198,9 @@ function Room:prepare(uid)
             allprepared = allprepared or m.state == MemberState.Prepared
         end
         if not allprepared then
-            self:send(uid,{
-                cmd = 1105,
-                ec = 1006
-            })
+            return 1006
         else
-            self:start_game()
+            return self:start_game()
         end
     else
         self:sync({
@@ -228,6 +212,7 @@ function Room:prepare(uid)
             members = self.members
         })
     end
+    return 0
 end
 
 
@@ -243,11 +228,11 @@ end
 function Room:join(uid)
 
     if self.state ~= RoomState.Prepare then
-        return self:send(uid,{ cmd = 1105, ec = 1004 })
+        return 1004
     end
 
     if #self.members >= 4 then
-        return self:send(uid,{ cmd = 1105, ec = 1003 })
+        return 1003
     end
     log:i("[room join] %s %s",self.id,uid)
     if self.owner == nil then
@@ -284,6 +269,8 @@ function Room:join(uid)
         total = self.total,
         members = members
     })
+
+    return 0
 end
 
 function Room:sync(data)
