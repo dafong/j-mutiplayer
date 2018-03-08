@@ -19,27 +19,24 @@ export default class Player{
 	    }
 
 
-		bind(root,isLocal){
-			if(isLocal == undefined) isLocal = true
+		bind(root){
 			this.oldy = root.position.y
 			this.root = root
 			this.body = this.root.children[0]
 			this.state = State.Idle
 			this.flyingTime = 0
-			this.isLocal = isLocal
 		}
 
-		simprepare(data,cb){
-			this.onsimcomplete = cb
-			this.preparetime = data.ptime
-			this.desireTime  = data.time
-			this.result = data.result
+		simprepare(){
 			this.squeeze()
 			this.state = State.SimPrepare
-			this.downtime = Date.now()/1000
 		}
 
-		simjump(){
+		simjump(data){
+			this.preparetime = data.ptime
+			this.desireTime  = data.time
+			this.result      = data.result
+
 			this.stopprepare()
 			this.triggered  = false
 			this.speed      = {y : g.config.speedY * this.preparetime, z : g.config.speedZ * this.preparetime}
@@ -51,7 +48,7 @@ export default class Player{
 
 		simmove(delta){
 			if(this.flyingTime + delta >= this.desireTime && !this.triggered ){
-				g.step.onLocalJumpOver()
+				g.step.onLocalJumpOver(this.result)
 				if(this.result != -1) return
 			}
 			var s = new t.Vector3(0, 0, 0)

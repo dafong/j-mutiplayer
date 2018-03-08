@@ -119,50 +119,31 @@ export default class Network{
 		g.state.msg("auth.complete",data)
 		if(data.ec == 0){
 			this.sid = data.sid
-			console.log("[auth] [succ] sid="+data.sid)
-		}else{
-			console.log("[auth] [failed] "+ data.ec)
 		}
 	}
 
 	onroomcreate(data){
-		if(data.ec == 0){
-			g.user.initRoom(data)
-			g.state.msg("room.create")
-			console.log("[room] [create] 房间号="+data.room_id)
-		}
+		g.state.msg("room.create",data)
 	}
 
 	onroomjoin(data){
-		if(data.ec == 0){
-			g.user.initRoom(data)
-		}
 		g.state.msg("room.join",data)
 	}
 
 	onmemberchanged(data){
-		if(data.ec == 0){
-			g.user.onMemberChanged(data)
-			g.state.msg("room.memberchanged")
-		}
+		g.state.msg("room.memberchanged",data)
 	}
 
 	onroomchanged(data){
-		if(data.ec == 0){
-			g.user.onRoomChanged(data)
-		}
+		g.state.msg("room.changed",data)
 	}
 
 	onjumpstart(data){
-		if(data.ec == 0){
-			g.user.onNtfJumpStart(data)
-		}
+		g.state.msg("room.jumpstart",data)
 	}
 
 	onjumpend(data){
-		if(data.ec == 0){
-			g.user.onNtfJumpEnd(data)
-		}
+		g.state.msg("room.jumpend",data)
 	}
 
 	onmessage(o){
@@ -181,6 +162,7 @@ export default class Network{
 	}
 
 	onfail(){
+		console.log("[network] [connect failed] ")
 		var self = this
 		setTimeout(function(){
 			self.connect()

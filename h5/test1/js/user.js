@@ -71,38 +71,13 @@ export default class User{
 
 	}
 
-	onNtfJumpStart(data){
-		if(data.uid != this.curId) return
-		if(data.uid == this.uid){
-			//it's me do nothing
-		}else{
-			//it's other
-			g.step.onSimJumpStart(data)
-		}
-	}
-
-	onNtfJumpEnd(data){
-		if(data.result == 0){
-			this.nextRound(data)
-		}
-        this.notifyResult(data)
-	}
-
 	nextRound(data){
-		console.log(`[room] [round] ${data.curr}`)
+		console.log(`[room] [round] idx=${data.curr}`)
 		this.curr = data.curr
 		var id = this.members[this.curr-1].id
 		this.isLocalRound = id == this.uid
 	}
 
-	onRoomChanged(data){
-
-		if(data.type == Type.GameInit){
-			return this.startGame(data)
-		}else if(data.type == Type.RoundChange){
-			return this.nextRound(data)
-		}
-	}
 
 	startGame(data){
 		if(this.roomState != RoomState.Preparing) return

@@ -82,7 +82,6 @@ export default class RoomPage{
     }
 
     nextRound(){
-        console.log('nextRound')
         this.refreshMember()
     }
 
