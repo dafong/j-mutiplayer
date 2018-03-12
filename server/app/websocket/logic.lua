@@ -118,7 +118,4 @@ handler:use(107,function(data,session)
 	end
 	room:jump_end(session.uid,data)
 
-	-- if landing successful then next send room state change
-
-	-- if landing fail  , end game and send room state change
 end)
