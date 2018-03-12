@@ -58,13 +58,14 @@ export default class User{
 	}
 
 	initRoom(data){
+		log('room',`[room] [create success] 房间号=${data.room_id}`)
 		this.roomId = data.room_id
 		this.score  = data.score
 		this.roomState = RoomState.Preparing
 	}
 
 	onMemberChanged(data){
-		console.log("[room] [member changed]")
+		log('room',"[room] [member changed]")
 		this.ownerId = data.owner
 		this.members = data.members
 		this.totalScore = data.total
@@ -72,7 +73,7 @@ export default class User{
 	}
 
 	nextRound(data){
-		console.log(`[room] [round] idx=${data.curr}`)
+		log('room',`[room] [next round] player_idx=${data.curr}`)
 		this.curr = data.curr
 		var id = this.members[this.curr-1].id
 		this.isLocalRound = id == this.uid
@@ -81,7 +82,7 @@ export default class User{
 
 	startGame(data){
 		if(this.roomState != RoomState.Preparing) return
-		console.log(`[room] [start] dir=${data.dir} dis=${data.dis}`)
+	    log('room',`[room] [start] dir=${data.dir} dis=${data.dis}`)
 		this.dir  = data.dir
 		this.dis  = data.dis
 		this.curr = data.curr

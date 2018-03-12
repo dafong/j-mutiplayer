@@ -79,6 +79,7 @@ function Room:jump_start(uid)
     end
 
     self:sync({
+        ec  = 0,
         cmd = 106,
         uid = uid
     })
@@ -110,7 +111,7 @@ function Room:jump_end(uid,data)
 
     local len1 = (r1 + r2) * (r1 + r2)
 
-    local len2 = (dest - self.dest):Magnitude()
+    local len2 = (dest - self.dest):SqrMagnitude()
 
     local result = -1
 

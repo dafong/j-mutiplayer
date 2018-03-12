@@ -17,10 +17,9 @@ class Idle {
         }else if(evt == "room.create"){
             if(para.ec == 0){
                 g.user.initRoom(para)
-                console.log("[room] [create success] 房间号="+para.room_id)
                 g.ui.showRoomPage()
             }else{
-                console.log("[room] [create failed] ")
+                log('room',`[room] [create failed]`)
             }
 
         }
@@ -105,6 +104,7 @@ class Play{
         }
         if(evt == "local.roundover"){
             g.user.nextRound(this.jumpdata)
+            g.ui.page.onMemberChanged()
             if(!g.user.isLocalRound){
                 g.state.go('sync')
             }
@@ -124,6 +124,7 @@ class Sync{
         }
         if(evt == "room.jumpend"){
             if(para.ec == 0){
+                g.user.penddingResult()
                 g.user.notifyResult(para)
                 this.jumpdata = para
                 g.step.onSimJumpEnd(para)
@@ -131,6 +132,7 @@ class Sync{
         }
         if(evt == "local.roundover"){
             g.user.nextRound(this.jumpdata)
+            g.ui.page.onMemberChanged()
             if(g.user.isLocalRound){
                 g.state.go('play')
             }
@@ -160,7 +162,7 @@ export default class StateManager{
 	}
 
     go(stateName,para){
-        console.log(`%c [STATE] ${this.name} => ${stateName}`,'background: #222;color:#bada55')
+        log('state',`[STATE] ${this.name} => ${stateName}`)
         this.name  = stateName
         this.state = this.states[stateName]
         this.state.onEnter(para)

@@ -28,15 +28,24 @@ export default class Player{
 		}
 
 		simprepare(){
+			// log('player','[player] [sim prepare]')
 			this.squeeze()
 			this.state = State.SimPrepare
 		}
 
 		simjump(data){
+			log('player','[player] [sim jump]')
 			this.preparetime = data.ptime
-			this.desireTime  = data.time
+			this.desireTime  = data.dtime
 			this.result      = data.result
+			this.caldest =  new t.Vector2(+data.destpos.x,+data.destpos.y)
+			var start = new t.Vector2(+this.root.position.x.toFixed(2), +this.root.position.z.toFixed(2))
 
+			var dest  = new t.Vector2(+data.destpos.x.toFixed(2), +data.destpos.y.toFixed(2))
+
+			var dir   =  new t.Vector2().subVectors(dest, start )
+
+			this.axis = new t.Vector3(dir.x,0,dir.y).normalize()
 			this.stopprepare()
 			this.triggered  = false
 			this.speed      = {y : g.config.speedY * this.preparetime, z : g.config.speedZ * this.preparetime}
@@ -44,11 +53,13 @@ export default class Player{
 			this.speed.z    = +this.speed.z.toFixed(2)
 			this.speed.y    = +Math.min(this.speed.y + g.config.baseY, 180).toFixed(2)
 			this.state      = State.SimJump
+			g.step.spawnnext()
 		}
 
 		simmove(delta){
 			if(this.flyingTime + delta >= this.desireTime && !this.triggered ){
-				g.step.onLocalJumpOver(this.result)
+				// g.step.onLocalJumpOver(this.result
+				this.triggerEnd()
 				if(this.result != -1) return
 			}
 			var s = new t.Vector3(0, 0, 0)
@@ -65,10 +76,13 @@ export default class Player{
 		}
 
 	    prepare(){
+			// log('player',"[player] [prepareing]")
 			if(this.state != State.Idle) return
 	        this.downtime = Date.now()/1000
 	        this.state = State.Prepare
-	        console.log("[player] [prepareing]")
+			if(this.net)
+				g.network.jumpstart()
+
 	        this.squeeze()
 	    }
 
@@ -128,7 +142,7 @@ export default class Player{
 
 			this.desireTime = downtime
 
-			console.log(`[player] [jump] speed.z=${this.speed.z} speed.y=${this.speed.y} result=${result} desire=${this.desireTime}`)
+			log('player',`[player] [jump] speed.z=${this.speed.z} speed.y=${this.speed.y} result=${result} desire=${this.desireTime.toFixed(2)}`)
 
 	        var self = this
 	        var tr = new tw.Tween({r : 0})
@@ -149,7 +163,7 @@ export default class Player{
 
 		triggerEnd(){
 			this.triggered = true
-			console.log(`[player] [local end] flyingTime=${this.flyingTime} `)
+			// log('player',`[player] [local end] flyingTime=${this.flyingTime.toFixed(2)} `)
 			if(this.result == 0 || this.result == 1){
 				this.state = State.Landing
 				this.root.position.set(this.caldest.x , g.step.targetpos.y , this.caldest.y )
@@ -189,16 +203,14 @@ export default class Player{
 	        }
 			if(this.state == State.SimPrepare){
 				this.downtime += delta
-				if(this.downtime >= this.preparetime){
-					this.simjump()
-				}
 			}
 			if(this.state == State.SimJump){
-				this.simmove()
+				this.simmove(delta)
 			}
 	    }
 
 	    stopprepare(){
+			this.anis = this.anis || []
 	        for(var a of this.anis){
 	            a.stop()
 	        }

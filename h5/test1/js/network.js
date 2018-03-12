@@ -153,7 +153,7 @@ export default class Network{
 			return
 		}
 
-		console.log(data)
+		// console.log(data)
 
 		if(func)
 			func(data)

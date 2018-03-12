@@ -21,13 +21,13 @@ export default class App{
 
 	setupRender(){
 		var info = wx.getSystemInfoSync()
-		console.log('---------------------------------------')
-		console.log('[devicePixelRatio] ' + g.config.devicePixelRatio)
-		console.log('[model] ' + g.config.model)
-		console.log('[platform] ' + g.config.platform)
-		console.log('[system] ' + g.config.system)
-		console.log('[resolution] ' + g.config.width + ' x ' + g.config.height)
-		console.log('---------------------------------------')
+		log('---------------------------------------')
+		log('[devicePixelRatio] ' + g.config.devicePixelRatio)
+		log('[model] ' + g.config.model)
+		log('[platform] ' + g.config.platform)
+		log('[system] ' + g.config.system)
+		log('[resolution] ' + g.config.width + ' x ' + g.config.height)
+		log('---------------------------------------')
 
 		renderer = new t.WebGLRenderer({
 			antialias: true,
@@ -78,7 +78,7 @@ export default class App{
 			if(!isd) {
 				hdl = g.step
 				hdl[func](t,x,y)
-				console.log("[touch] "+ log + " " + x +" " + y)
+				// console.log("[touch] "+ log + " " + x +" " + y)
 			}
 
 			if(func == "ontouchstart"){

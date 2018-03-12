@@ -78,7 +78,6 @@ export default class RoomPage{
 
     startGame(){
         this.refreshMember()
-
     }
 
     nextRound(){

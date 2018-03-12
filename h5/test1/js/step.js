@@ -286,6 +286,7 @@ export default class Step{
 		}
 
 		onLocalJumpOver(result){
+
 			if(this.mode == Mode.Offline){
 				if(result == 0){
 					g.step.addfloor(this.player)
@@ -300,19 +301,15 @@ export default class Step{
 
 		onServerJumpEnd(data){
 			// the server will return the position calculated
+			log('step',`[step] [round over] seq=${data.tseq}`)
 			if(data.result == 0){
-				console.log("[step] [round over] seq=" + data.tseq)
 				this.player.root.position.set(data.destpos.x , (data.tseq - 0.5) * g.config.floor_height, data.destpos.y )
 				this.addfloor(this.player)
-				if(g.ui.page && g.ui.page.nextRound){
-					g.ui.page.nextRound()
-				}
 			}else{
-				console.log("[step] [round over] seq=" + data.tseq)
 				this.player.root.position.set(data.destpos.x , (data.tseq - 0.5) * g.config.floor_height, data.destpos.y )
 				this.addfloor(this.player)
 				//failed
-				console.log("[step] [game over]")
+				log('step',"[step] [game over]")
 			}
 			g.state.msg("local.roundover")
 		}
