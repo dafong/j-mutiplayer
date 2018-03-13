@@ -2,6 +2,7 @@ import * as t from 'libs/three.js'
 import Camera from 'cameracontroller.js'
 import Player from 'player.js'
 import * as tw from 'libs/tween.js'
+import Factory from 'factory.js'
 var scene
 var cols = [
 	["rgba(215, 219, 230, 1)", "rgba(188, 190, 199, 1)"],
@@ -111,27 +112,8 @@ export default class Step{
 		}
 
 		addtable(distance){
-			var o = new t.MeshLambertMaterial({
-				color: 0x619066
-			})
 
-			var r = new t.Geometry
-
-			var s = new t.ConeGeometry(1,g.config.floor_height,32)
-			this.merge(r,s,0,{
-				x:0,
-				y:0,
-				z:0
-			})
-
-			var c = new t.CylinderGeometry(g.config.table_radius,g.config.table_radius,0.2,32)
-			this.merge(r,c,0,{
-				x:0,
-				y:0.9,
-				z:0
-			})
-
-			var m = new t.Mesh(r,[o])
+			var m = Factory.create("table")
 			m.name = "table"
 			if(this.dir == 1){
 				m.position.set((_centerX + distance/2 * this.dir),_py(g.config.floor_height,0),0)
@@ -149,11 +131,7 @@ export default class Step{
 
 
 		addbase(distance){
-			var o = new t.MeshLambertMaterial({
-				color: 0xff0000
-			})
-			var p = new t.CylinderGeometry(.5,.5, g.config.floor_height,32)
-			this.base = new t.Mesh(p,o)
+			this.base = Factory.create("base")
 			this.base.name = "base"
 			this.world.add(this.base)
 			if(this.dir == 1){
@@ -183,22 +161,12 @@ export default class Step{
 
 		spawnnext(){
 			this.idx++
+
 			var root = new t.Object3D
 			root.name="player-"+this.idx
-			var o = new t.MeshLambertMaterial({
-				color : this.idx * 400
-			})
-			var p = new t.CylinderGeometry(
-				g.config.floor_radius,
-				g.config.floor_radius,
-				g.config.floor_height,
-				32
-			)
-			var body = new t.Mesh(p,o)
+			var body = Factory.create('player')
 			body.name="body"
 			root.add(body)
-
-
 			this.world.add(root)
 
 			var tscale = this.base.position.y + 1
@@ -239,16 +207,7 @@ export default class Step{
 
 		}
 
-		merge(src,dest,mat_i,pos){
-			var o = dest.faces.length
-			for(var i = 0; i < o; i++){
-				dest.faces[i].materialIndex = 0
-			}
-			var r = new t.Mesh(dest)
-			r.position.set(pos.x,pos.y,pos.z)
-			r.updateMatrix()
-			src.merge(r.geometry,r.matrix,mat_i)
-		}
+
 
 		update(delta){
 			if(this.player)
@@ -267,9 +226,9 @@ export default class Step{
 		}
 
 		addlight(){
-		    var e = new t.AmbientLight(0xffffff, .8);
-		    e.name = "ambient light"
-		    this.world.add(e)
+		    // var e = new t.AmbientLight(0xffffff, .8);
+		    // e.name = "ambient light"
+		    // this.world.add(e)
 		}
 
 		changecolor(){

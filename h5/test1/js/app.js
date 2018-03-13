@@ -6,6 +6,7 @@ import CameraController from 'cameracontroller.js'
 import StateManager from 'statemanager.js'
 import Step from 'step.js'
 import UI from 'ui/ui.js'
+import Factory from 'factory.js'
 
 let ctx = canvas.getContext('webgl')
 let renderer
@@ -115,6 +116,7 @@ export default class App{
 		g.ui      = new UI
 		g.state   = new StateManager
 		this.oldTime = Date.now()
+
 
 		g.ui.showMainPage()
 		g.step.reset()
